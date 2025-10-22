@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Format staged Lua files, then re-stage them.
+mapfile -t lua_files < <(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.lua$' || true)
+
+if [ ${#lua_files[@]} -eq 0 ]; then
+  exit 0
+fi
+
+if command -v stylua >/dev/null 2>&1; then
+  STYLUA_BIN="$(command -v stylua)"
+elif [ -x "$HOME/.local/share/nvim/mason/bin/stylua" ]; then
+  STYLUA_BIN="$HOME/.local/share/nvim/mason/bin/stylua"
+else
+  echo "pre-commit: stylua not found; skipping Lua formatting" >&2
+  exit 0
+fi
+
+"$STYLUA_BIN" "${lua_files[@]}"
+git add -- "${lua_files[@]}"
