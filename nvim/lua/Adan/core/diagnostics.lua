@@ -6,10 +6,7 @@ local diagnostic_signs = {
 }
 
 vim.diagnostic.config({
-    virtual_text = {
-        spacing = 4,
-        prefix = "",
-    },
+    virtual_text = false,
     signs = {
         text = diagnostic_signs,
     },
