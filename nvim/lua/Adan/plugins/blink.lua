@@ -7,7 +7,7 @@ return {
   version = '1.*',
   opts = {
     keymap = {
-        preset = "enter",
+        -- preset = "enter",
         ["<CR>"] = { "select_and_accept","fallback" },-- use enter to accept
         ['<Tab>'] = { 'select_next', 'fallback' },--use tab to select next option
         ['<S-Tab>'] = { 'select_prev', 'fallback' },--use shift tab to go back an option
@@ -75,3 +75,4 @@ return {
   },
   opts_extend = { "sources.default" }
 }
+

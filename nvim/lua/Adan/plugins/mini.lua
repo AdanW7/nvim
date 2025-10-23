@@ -5,4 +5,5 @@ return {
     { 'nvim-mini/mini.comment', version = '*' },
     { 'nvim-mini/mini.surround', version = '*' },
     { 'nvim-mini/mini.cursorword', version = '*', delay = 100, },
+    { 'nvim-mini/mini.surround', version = '*' },
 }
