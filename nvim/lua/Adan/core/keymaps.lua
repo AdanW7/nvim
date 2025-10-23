@@ -12,6 +12,10 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 -- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
 -- or just use <C-\><C-n> to exit terminal mode
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
+vim.keymap.set('t', '<A-h>', '<C-\\><C-n><C-w>h', { desc = 'Exit terminal to left split' })
+vim.keymap.set('t', '<A-j>', '<C-\\><C-n><C-w>j', { desc = 'Exit terminal to lower split' })
+vim.keymap.set('t', '<A-k>', '<C-\\><C-n><C-w>k', { desc = 'Exit terminal to above split' })
+vim.keymap.set('t', '<A-l>', '<C-\\><C-n><C-w>l', { desc = 'Exit terminal to right mode' })
 
 
 -- rather than enter ex mode pressing 'Q' no repeats last macro
@@ -106,9 +110,6 @@ vim.keymap.set("n", "<Leader>Pp", [["+p]],
 vim.keymap.set("n", "<Leader>PP", [["+P]],
     { noremap = true, silent = true, desc = "paste from system clipboard before cursor" })
 
-
--- Exit terminal mode
-vim.keymap.set("t", "<Esc>", "<C-\\><C-N>")
 
 
 vim.keymap.set("n", "<leader>cd", '<cmd>lua vim.fn.chdir(vim.fn.expand("%:p:h"))<CR>',

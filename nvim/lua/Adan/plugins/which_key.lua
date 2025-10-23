@@ -7,7 +7,7 @@ return {
     spec = {
       { "<leader>b", group = "Buffers" },
       { "<leader>w", group = "Windows" },
-      { "<leader>t", group = "Tabs" },
+      { "<leader>t", group = "Tabs/Terminal" },
       { "<leader>l", group = "LSP" },
       { "<leader>p", group = "Projects" },
       { "<leader>P", group = "Paste" },
