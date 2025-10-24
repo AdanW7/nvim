@@ -1,13 +1,3 @@
--- Highlight yanked text
-local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
-vim.api.nvim_create_autocmd('TextYankPost', {
-    pattern = '*',
-    callback = function()
-        vim.highlight.on_yank({ timeout = 170 })
-    end,
-    group = highlight_group,
-})
-
 -- dont use ruff for hover, use Pyright
 vim.api.nvim_create_autocmd("LspAttach", {
   group = vim.api.nvim_create_augroup('lsp_attach_disable_ruff_hover', { clear = true }),
@@ -23,4 +13,3 @@ vim.api.nvim_create_autocmd("LspAttach", {
   end,
   desc = 'LSP: Disable hover capability from Ruff',
 })
-
