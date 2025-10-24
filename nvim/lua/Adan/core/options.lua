@@ -1,23 +1,48 @@
--- mouse and cursor
-vim.opt.mouse = 'a'-- Enable mouse mode, can be useful for resizing splits for example
-vim.opt.guicursor = {"v:block","n:block","i:ver25"} -- Use block cursor in normal and visual mode, beam in insert mode
+-- =============================================================================
+-- APPEARANCE & UI
+-- =============================================================================
 
--- color options
+-- Color scheme
+-- vim.cmd.colorscheme("helix")
 vim.opt.termguicolors = true -- Enable true colors
 
--- colomn options
-vim.opt.colorcolumn = "" -- Highlight column
+-- Cursor
+vim.opt.guicursor = {"v:block", "n:block", "i:ver25"} -- Block cursor in normal/visual, beam in insert
+vim.opt.cursorline = true -- Highlight the current line
+
+-- Line numbers
+vim.opt.number = true -- Show line numbers
+vim.opt.relativenumber = false -- Disable relative line numbers
+vim.opt.numberwidth = 2 -- Width of the line number column
+
+-- Columns
+vim.opt.colorcolumn = "" -- No column highlight
 vim.opt.signcolumn = "yes:1" -- Always show sign column
 
--- search 
-vim.opt.ignorecase = true -- Ignore case in search
-vim.opt.smartcase = true
-vim.opt.hlsearch = true -- Enable/Disable highlighting of search results
+-- Whitespace visualization
+vim.opt.list = true -- Show whitespace characters
+vim.opt.listchars = {
+    tab = "→ ",
+    multispace = "┊   ",
+    trail = "·",
+    nbsp = "⎵",
+} -- Characters to show for tabs and spaces
 
--- swap file settings
-vim.opt.swapfile = false
+-- Mode display
+vim.opt.showmode = false -- Don't show mode (statusline handles this)
 
--- indenting
+-- Borders
+vim.opt.winborder = "rounded" -- Use rounded borders for windows
+
+
+-- =============================================================================
+-- BEHAVIOR & EDITING
+-- =============================================================================
+
+-- Mouse
+vim.opt.mouse = 'a' -- Enable mouse mode
+
+-- Indentation
 vim.opt.autoindent = true -- Enable auto indentation
 vim.opt.expandtab = true -- Use spaces instead of tabs
 vim.opt.tabstop = 4 -- Number of spaces for a tab
@@ -26,50 +51,63 @@ vim.opt.shiftwidth = 4 -- Number of spaces for autoindent
 vim.opt.shiftround = true -- Round indent to multiple of shiftwidth
 vim.cmd.filetype("plugin indent on") -- Enable filetype detection, plugins, and indentation
 
--- white space representation
-vim.opt.list = true -- Show whitespace characters
--- vim.opt.listchars = "tab: ,multispace:|   ,eol:󰌑" -- Characters to show for tabs, spaces, and end of line
-vim.opt.listchars = "tab: ,multispace:|   " -- Characters to show for tabs, spaces, and end of line
+-- Line wrapping
+vim.opt.wrap = true -- Enable line wrapping
+vim.opt.linebreak = true -- Wrap at word boundaries
+vim.opt.breakindent = true -- Maintain indent when wrapping
+vim.opt.showbreak = "↪ " -- Visual indicator for wrapped lines
 
--- line numbers
-vim.opt.number = true -- Show line numbers
-vim.opt.relativenumber = false -- Show relative line numbers
-vim.opt.numberwidth = 2 -- Width of the line number column
-vim.opt.cursorline = true -- Highlight the current line
-vim.opt.scrolloff = 8 -- Keep N lines above and below the cursor
-
--- wrapping
-vim.opt.wrap = true -- Enable/Disable line wrapping
-vim.opt.linebreak = true -- Enable/Disable line wrapping
-vim.opt.breakindent = true -- Enable break indent
-vim.opt.showbreak = "↪ " -- Optional: Visual indicator for wrapped lines
+-- Scrolling
+vim.opt.scrolloff = 8 -- Keep 8 lines above and below cursor
 
 
--- command options
-vim.opt.inccommand = "nosplit" -- Shows the effects of a command incrementally in the buffer
+-- =============================================================================
+-- SEARCH
+-- =============================================================================
 
--- undo options
+vim.opt.ignorecase = true -- Ignore case in search
+vim.opt.smartcase = true -- Override ignorecase if search contains uppercase
+vim.opt.hlsearch = true -- Highlight search results
+vim.opt.inccommand = "nosplit" -- Show effects of command incrementally
+
+
+-- =============================================================================
+-- COMPLETION
+-- =============================================================================
+
+vim.opt.completeopt = { "menuone", "popup", "noinsert" } -- Completion menu options
+
+
+-- =============================================================================
+-- FILES & PERSISTENCE
+-- =============================================================================
+
+-- Swap files
+vim.opt.swapfile = false -- Disable swap files
+
+-- Undo
 vim.opt.undodir = os.getenv('HOME') .. '/.vim/undodir' -- Directory for undo files
 vim.opt.undofile = true -- Enable persistent undo
 
--- window options
-vim.opt.splitright = true --makes new vertical splits open to the right of the current window
-vim.opt.splitbelow = true -- makes new horizontal splits open below the current window
-vim.opt.winborder = "rounded" -- Use rounded borders for windows
 
---completion
-vim.opt.completeopt = { "menuone", "popup", "noinsert" } -- Options for completion menu
+-- =============================================================================
+-- WINDOWS & SPLITS
+-- =============================================================================
 
--- color scheme
--- vim.cmd.colorscheme("techbase")
+vim.opt.splitright = true -- New vertical splits open to the right
+vim.opt.splitbelow = true -- New horizontal splits open below
 
--- enable nerdfont
-vim.g.have_nerd_font = true
 
--- show current mode
-vim.opt.showmode = false
+-- =============================================================================
+-- TIMING
+-- =============================================================================
 
--- timing options
--- 
-vim.opt.timeoutlen = 300-- Decrease mapped sequence wait time
-vim.opt.updatetime = 250-- Decrease update time
+vim.opt.timeoutlen = 300 -- Decrease mapped sequence wait time (ms)
+vim.opt.updatetime = 250 -- Decrease update time (ms)
+
+
+-- =============================================================================
+-- FONTS
+-- =============================================================================
+
+vim.g.have_nerd_font = true -- Enable Nerd Font icons
