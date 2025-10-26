@@ -25,14 +25,34 @@ vim.keymap.set('n', 'Q', '@@', { noremap = true, silent = true })
 -- =============================================================================
 
 -- Line navigation
-vim.keymap.set({ "n", "v", "o","x" }, "gh", "0", { noremap = true, silent = true, desc = "go to begining of line" })
-vim.keymap.set({ "n", "v", "o","x" }, "gs", "^", { noremap = true, silent = true, desc = "go to first not white space in line" })
-vim.keymap.set({ "n", "v", "o","x" }, "gl", "$", { noremap = true, silent = true, desc = "go to end of line" })
-vim.keymap.set({ "n", "v", "o","x" }, "ge", "G", { noremap = true, silent = true, desc = "go to end of file" })
+vim.keymap.set({ "n", "v", "o", "x" }, "gh", "0", { noremap = true, silent = true, desc = "go to begining of line" })
+vim.keymap.set({ "n", "v", "o", "x" }, "gs", "^", {
+    noremap = true,
+    silent = true,
+    desc = "go to first not white space in line"
+})
+vim.keymap.set({ "n", "v", "o", "x" }, "gl", "$", {
+    noremap = true,
+    silent = true,
+    desc = "go to end of line"
+})
+vim.keymap.set({ "n", "v", "o", "x" }, "ge", "G", {
+    noremap = true,
+    silent = true,
+    desc = "go to end of file"
+})
 
 -- Page navigation (centered)
-vim.keymap.set({"n","v"}, "<C-d>", "<C-d>zz", { noremap = true, silent = true, desc = "jump up the page" })
-vim.keymap.set({"n","v"}, "<C-u>", "<C-u>zz", { noremap = true, silent = true, desc = "jump down the page" })
+vim.keymap.set({ "n", "v" }, "<C-d>", "<C-d>zz", {
+    noremap = true,
+    silent = true,
+    desc = "jump up the page"
+})
+vim.keymap.set({ "n", "v" }, "<C-u>", "<C-u>zz", {
+    noremap = true,
+    silent = true,
+    desc = "jump down the page"
+})
 
 
 -- =============================================================================
@@ -57,14 +77,38 @@ vim.keymap.set("n", "p", "p", { noremap = true, silent = true, desc = "paste nvi
 vim.keymap.set("n", "P", "P", { noremap = true, silent = true, desc = "paste nvim clipboard before cursor" })
 
 -- System clipboard operations (Leader prefix)
-vim.keymap.set({ "n", "v" }, "<Leader>y", [["+y]], { noremap = true, silent = true, desc = "save text to system clipboard" })
-vim.keymap.set("n", "<Leader>Y", [["+Y]], { noremap = true, silent = true, desc = "save current line to system clipboard" })
-vim.keymap.set("n", "<Leader>pp", [["+p]], { noremap = true, silent = true, desc = "paste from system clipboard at cursor" })
-vim.keymap.set("n", "<Leader>pP", [["+P]], { noremap = true, silent = true, desc = "paste from system clipboard before cursor" })
+vim.keymap.set({ "n", "v" }, "<Leader>y", [["+y]], {
+    noremap = true,
+    silent = true,
+    desc = "save text to system clipboard"
+})
+vim.keymap.set("n", "<Leader>Y", [["+Y]], {
+    noremap = true,
+    silent = true,
+    desc = "save current line to system clipboard"
+})
+vim.keymap.set("n", "<Leader>pp", [["+p]], {
+    noremap = true,
+    silent = true,
+    desc = "paste from system clipboard at cursor"
+})
+vim.keymap.set("n", "<Leader>pP", [["+P]], {
+    noremap = true,
+    silent = true,
+    desc = "paste from system clipboard before cursor"
+})
 
 -- Replace selection without yanking
-vim.keymap.set({"v", "x"}, "R", [["_dP]], { noremap = true, silent = true, desc = "Replace selection with unnamed register" })
-vim.keymap.set({"v", "x"}, "<Leader>R", [["+p]], { noremap = true, silent = true, desc = "Replace selection with system clipboard" })
+vim.keymap.set({ "v", "x" }, "R", [["_dP]], {
+    noremap = true,
+    silent = true,
+    desc = "Replace selection with unnamed register"
+})
+vim.keymap.set({ "v", "x" }, "<Leader>R", [["+p]], {
+    noremap = true,
+    silent = true,
+    desc = "Replace selection with system clipboard"
+})
 
 
 -- =============================================================================
@@ -107,8 +151,16 @@ vim.keymap.set('n', '<leader>br', '<cmd>checktime<CR>', { desc = 'Reload all buf
 -- =============================================================================
 
 -- Window splits
-vim.keymap.set("n", "<Leader>wv", "<cmd>vsplit<CR>", { noremap = true, silent = true, desc = "Split Window vertically" })
-vim.keymap.set("n", "<Leader>ws", "<cmd>split<CR>", { noremap = true, silent = true, desc = "Split Window horizontally" })
+vim.keymap.set("n", "<Leader>wv", "<cmd>vsplit<CR>", {
+    noremap = true,
+    silent = true,
+    desc = "Split Window vertically"
+})
+vim.keymap.set("n", "<Leader>ws", "<cmd>split<CR>", {
+    noremap = true,
+    silent = true,
+    desc = "Split Window horizontally"
+})
 
 -- Window navigation
 vim.keymap.set("n", "<Leader>wh", "<C-w>h", { noremap = true, silent = true, desc = "Move to left window" })
@@ -140,12 +192,16 @@ end, { desc = "New scratch buffer (horizontal)" })
 -- =============================================================================
 
 -- Tab creation
-vim.keymap.set({ "n", "t" }, "<Leader>ta", "<cmd>tabnew<CR>", { noremap = true, silent = true, desc = "create a new tab" })
-vim.keymap.set({ "n", "t" }, "<Leader>tb", "<cmd>tabedit %<CR>", { noremap = true, silent = true, desc = "open current buffer in new tab" })
+vim.keymap.set({ "n", "t" }, "<Leader>ta", "<cmd>tabnew<CR>",
+    { noremap = true, silent = true, desc = "create a new tab" })
+vim.keymap.set({ "n", "t" }, "<Leader>tb", "<cmd>tabedit %<CR>",
+    { noremap = true, silent = true, desc = "open current buffer in new tab" })
 
 -- Tab closing
-vim.keymap.set({ "n", "t" }, "<Leader>tcc", "<cmd>tabclose<CR>", { noremap = true, silent = true, desc = "close current tab" })
-vim.keymap.set({ "n", "t" }, "<Leader>tco", "<cmd>tabonly<CR>", { noremap = true, silent = true, desc = "close other tabs" })
+vim.keymap.set({ "n", "t" }, "<Leader>tcc", "<cmd>tabclose<CR>",
+    { noremap = true, silent = true, desc = "close current tab" })
+vim.keymap.set({ "n", "t" }, "<Leader>tco", "<cmd>tabonly<CR>",
+    { noremap = true, silent = true, desc = "close other tabs" })
 
 -- Tab navigation
 vim.keymap.set({ "n", "t" }, "<Leader>tn", "gt", { noremap = true, silent = true, desc = "next tab" })
@@ -155,8 +211,10 @@ vim.keymap.set({ "n", "t" }, "<Leader>t2", "2gt", { noremap = true, silent = tru
 vim.keymap.set({ "n", "t" }, "<Leader>t3", "3gt", { noremap = true, silent = true, desc = "goto tab 3" })
 
 -- Tab reordering
-vim.keymap.set({ "n", "t" }, "<Leader>tm>", "<cmd>tabmove +1<CR>", { noremap = true, silent = true, desc = "move current tab to the right" })
-vim.keymap.set({ "n", "t" }, "<Leader>tm<", "<cmd>tabmove -1<CR>", { noremap = true, silent = true, desc = "move current tab to the left" })
+vim.keymap.set({ "n", "t" }, "<Leader>tm>", "<cmd>tabmove +1<CR>",
+    { noremap = true, silent = true, desc = "move current tab to the right" })
+vim.keymap.set({ "n", "t" }, "<Leader>tm<", "<cmd>tabmove -1<CR>",
+    { noremap = true, silent = true, desc = "move current tab to the left" })
 
 
 -- =============================================================================
@@ -221,7 +279,9 @@ end, { desc = "LSP Restart" })
 -- =============================================================================
 
 -- Change directory to current file
-vim.keymap.set("n", "<leader>cd", '<cmd>lua vim.fn.chdir(vim.fn.expand("%:p:h"))<CR>', { desc = "Change directory to the current file" })
+vim.keymap.set("n", "<leader>cd", '<cmd>lua vim.fn.chdir(vim.fn.expand("%:p:h"))<CR>', {
+    desc = "Change directory to the current file"
+})
 
 
 -- =============================================================================
@@ -236,31 +296,39 @@ vim.keymap.set("n", "<leader>e", ":Neotree filesystem reveal left<CR>", { desc =
 -- RELOAD CONFIG
 -- =============================================================================
 
-vim.api.nvim_set_keymap("n", "<leader>ro", ":luafile ~/.config/nvim/init.lua<CR>", { noremap = true, silent = true, desc = "reload nvim" })
+vim.keymap.set("n", "<leader>rc", function()
+    for name, _ in pairs(package.loaded) do
+        if name:match('^Adan') then
+            package.loaded[name] = nil
+        end
+    end
+    dofile(vim.fn.stdpath('config') .. '/init.lua')
+    vim.notify("Config reloaded!", vim.log.levels.INFO)
+end, { desc = "Reload config" })
 
 
 -- =============================================================================
 -- Create / Open a Daily Note Markdown file
 -- =============================================================================
 vim.keymap.set('n', '<leader>n', function()
-  -- Get today's date in Obsidian format (YYYY-MM-DD)
-  local date = os.date("%Y-%m-%d")
-  
-  -- Detect OS and set path accordingly
-  local dir
-  if vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1 then
-    -- Windows OneDrive path
-    dir = "C:/Users/awodzins/OneDrive - Milwaukee Tool/Documents/Notes/Daily notes"
-  else
-    -- Linux/Mac path
-    dir = vim.fn.expand("~/Notes/DailyNotes")
-  end
-  
-  local filepath = dir .. "/" .. date .. ".md"
-  
-  -- Create directory if it doesn't exist
-  vim.fn.mkdir(dir, "p")
-  
-  -- Open the file (creates it if it doesn't exist)
-  vim.cmd("edit " .. filepath)
+    -- Get today's date in Obsidian format (YYYY-MM-DD)
+    local date = os.date("%Y-%m-%d")
+
+    -- Detect OS and set path accordingly
+    local dir
+    if vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1 then
+        -- Windows OneDrive path
+        dir = "C:/Users/awodzins/OneDrive - Milwaukee Tool/Documents/Notes/Daily notes"
+    else
+        -- Linux/Mac path
+        dir = vim.fn.expand("~/Notes/DailyNotes")
+    end
+
+    local filepath = dir .. "/" .. date .. ".md"
+
+    -- Create directory if it doesn't exist
+    vim.fn.mkdir(dir, "p")
+
+    -- Open the file (creates it if it doesn't exist)
+    vim.cmd("edit " .. filepath)
 end, { desc = "Open today's daily note" })

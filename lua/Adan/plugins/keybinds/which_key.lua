@@ -6,6 +6,7 @@ return {
     delay = 200,
     spec = {
       { "<leader>b",  group = "Buffers" },
+      { "<leader>bc", group = "Close Buffers" },
       { "<leader>w",  group = "Windows" },
       { "<leader>t",  group = "Tabs/Terminal" },
       { "<leader>tc", group = "Close Tabs" },
