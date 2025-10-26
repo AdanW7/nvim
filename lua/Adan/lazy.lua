@@ -14,16 +14,23 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
   end
 end
 vim.opt.rtp:prepend(lazypath)
-
 require("lazy").setup({
-
-  spec = {
-    { import = "Adan.plugins" },
-  },
-
-  -- colorscheme that will be used when installing plugins.
+  spec = (function()
+    local spec = {}
+    local plugins_path = vim.fn.stdpath("config") .. "/lua/Adan/plugins"
+    local handle = vim.loop.fs_scandir(plugins_path)
+    if handle then
+      while true do
+        local name, type = vim.loop.fs_scandir_next(handle)
+        if not name then break end
+        -- Only import directories (not files)
+        if type == "directory" then
+          table.insert(spec, { import = "Adan.plugins." .. name })
+        end
+      end
+    end
+    return spec
+  end)(),
   install = { colorscheme = { "helix" } },
-  -- 
-  -- automatically check for plugin updates
   checker = { enabled = false },
 })

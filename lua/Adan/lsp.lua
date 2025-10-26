@@ -3,11 +3,14 @@ local custom_lsps = {
   "clangd",
   "gopls",
   "lua_ls",
-  "ruff",
+  "marksman",
+  "nixd",
+  "powershell_es",
   "pyright",
+  "ruff",
+  "rust_analyzer",
   "texlab",
   "ts_ls",
-  "rust_analyzer",
   "zls",
 }
 
