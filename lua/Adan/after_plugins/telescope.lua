@@ -102,15 +102,15 @@ vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Telescope help ta
 vim.keymap.set('n', '<leader>fp', '<cmd>Telescope projects<CR>', { desc = 'Find projects' })
 
 -- Project operations (after switching project)
-vim.keymap.set('n', '<leader>pf', function()
+vim.keymap.set('n', '<leader>Pf', function()
     builtin.find_files({ cwd = vim.fn.getcwd() })
 end, { desc = 'Find files in project' })
 
-vim.keymap.set('n', '<leader>pg', function()
+vim.keymap.set('n', '<leader>Pg', function()
     builtin.live_grep({ cwd = vim.fn.getcwd() })
 end, { desc = 'Grep in project' })
 
-vim.keymap.set('n', '<leader>pr', function()
+vim.keymap.set('n', '<leader>Pr', function()
     builtin.oldfiles({ cwd = vim.fn.getcwd() })
 end, { desc = 'Recent files in project' })
 
@@ -120,7 +120,7 @@ end, { desc = 'Recent files in project' })
 -- =============================================================================
 
 -- Add current directory as project
-vim.keymap.set('n', '<leader>pa', function()
+vim.keymap.set('n', '<leader>Pa', function()
     local history = require("project_nvim.utils.history")
     local cwd = vim.fn.getcwd()
     
@@ -139,7 +139,7 @@ vim.keymap.set('n', '<leader>pa', function()
 end, { desc = 'Add current dir as project' })
 
 -- Add custom directory as project
-vim.keymap.set('n', '<leader>pA', function()
+vim.keymap.set('n', '<leader>PA', function()
     vim.ui.input({ prompt = "Project path: ", completion = "dir" }, function(path)
         if path and path ~= "" then
             local expanded = vim.fn.expand(path)

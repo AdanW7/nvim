@@ -25,14 +25,14 @@ vim.keymap.set('n', 'Q', '@@', { noremap = true, silent = true })
 -- =============================================================================
 
 -- Line navigation
-vim.keymap.set({ "n", "v", "o" }, "gh", "0", { noremap = true, silent = true, desc = "go to begining of line" })
-vim.keymap.set({ "n", "v", "o" }, "gs", "^", { noremap = true, silent = true, desc = "go to first not white space in line" })
-vim.keymap.set({ "n", "v", "o" }, "gl", "$", { noremap = true, silent = true, desc = "go to end of line" })
-vim.keymap.set({ "n", "v", "o" }, "ge", "G", { noremap = true, silent = true, desc = "go to end of file" })
+vim.keymap.set({ "n", "v", "o","x" }, "gh", "0", { noremap = true, silent = true, desc = "go to begining of line" })
+vim.keymap.set({ "n", "v", "o","x" }, "gs", "^", { noremap = true, silent = true, desc = "go to first not white space in line" })
+vim.keymap.set({ "n", "v", "o","x" }, "gl", "$", { noremap = true, silent = true, desc = "go to end of line" })
+vim.keymap.set({ "n", "v", "o","x" }, "ge", "G", { noremap = true, silent = true, desc = "go to end of file" })
 
 -- Page navigation (centered)
-vim.keymap.set("n", "<C-d>", "<C-d>zz", { noremap = true, silent = true, desc = "jump up the page" })
-vim.keymap.set("n", "<C-u>", "<C-u>zz", { noremap = true, silent = true, desc = "jump down the page" })
+vim.keymap.set({"n","v"}, "<C-d>", "<C-d>zz", { noremap = true, silent = true, desc = "jump up the page" })
+vim.keymap.set({"n","v"}, "<C-u>", "<C-u>zz", { noremap = true, silent = true, desc = "jump down the page" })
 
 
 -- =============================================================================
@@ -59,8 +59,8 @@ vim.keymap.set("n", "P", "P", { noremap = true, silent = true, desc = "paste nvi
 -- System clipboard operations (Leader prefix)
 vim.keymap.set({ "n", "v" }, "<Leader>y", [["+y]], { noremap = true, silent = true, desc = "save text to system clipboard" })
 vim.keymap.set("n", "<Leader>Y", [["+Y]], { noremap = true, silent = true, desc = "save current line to system clipboard" })
-vim.keymap.set("n", "<Leader>Pp", [["+p]], { noremap = true, silent = true, desc = "paste from system clipboard at cursor" })
-vim.keymap.set("n", "<Leader>PP", [["+P]], { noremap = true, silent = true, desc = "paste from system clipboard before cursor" })
+vim.keymap.set("n", "<Leader>pp", [["+p]], { noremap = true, silent = true, desc = "paste from system clipboard at cursor" })
+vim.keymap.set("n", "<Leader>pP", [["+P]], { noremap = true, silent = true, desc = "paste from system clipboard before cursor" })
 
 -- Replace selection without yanking
 vim.keymap.set({"v", "x"}, "R", [["_dP]], { noremap = true, silent = true, desc = "Replace selection with unnamed register" })
@@ -237,3 +237,30 @@ vim.keymap.set("n", "<leader>e", ":Neotree filesystem reveal left<CR>", { desc =
 -- =============================================================================
 
 vim.api.nvim_set_keymap("n", "<leader>ro", ":luafile ~/.config/nvim/init.lua<CR>", { noremap = true, silent = true, desc = "reload nvim" })
+
+
+-- =============================================================================
+-- Create / Open a Daily Note Markdown file
+-- =============================================================================
+vim.keymap.set('n', '<leader>n', function()
+  -- Get today's date in Obsidian format (YYYY-MM-DD)
+  local date = os.date("%Y-%m-%d")
+  
+  -- Detect OS and set path accordingly
+  local dir
+  if vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1 then
+    -- Windows OneDrive path
+    dir = "C:/Users/awodzins/OneDrive - Milwaukee Tool/Documents/Notes/Daily notes"
+  else
+    -- Linux/Mac path
+    dir = vim.fn.expand("~/Notes/DailyNotes")
+  end
+  
+  local filepath = dir .. "/" .. date .. ".md"
+  
+  -- Create directory if it doesn't exist
+  vim.fn.mkdir(dir, "p")
+  
+  -- Open the file (creates it if it doesn't exist)
+  vim.cmd("edit " .. filepath)
+end, { desc = "Open today's daily note" })
