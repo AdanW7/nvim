@@ -39,7 +39,6 @@ return {
           draw = {
             treesitter = { "lsp" },
           },
-          auto_select = true,
         },
         documentation = {
           auto_show = true,
