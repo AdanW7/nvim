@@ -8,7 +8,7 @@ return {
   opts = {
     keymap = {
         -- preset = "enter",
-        ["<CR>"] = { "select_and_accept","fallback" },-- use enter to accept
+        ["<CR>"] = { "accept","fallback" },-- use enter to accept
         ['<Tab>'] = { 'select_next', 'fallback' },--use tab to select next option
         ['<S-Tab>'] = { 'select_prev', 'fallback' },--use shift tab to go back an option
         ['<C-u>'] = { 'scroll_documentation_up', 'fallback' },
@@ -39,6 +39,7 @@ return {
           draw = {
             treesitter = { "lsp" },
           },
+          auto_select = true,
         },
         documentation = {
           auto_show = true,
