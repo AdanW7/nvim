@@ -1,3 +1,3 @@
 local dap = require("dap")
 
-dap.configurations.cpp = dap.configurations.zig
+dap.configurations.cpp = dap.configurations.c
