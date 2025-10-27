@@ -8,45 +8,45 @@ local actions = require('telescope.actions')
 
 -- Configure telescope before loading extensions
 telescope.setup({
-  defaults = {
-    -- Layout
-    layout_strategy = 'horizontal',
-    layout_config = {
-      horizontal = {
-        prompt_position = 'top',
-        preview_width = 0.5,
-        results_width = 0.8,
-      },
-      width = 0.95,
-      height = 0.85,
-      preview_cutoff = 120,
-    },
-    wrap_results = true,
-    preview = {
-        treesitter = {
-            enable = true,
+    defaults = {
+        -- Layout
+        layout_strategy = 'horizontal',
+        layout_config = {
+            horizontal = {
+                prompt_position = 'top',
+                preview_width = 0.5,
+                results_width = 0.8,
+            },
+            width = 0.95,
+            height = 0.85,
+            preview_cutoff = 120,
+        },
+        wrap_results = true,
+        preview = {
+            treesitter = {
+                enable = true,
+            },
+        },
+
+        -- Sorting
+        sorting_strategy = 'ascending', -- First result at top
+
+        -- Keymaps
+        mappings = {
+            i = { -- Insert mode
+                ['<Tab>'] = actions.move_selection_next,
+                ['<S-Tab>'] = actions.move_selection_previous,
+                ['<C-j>'] = actions.move_selection_next,
+                ['<C-k>'] = actions.move_selection_previous,
+            },
+            n = { -- Normal mode
+                ['<Tab>'] = actions.move_selection_next,
+                ['<S-Tab>'] = actions.move_selection_previous,
+                ['j'] = actions.move_selection_next,
+                ['k'] = actions.move_selection_previous,
+            },
         },
     },
-    
-    -- Sorting
-    sorting_strategy = 'ascending', -- First result at top
-    
-    -- Keymaps
-    mappings = {
-      i = { -- Insert mode
-        ['<Tab>'] = actions.move_selection_next,
-        ['<S-Tab>'] = actions.move_selection_previous,
-        ['<C-j>'] = actions.move_selection_next,
-        ['<C-k>'] = actions.move_selection_previous,
-      },
-      n = { -- Normal mode
-        ['<Tab>'] = actions.move_selection_next,
-        ['<S-Tab>'] = actions.move_selection_previous,
-        ['j'] = actions.move_selection_next,
-        ['k'] = actions.move_selection_previous,
-      },
-    },
-  },
 })
 
 
@@ -129,7 +129,7 @@ end, { desc = 'Recent files in project' })
 vim.keymap.set('n', '<leader>Pa', function()
     local history = require("project_nvim.utils.history")
     local cwd = vim.fn.getcwd()
-    
+
     -- Check if already in history
     for _, v in pairs(history.recent_projects) do
         if v == cwd then
@@ -137,7 +137,7 @@ vim.keymap.set('n', '<leader>Pa', function()
             return
         end
     end
-    
+
     -- Add to recent projects
     table.insert(history.recent_projects, 1, cwd)
     history.write_projects_to_history()
@@ -149,10 +149,10 @@ vim.keymap.set('n', '<leader>PA', function()
     vim.ui.input({ prompt = "Project path: ", completion = "dir" }, function(path)
         if path and path ~= "" then
             local expanded = vim.fn.expand(path)
-            
+
             if vim.fn.isdirectory(expanded) == 1 then
                 local history = require("project_nvim.utils.history")
-                
+
                 -- Check if already exists
                 for _, v in pairs(history.recent_projects) do
                     if v == expanded then
@@ -160,7 +160,7 @@ vim.keymap.set('n', '<leader>PA', function()
                         return
                     end
                 end
-                
+
                 -- Add and save
                 table.insert(history.recent_projects, 1, expanded)
                 history.write_projects_to_history()
@@ -171,3 +171,20 @@ vim.keymap.set('n', '<leader>PA', function()
         end
     end)
 end, { desc = 'Add folder as project' })
+
+-- =============================================================================
+-- KEYMAPS - Diagnostics
+-- =============================================================================
+
+vim.keymap.set("n", "<leader>fd", function()
+    require("telescope.builtin").diagnostics({
+        bufnr = 0,        -- Current buffer only
+        severity_limit = nil, -- Show all severities (error, warn, info, hint)
+        -- Or filter by severity:
+        -- severity = vim.diagnostic.severity.ERROR, -- Only errors
+    })
+end, { desc = "Find Diagnostics (buffer)" })
+
+vim.keymap.set("n", "<leader>fD", function()
+    require("telescope.builtin").diagnostics()
+end, { desc = "Find Diagnostics (workspace)" })
