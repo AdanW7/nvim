@@ -113,6 +113,10 @@ require 'nvim-treesitter.configs'.setup {
                 -- Calls (function calls)
                 ["aC"] = "@call.outer",
                 ["iC"] = "@call.inner",
+
+                -- Type definitions
+                ["aT"] = "@type.outer",
+                ["iT"] = "@type.inner",
             },
         },
         move = {
