@@ -12,6 +12,18 @@ return {
     { "<leader>ge", "<cmd>Neotree git_status toggle<cr>", desc = "Git Explorer" },
     { "<leader>be", "<cmd>Neotree buffers toggle<cr>", desc = "Buffer Explorer" },
   },
+  init = function()
+    vim.api.nvim_create_autocmd("VimEnter", {
+      callback = function(data)
+        local directory = vim.fn.isdirectory(data.file) == 1
+        if directory then
+          vim.cmd.enew()
+          vim.cmd.bw(data.buf)
+          vim.cmd("Neotree show")
+        end
+      end,
+    })
+  end,
   opts = {
     filesystem = {
       follow_current_file = { enabled = true },

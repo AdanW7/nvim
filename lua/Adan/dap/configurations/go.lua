@@ -1,0 +1,2 @@
+-- Go configurations are handled by dap-go plugin
+-- No additional configuration needed
