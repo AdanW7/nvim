@@ -188,3 +188,96 @@ end, { desc = "Find Diagnostics (buffer)" })
 vim.keymap.set("n", "<leader>fD", function()
     require("telescope.builtin").diagnostics()
 end, { desc = "Find Diagnostics (workspace)" })
+
+
+
+-- =============================================================================
+-- KEYMAPS - LSP
+-- =============================================================================
+
+-- LSP symbols in current buffer
+vim.keymap.set('n', '<leader>fs', builtin.lsp_document_symbols, { desc = 'Document symbols' })
+
+-- LSP symbols in workspace
+vim.keymap.set('n', '<leader>fS', builtin.lsp_workspace_symbols, { desc = 'Workspace symbols' })
+
+-- LSP references
+vim.keymap.set('n', '<leader>fR', builtin.lsp_references, { desc = 'LSP references' })
+
+-- LSP implementations
+vim.keymap.set('n', '<leader>fi', builtin.lsp_implementations, { desc = 'LSP implementations' })
+
+-- LSP definitions
+vim.keymap.set('n', '<leader>fD', builtin.lsp_definitions, { desc = 'LSP definitions' })
+
+
+-- =============================================================================
+-- KEYMAPS - GIT
+-- =============================================================================
+
+-- Git status (modified files)
+vim.keymap.set('n', '<leader>gs', builtin.git_status, { desc = 'Git status' })
+
+vim.keymap.set('n', '<leader>gf', function()
+    builtin.git_files({
+        git_command = { "git", "diff", "--name-only", "HEAD", "--diff-filter=M" }
+    })
+end, { desc = 'Telescope git modified files' })
+
+-- Git commits (current buffer)
+vim.keymap.set('n', '<leader>gc', builtin.git_bcommits, { desc = 'Git buffer commits' })
+
+-- Git commits (all)
+vim.keymap.set('n', '<leader>gC', builtin.git_commits, { desc = 'Git commits' })
+
+-- Git branches
+vim.keymap.set('n', '<leader>gb', builtin.git_branches, { desc = 'Git branches' })
+
+-- Git stash
+vim.keymap.set('n', '<leader>gS', builtin.git_stash, { desc = 'Git stash' })
+
+
+-- =============================================================================
+-- KEYMAPS - CURRENT BUFFER
+-- =============================================================================
+
+-- Search in current buffer
+vim.keymap.set('n', '<leader>/', builtin.current_buffer_fuzzy_find, { desc = 'Fuzzy find in buffer' })
+
+-- =============================================================================
+-- KEYMAPS - SEARCH
+-- =============================================================================
+
+-- Search history
+vim.keymap.set('n', '<leader>f/', builtin.search_history, { desc = 'Search history' })
+
+-- Command history
+vim.keymap.set('n', '<leader>f:', builtin.command_history, { desc = 'Command history' })
+
+-- Grep string under cursor
+vim.keymap.set('n', '<leader>fw', builtin.grep_string, { desc = 'Grep word under cursor' })
+
+-- Marks
+vim.keymap.set('n', '<leader>fm', builtin.marks, { desc = 'Marks' })
+
+-- Registers
+vim.keymap.set('n', '<leader>f"', builtin.registers, { desc = 'Registers' })
+
+-- Keymaps
+vim.keymap.set('n', '<leader>fk', builtin.keymaps, { desc = 'Keymaps' })
+
+-- =============================================================================
+-- KEYMAPS - VIM
+-- =============================================================================
+
+-- Autocommands
+vim.keymap.set('n', '<leader>fa', builtin.autocommands, { desc = 'Autocommands' })
+
+-- Options
+vim.keymap.set('n', '<leader>fo', builtin.vim_options, { desc = 'Vim options' })
+
+-- Quickfix list
+vim.keymap.set('n', '<leader>fq', builtin.quickfix, { desc = 'Quickfix list' })
+
+-- Location list
+vim.keymap.set('n', '<leader>fl', builtin.loclist, { desc = 'Location list' })
