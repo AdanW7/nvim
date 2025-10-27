@@ -7,7 +7,19 @@
 vim.opt.termguicolors = true -- Enable true colors
 
 -- Cursor
-vim.opt.guicursor = {"v:block", "n:block", "i:ver25"} -- Block cursor in normal/visual, beam in insert
+vim.opt.guicursor = {
+  "n-v-c:block-Cursor/lCursor",     -- Normal, visual, command: block cursor
+  "i-ci-ve:ver25-Cursor/lCursor",   -- Insert: vertical bar (25% width)
+  "r-cr:hor20-Cursor/lCursor",      -- Replace: horizontal bar (20% height)
+  "o:hor50-Cursor/lCursor",         -- Operator pending
+  "sm:block-Cursor/lCursor",        -- Showmatch
+}
+
+-- Enable inverse/reverse video for cursor
+vim.api.nvim_set_hl(0, "Cursor", { reverse = true })
+vim.api.nvim_set_hl(0, "lCursor", { reverse = true })
+vim.api.nvim_set_hl(0, "TermCursor", { reverse = true })
+
 vim.opt.cursorline = true -- Highlight the current line
 
 -- Line numbers
