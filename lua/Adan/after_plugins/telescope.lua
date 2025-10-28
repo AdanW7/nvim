@@ -127,31 +127,6 @@ vim.keymap.set('n', '<leader>Pr', function()
 end, { desc = 'Recent files in project' })
 
 
--- =============================================================================
--- KEYMAPS - PROJECT MANAGEMENT
--- =============================================================================
-
--- Keymaps (put this in your config after the plugin is loaded)
-vim.keymap.set('n', '<leader>Pa', function()
-  local pm = require("Adan.projects.project-manger")
-  pm.add_project(vim.fn.getcwd())
-end, { desc = "Add CWD to projects" })
-
-vim.keymap.set('n', '<leader>PA', function()
-  local pm = require("Adan.projects.project-manger")
-  vim.ui.input({ prompt = "Enter project path: " }, function(path)
-    if path and path ~= "" then
-      pm.add_project(vim.fn.expand(path))
-    end
-  end)
-end, { desc = "Add arbitrary path to projects" })
-
--- Optional: User commands
-vim.api.nvim_create_user_command('ProjectAdd', function(opts)
-  local pm = require("Adan.projects.project-manger")
-  local path = opts.args ~= "" and opts.args or vim.fn.getcwd()
-  pm.add_project(vim.fn.expand(path))
-end, { nargs = '?', complete = 'dir', desc = "Add project to list" })
 
 -- =============================================================================
 -- KEYMAPS - Diagnostics
