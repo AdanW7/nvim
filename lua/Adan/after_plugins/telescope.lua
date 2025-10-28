@@ -230,9 +230,6 @@ vim.keymap.set('n', '<leader>gc', builtin.git_bcommits, { desc = 'Git buffer com
 -- Git commits (all)
 vim.keymap.set('n', '<leader>gC', builtin.git_commits, { desc = 'Git commits' })
 
--- Git branches
-vim.keymap.set('n', '<leader>gb', builtin.git_branches, { desc = 'Git branches' })
-
 -- Git stash
 vim.keymap.set('n', '<leader>gS', builtin.git_stash, { desc = 'Git stash' })
 

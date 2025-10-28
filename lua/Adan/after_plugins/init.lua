@@ -1,5 +1,4 @@
 require('Adan.after_plugins.telescope')
 require('Adan.after_plugins.mini')
 require('Adan.after_plugins.bufferline')
-require('Adan.after_plugins.lualine')
 require('Adan.after_plugins.treesitter')
