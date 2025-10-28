@@ -1,17 +1,41 @@
 return {
-    "ahmedkhalf/project.nvim",
-    config = function()
-        require("project_nvim").setup({
-            -- Manual mode doesn't automatically change directory
-            manual_mode = false,
-            -- Don't show hidden files in telescope
-            show_hidden = false,
+    "coffebar/neovim-project",
+    opts = {
+        projects = {
+            "~/.config/*",
+        },
+        -- Load most recent session on startup
+        last_session_on_startup = true,
+        dashboard_mode = false,
 
-            -- Don't automatically change to project dir when opening a file
-            silent_chdir = true,
+        -- Session manager options
+        session_manager_opts = {
+            autosave_ignore_dirs = {
+                vim.fn.expand("~"),
+                "/tmp",
+            },
+            autosave_ignore_filetypes = {
+                "gitcommit",
+                "gitrebase",
+                "qf",
+                "toggleterm",
+            },
+        },
 
-            -- Path to store project history
-            datapath = vim.fn.stdpath("data"),
-        })
+        -- Telescope picker
+        picker = {
+            type = "telescope",
+        },
+    },
+    init = function()
+        -- Enable saving plugin state in sessions
+        vim.opt.sessionoptions:append("globals")
     end,
+    dependencies = {
+        { "nvim-lua/plenary.nvim" },
+        { "nvim-telescope/telescope.nvim" },
+        { "Shatur/neovim-session-manager" },
+    },
+    lazy = false,
+    priority = 100,
 }

@@ -104,8 +104,14 @@ vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Telescope help ta
 -- KEYMAPS - PROJECTS
 -- =============================================================================
 
--- Find projects
-vim.keymap.set('n', '<leader>fp', '<cmd>Telescope projects<CR>', { desc = 'Find projects' })
+-- Find projects (history)
+vim.keymap.set('n', '<leader>fp', '<cmd>NeovimProjectHistory<CR>', { desc = 'Find projects (history)' })
+
+-- Discover projects (from patterns)
+vim.keymap.set('n', '<leader>fP', '<cmd>NeovimProjectDiscover<CR>', { desc = 'Discover projects' })
+
+-- Load recent project
+vim.keymap.set('n', '<leader>Pl', '<cmd>NeovimProjectLoadRecent<CR>', { desc = 'Load recent project' })
 
 -- Project operations (after switching project)
 vim.keymap.set('n', '<leader>Pf', function()
@@ -125,52 +131,27 @@ end, { desc = 'Recent files in project' })
 -- KEYMAPS - PROJECT MANAGEMENT
 -- =============================================================================
 
--- Add current directory as project
+-- Keymaps (put this in your config after the plugin is loaded)
 vim.keymap.set('n', '<leader>Pa', function()
-    local history = require("project_nvim.utils.history")
-    local cwd = vim.fn.getcwd()
+  local pm = require("Adan.projects.project-manger")
+  pm.add_project(vim.fn.getcwd())
+end, { desc = "Add CWD to projects" })
 
-    -- Check if already in history
-    for _, v in pairs(history.recent_projects) do
-        if v == cwd then
-            vim.notify("Project already in history: " .. cwd, vim.log.levels.INFO)
-            return
-        end
-    end
-
-    -- Add to recent projects
-    table.insert(history.recent_projects, 1, cwd)
-    history.write_projects_to_history()
-    vim.notify("Added '" .. cwd .. "' to projects", vim.log.levels.INFO)
-end, { desc = 'Add current dir as project' })
-
--- Add custom directory as project
 vim.keymap.set('n', '<leader>PA', function()
-    vim.ui.input({ prompt = "Project path: ", completion = "dir" }, function(path)
-        if path and path ~= "" then
-            local expanded = vim.fn.expand(path)
+  local pm = require("Adan.projects.project-manger")
+  vim.ui.input({ prompt = "Enter project path: " }, function(path)
+    if path and path ~= "" then
+      pm.add_project(vim.fn.expand(path))
+    end
+  end)
+end, { desc = "Add arbitrary path to projects" })
 
-            if vim.fn.isdirectory(expanded) == 1 then
-                local history = require("project_nvim.utils.history")
-
-                -- Check if already exists
-                for _, v in pairs(history.recent_projects) do
-                    if v == expanded then
-                        vim.notify("Project already in history: " .. expanded, vim.log.levels.INFO)
-                        return
-                    end
-                end
-
-                -- Add and save
-                table.insert(history.recent_projects, 1, expanded)
-                history.write_projects_to_history()
-                vim.notify("Added '" .. expanded .. "' to projects", vim.log.levels.INFO)
-            else
-                vim.notify("Invalid directory: " .. expanded, vim.log.levels.ERROR)
-            end
-        end
-    end)
-end, { desc = 'Add folder as project' })
+-- Optional: User commands
+vim.api.nvim_create_user_command('ProjectAdd', function(opts)
+  local pm = require("Adan.projects.project-manger")
+  local path = opts.args ~= "" and opts.args or vim.fn.getcwd()
+  pm.add_project(vim.fn.expand(path))
+end, { nargs = '?', complete = 'dir', desc = "Add project to list" })
 
 -- =============================================================================
 -- KEYMAPS - Diagnostics
@@ -178,7 +159,7 @@ end, { desc = 'Add folder as project' })
 
 vim.keymap.set("n", "<leader>fd", function()
     require("telescope.builtin").diagnostics({
-        bufnr = 0,        -- Current buffer only
+        bufnr = 0,            -- Current buffer only
         severity_limit = nil, -- Show all severities (error, warn, info, hint)
         -- Or filter by severity:
         -- severity = vim.diagnostic.severity.ERROR, -- Only errors
