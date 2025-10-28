@@ -204,8 +204,8 @@ vim.keymap.set({ "n", "t" }, "<Leader>tco", "<cmd>tabonly<CR>",
     { noremap = true, silent = true, desc = "close other tabs" })
 
 -- Tab navigation
-vim.keymap.set({ "n", "t" }, "<Leader>tn", "gt", { noremap = true, silent = true, desc = "next tab" })
-vim.keymap.set({ "n", "t" }, "<Leader>tp", "gT", { noremap = true, silent = true, desc = "previous tab" })
+vim.keymap.set({ "n", "t" }, "tn", "gt", { noremap = true, silent = true, desc = "next tab" })
+vim.keymap.set({ "n", "t" }, "tp", "gT", { noremap = true, silent = true, desc = "previous tab" })
 vim.keymap.set({ "n", "t" }, "<Leader>t1", "1gt", { noremap = true, silent = true, desc = "goto tab 1" })
 vim.keymap.set({ "n", "t" }, "<Leader>t2", "2gt", { noremap = true, silent = true, desc = "goto tab 2" })
 vim.keymap.set({ "n", "t" }, "<Leader>t3", "3gt", { noremap = true, silent = true, desc = "goto tab 3" })
