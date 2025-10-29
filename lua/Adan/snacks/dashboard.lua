@@ -1,5 +1,12 @@
 return {
     "folke/snacks.nvim",
+    lazy= false,
+    priority = 1000,
+    init = function()
+        -- Disable netrw
+        vim.g.loaded_netrw = 1
+        vim.g.loaded_netrwPlugin = 1
+    end,
     opts = {
         dashboard = {
             enabled = true,
