@@ -3,9 +3,11 @@ return {
     opts = {
         projects = {
             "~/.config/*",
+            "C:/MTRepos/*",
+            "C:/Users/awodzins/OneDrive - Milwaukee Tool/Documents/Notes/Daily notes",
         },
         -- Load most recent session on startup
-        last_session_on_startup = true,
+        last_session_on_startup = false,
         dashboard_mode = false,
 
         -- Session manager options
