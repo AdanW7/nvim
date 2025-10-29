@@ -1,4 +1,3 @@
--- lua/plugins/dashboard.lua
 return {
     "folke/snacks.nvim",
     opts = {
@@ -6,13 +5,13 @@ return {
             enabled = true,
             preset = {
                 header = [[
-    ░█████    ░███    ░███████   ░██████████    ░██    ░██ ░██████░███     ░███ 
-      ░██    ░██░██   ░██   ░██  ░██            ░██    ░██   ░██  ░████   ░████ 
-      ░██   ░██  ░██  ░██    ░██ ░██            ░██    ░██   ░██  ░██░██ ░██░██ 
-      ░██  ░█████████ ░██    ░██ ░█████████     ░██    ░██   ░██  ░██ ░████ ░██ 
-░██   ░██  ░██    ░██ ░██    ░██ ░██             ░██  ░██    ░██  ░██  ░██  ░██ 
-░██   ░██  ░██    ░██ ░██   ░██  ░██              ░██░██     ░██  ░██       ░██ 
- ░██████   ░██    ░██ ░███████   ░██████████       ░███    ░██████░██       ░██ 
+    ░█████    ░███    ░███████   ░██████████    ░██    ░██ ░██████░███     ░███
+      ░██    ░██░██   ░██   ░██  ░██            ░██    ░██   ░██  ░████   ░████
+      ░██   ░██  ░██  ░██    ░██ ░██            ░██    ░██   ░██  ░██░██ ░██░██
+      ░██  ░█████████ ░██    ░██ ░█████████     ░██    ░██   ░██  ░██ ░████ ░██
+░██   ░██  ░██    ░██ ░██    ░██ ░██             ░██  ░██    ░██  ░██  ░██  ░██
+░██   ░██  ░██    ░██ ░██   ░██  ░██              ░██░██     ░██  ░██       ░██
+ ░██████   ░██    ░██ ░███████   ░██████████       ░███    ░██████░██       ░██
 ]],
                 keys = {
                     { icon = "󰈞 ", key = "f", desc = "Find File", action = ":Telescope find_files" },
@@ -20,9 +19,14 @@ return {
                     { icon = "󰋚 ", key = "r", desc = "Recent Files", action = ":Telescope oldfiles" },
                     { icon = "󰱼 ", key = "g", desc = "Find Text", action = ":Telescope live_grep" },
                     { icon = " ", key = "c", desc = "Config", action = ":e $MYVIMRC" },
-                    { icon = "󰦛 ", key = "s", desc = "Restore Session", action = function()
-                        require("persistence").load()
-                    end },
+                    {
+                        icon = "󰦛 ",
+                        key = "s",
+                        desc = "Restore Session",
+                        action = function()
+                            require("persistence").load()
+                        end
+                    },
                     { icon = "󰒲 ", key = "l", desc = "Lazy", action = ":Lazy", enabled = package.loaded.lazy ~= nil },
                     { icon = "󰩈 ", key = "q", desc = "Quit", action = ":qa" },
                 },
