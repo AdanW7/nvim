@@ -4,7 +4,7 @@ return {
         projects = {
             "~/.config/*",
             "C:/MTRepos/*",
-            "C:/Users/awodzins/OneDrive - Milwaukee Tool/Documents/Notes/Daily notes",
+            "C:/Users/awodzins/OneDrive - Milwaukee Tool/Documents/Notes",
         },
         -- Load most recent session on startup
         last_session_on_startup = false,
