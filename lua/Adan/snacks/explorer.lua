@@ -1,4 +1,3 @@
-
 return {
     "snacks.nvim",
     opts = {
@@ -10,7 +9,7 @@ return {
         },
     },
     keys = {
-        { "<leader>e", function() Snacks.explorer() end, desc = "Explorer" },
+        { "<leader>e", function() Snacks.explorer() end,                                 desc = "Explorer" },
         { "<leader>E", function() Snacks.explorer({ cwd = vim.fn.expand("%:p:h") }) end, desc = "Explorer (cwd)" },
     },
 }
