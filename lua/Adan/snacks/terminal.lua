@@ -1,15 +1,33 @@
 return {
     "folke/snacks.nvim",
-    opts = {
-        terminal = {
-            win = {
-                style = "terminal",
+    opts = function()
+        local is_windows = vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1
+
+        return {
+            terminal = {
+                win = {
+                    style = "terminal",
+                },
+                -- Set shell to PowerShell on Windows
+                shell = is_windows and "pwsh.exe" or vim.o.shell,
             },
-        },
-    },
+        }
+    end,
     keys = {
-        -- Basic terminal toggles
-        { "<leader>tf", function() Snacks.terminal(nil, { win = { position = "float" } }) end, desc = "Toggle Terminal (float)" },
-        { "<c-/>", function() Snacks.terminal() end, desc = "Toggle Terminal", mode = { "n", "t" } },
+        {
+            "<leader>ts",
+            function()
+                Snacks.terminal(nil, { win = { position = "bottom" } })
+            end,
+            desc = "Toggle Terminal (split)"
+        },
+        {
+            "<c-/>",
+            function()
+                Snacks.terminal()
+            end,
+            desc = "Toggle Terminal",
+            mode = { "n", "t" }
+        },
     },
 }
