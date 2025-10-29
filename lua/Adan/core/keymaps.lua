@@ -112,38 +112,10 @@ vim.keymap.set({ "v", "x" }, "<Leader>R", [["+p]], {
 
 
 -- =============================================================================
--- BUFFER MANAGEMENT
+-- BUFFER NAVIGATION 
 -- =============================================================================
-
--- Buffer navigation
 vim.keymap.set("n", "gn", "<cmd>bnext<cr>", { desc = "Next buffer" })
 vim.keymap.set("n", "gp", "<cmd>bprevious<cr>", { desc = "Previous buffer" })
-
--- Buffer operations (Leader + b prefix)
-vim.keymap.set('n', '<Leader>bcc', function()
-    vim.cmd('bdelete!')
-end, { desc = "Force close current buffer" })
-
-vim.keymap.set('n', '<Leader>bca', function()
-    local buffers = vim.api.nvim_list_bufs()
-    for _, buf in ipairs(buffers) do
-        if vim.api.nvim_buf_is_loaded(buf) then
-            pcall(vim.api.nvim_buf_delete, buf, { force = false })
-        end
-    end
-end, { desc = "Close all buffers (skip unsaved)" })
-
-vim.keymap.set('n', '<Leader>bco', function()
-    local current = vim.api.nvim_get_current_buf()
-    local buffers = vim.api.nvim_list_bufs()
-    for _, buf in ipairs(buffers) do
-        if buf ~= current and vim.api.nvim_buf_is_loaded(buf) then
-            pcall(vim.api.nvim_buf_delete, buf, { force = false })
-        end
-    end
-end, { desc = "Close all buffers except current (skip unsaved)" })
-
-vim.keymap.set('n', '<leader>br', '<cmd>checktime<CR>', { desc = 'Reload all buffers' })
 
 
 -- =============================================================================
