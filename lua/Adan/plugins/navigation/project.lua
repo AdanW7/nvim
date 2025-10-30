@@ -8,7 +8,7 @@ return {
         },
         -- Load most recent session on startup
         last_session_on_startup = false,
-        dashboard_mode = false,
+        dashboard_mode = true,
 
         -- Session manager options
         session_manager_opts = {
