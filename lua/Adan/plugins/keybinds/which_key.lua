@@ -21,6 +21,7 @@ return {
       { "<leader>r",  group = "Reload" },
       { "<leader>f",  group = "Telescope" },
       { "<leader>g",  group = "Git" },
+      { "<leader>gh",  group = "Staging and History" },
       { "<leader>wn", group = "Scratch buffer in New Window" },
     },
     plugins = {

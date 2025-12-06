@@ -17,6 +17,6 @@ return {
     keys = {
         { "<leader>gg", function() Snacks.lazygit() end, desc = "LazyGit" },
         { "<leader>gG", function() Snacks.lazygit.log() end, desc = "LazyGit Log" },
-        { "<leader>gh", function() Snacks.lazygit.log_file() end, desc = "LazyGit Current File History" },
+        { "<leader>ghh", function() Snacks.lazygit.log_file() end, desc = "LazyGit Current File History" },
     },
 }
