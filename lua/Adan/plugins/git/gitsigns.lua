@@ -38,7 +38,7 @@ return {
             local gs = require('gitsigns')
 
             -- Toggle inline blame
-            vim.keymap.set('n', '<leader>gb', gs.toggle_current_line_blame, {
+            vim.keymap.set('n', '<leader>gbb', gs.toggle_current_line_blame, {
                 buffer = bufnr, desc = 'Toggle Git Blame (inline)'
             })
 

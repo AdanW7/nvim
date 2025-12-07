@@ -181,7 +181,7 @@ vim.keymap.set('n', '<leader>gf', function()
 end, { desc = 'Telescope git modified files' })
 
 -- Git commits (current buffer)
-vim.keymap.set('n', '<leader>gc', builtin.git_bcommits, { desc = 'Git buffer commits' })
+vim.keymap.set('n', '<leader>gbc', builtin.git_bcommits, { desc = 'Git buffer commits' })
 
 -- Git commits (all)
 vim.keymap.set('n', '<leader>gC', builtin.git_commits, { desc = 'Git commits' })

@@ -21,6 +21,7 @@ return {
       { "<leader>r",  group = "Reload" },
       { "<leader>f",  group = "Telescope" },
       { "<leader>g",  group = "Git" },
+      { "<leader>gb",  group = "Blame and Buffer options" },
       { "<leader>h",  group = "Git Staging" },
       { "<leader>wn", group = "Scratch buffer in New Window" },
     },

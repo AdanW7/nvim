@@ -4,7 +4,7 @@ return {
     opts = {
         foldtext = {
             lineCount = {
-                template = " %d Lines"
+                template = " %d Lines"
             },
             diagnosticsCount = true, -- uses hlgroups and icons from `vim.diagnostic.config().signs`
             gitsignsCount = true,    -- requires `gitsigns.nvim`
