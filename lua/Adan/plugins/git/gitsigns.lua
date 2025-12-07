@@ -60,12 +60,12 @@ return {
             end, { buffer = bufnr, desc = 'Prev hunk' })
 
             -- Actions
-            vim.keymap.set('n', '<leader>ghs', gs.stage_hunk, { buffer = bufnr, desc = 'Stage hunk' })
-            vim.keymap.set('n', '<leader>ghr', gs.reset_hunk, { buffer = bufnr, desc = 'Reset hunk' })
-            vim.keymap.set('n', '<leader>ghS', gs.stage_buffer, { buffer = bufnr, desc = 'Stage buffer' })
-            vim.keymap.set('n', '<leader>ghR', gs.reset_buffer, { buffer = bufnr, desc = 'Reset buffer' })
-            vim.keymap.set('n', '<leader>ghp', gs.preview_hunk, { buffer = bufnr, desc = 'Preview hunk' })
-            vim.keymap.set('n', '<leader>ghb',
+            vim.keymap.set('n', '<leader>hs', gs.stage_hunk, { buffer = bufnr, desc = 'Stage hunk' })
+            vim.keymap.set('n', '<leader>hr', gs.reset_hunk, { buffer = bufnr, desc = 'Reset hunk' })
+            vim.keymap.set('n', '<leader>hS', gs.stage_buffer, { buffer = bufnr, desc = 'Stage buffer' })
+            vim.keymap.set('n', '<leader>hR', gs.reset_buffer, { buffer = bufnr, desc = 'Reset buffer' })
+            vim.keymap.set('n', '<leader>hp', gs.preview_hunk, { buffer = bufnr, desc = 'Preview hunk' })
+            vim.keymap.set('n', '<leader>hb',
                 function()
                     gs.blame_line({ full = true })
                 end,
@@ -77,11 +77,11 @@ return {
             vim.keymap.set('n', '<leader>gR', gs.refresh, { buffer = bufnr, desc = 'Refresh git signs' })
 
             -- Visual mode stage/reset
-            vim.keymap.set('v', '<leader>ghs', function()
+            vim.keymap.set('v', '<leader>hs', function()
                 gs.stage_hunk({ vim.fn.line('.'), vim.fn.line('v') })
             end, { buffer = bufnr, desc = 'Stage hunk (visual)' })
 
-            vim.keymap.set('v', '<leader>ghr', function()
+            vim.keymap.set('v', '<leader>hr', function()
                 gs.reset_hunk({ vim.fn.line('.'), vim.fn.line('v') })
             end, { buffer = bufnr, desc = 'Reset hunk (visual)' })
 
