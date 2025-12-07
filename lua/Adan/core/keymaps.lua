@@ -282,7 +282,7 @@ end, { desc = "Reload config" })
 -- =============================================================================
 -- Create / Open a Daily Note Markdown file
 -- =============================================================================
-vim.keymap.set('n', '<leader>n', function()
+vim.keymap.set('n', '<leader>nn', function()
     -- Get today's date in Obsidian format (YYYY-MM-DD)
     local date = os.date("%Y-%m-%d")
 
