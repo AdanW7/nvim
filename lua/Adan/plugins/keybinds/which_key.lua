@@ -23,6 +23,9 @@ return {
       { "<leader>g",  group = "Git" },
       { "<leader>gb",  group = "Blame and Buffer options" },
       { "<leader>h",  group = "Git Staging" },
+      { "<leader>o",  group = "Org Mode" },
+      { "<leader>on",  group = "Open Org Note" },
+      { "<leader>or",  group = "Refile" },
       { "<leader>wn", group = "Scratch buffer in New Window" },
     },
     plugins = {
