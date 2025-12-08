@@ -269,12 +269,7 @@ vim.keymap.set("n", "<leader>e", ":Neotree filesystem reveal left<CR>", { desc =
 -- =============================================================================
 
 vim.keymap.set("n", "<leader>rc", function()
-    for name, _ in pairs(package.loaded) do
-        if name:match('^Adan') then
-            package.loaded[name] = nil
-        end
-    end
-    dofile(vim.fn.stdpath('config') .. '/init.lua')
+    vim.cmd("source " .. vim.env.MYVIMRC)
     vim.notify("Config reloaded!", vim.log.levels.INFO)
 end, { desc = "Reload config" })
 

@@ -22,7 +22,7 @@ return {
         local fold_util = require("Adan.utils.code_folds")
 
         -- Keymaps
-        vim.keymap.set("n", "za", "za", { noremap = true, silent = true, desc = "Toggle fold" })
+        vim.keymap.set("n", "H", "za", { noremap = true, silent = true, desc = "Toggle fold" })
         vim.keymap.set("n", "zk", fold_util.goto_previous_fold,
             { noremap = true, silent = true, desc = "Go to previous fold" })
         vim.keymap.set("n", "zj", "zj", { noremap = true, silent = true, desc = "Go to next fold" })
