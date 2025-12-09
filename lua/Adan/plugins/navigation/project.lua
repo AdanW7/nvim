@@ -3,6 +3,7 @@ return {
     opts = {
         projects = {
             "~/.config/*",
+            "~/orgfiles",
             "C:/MTRepos/*",
             "C:/Users/awodzins/OneDrive - Milwaukee Tool/Documents/Notes",
         },
