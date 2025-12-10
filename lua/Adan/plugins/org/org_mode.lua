@@ -84,6 +84,7 @@ return {
                     org_insert_heading_respect_content = '<leader>oih',      -- Add heading after content
                     org_insert_todo_heading = '<leader>oiT',                 -- Add TODO heading
                     org_insert_todo_heading_respect_content = '<leader>oit', -- Add TODO after content
+                    org_insert_code_block = '<leader>oic',  
 
                     -- TODO & Priority
                     org_todo = 'cit',            -- Cycle TODO state
@@ -177,6 +178,11 @@ return {
             end,
         })
 
+        -- set highlights for urls
+        vim.api.nvim_set_hl(0, '@org.hyperlink', { nocombine = true })
+        vim.api.nvim_set_hl(0, '@org.hyperlink.url', { nocombine = true })
+        vim.api.nvim_set_hl(0, '@org.hyperlink.desc', { fg = '#87CEEB', italic = true })
+
         -- Set highlight groups immediately (in case autocmd doesn't fire)
         vim.api.nvim_set_hl(0, 'OrgAgendaScheduled', { fg = '#87CEEB' })
         vim.api.nvim_set_hl(0, 'OrgAgendaDeadline', { fg = '#87CEEB' })
@@ -196,6 +202,18 @@ return {
             pattern = 'orgagenda',
             callback = function()
                 vim.api.nvim_set_hl(0, '@org.keyword.done', { fg = '#00FF00', bold = true })
+            end,
+        })
+        -- make file hyper link descriptions red, urls should stay blue
+        vim.api.nvim_create_autocmd('FileType', {
+            pattern = 'org',
+            callback = function()
+                -- Style file link descriptions as mint green italic
+                vim.fn.matchadd('OrgFileLink', '\\[\\[file:[^]]*\\]\\[[^]]*\\]\\]', 10)
+                vim.api.nvim_set_hl(0, 'OrgFileLink', { fg = '#00ff99', italic = true })
+                -- Style URL link descriptions as sky blue italic
+                vim.fn.matchadd('OrgUrlLink', '\\[\\[https\\?:[^]]*\\]\\[[^]]*\\]\\]', 10)
+                vim.api.nvim_set_hl(0, 'OrgUrlLink', { fg = '#87CEEB', italic = true })
             end,
         })
 
@@ -384,5 +402,33 @@ return {
 
             vim.notify('Refiled to ' .. work_file)
         end, { desc = 'Refile to today\'s work notes' })
+
+        -- create a code block
+        vim.keymap.set('n', '<leader>oic', function()
+            local api = require('orgmode.api')
+            local current_file = api.current()
+            local headline = current_file:get_closest_headline()
+
+            if not headline then
+                vim.notify('No headline found at cursor', vim.log.levels.WARN)
+                return
+            end
+
+            -- Get current line and position
+            local line = vim.fn.line('.')
+
+            -- Insert code block template
+            local lines = {
+                '#+BEGIN_SRC ',
+                '',
+                '#+END_SRC',
+            }
+
+            vim.api.nvim_buf_set_lines(0, line, line, false, lines)
+
+            -- Position cursor on the language line
+            vim.fn.cursor(line + 1, 16)
+        end, { desc = 'Insert code block' })
+
     end,
 }

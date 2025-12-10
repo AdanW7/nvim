@@ -54,6 +54,9 @@ return {
         -- Default list of enabled providers defined so that you can extend it
         -- elsewhere in your config, without redefining it, due to `opts_extend`
         sources = {
+            per_filetype = {
+                org = { 'lsp', 'path', 'snippets', 'buffer', 'orgmode' }
+            },
             -- compat = {},
             default = {
                 'lsp',
@@ -61,7 +64,13 @@ return {
                 'snippets',
                 'buffer',
             },
-            -- providers = {},
+            providers = {
+                orgmode = {
+                    name = 'Orgmode',
+                    module = 'orgmode.org.autocompletion.blink',
+                    fallbacks = { 'buffer' },
+                },
+            },
         },
 
         fuzzy = {
