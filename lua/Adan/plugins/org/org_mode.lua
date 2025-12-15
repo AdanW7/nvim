@@ -89,7 +89,7 @@ return {
                     -- TODO & Priority
                     org_todo = 'cit',            -- Cycle TODO state
                     org_todo_prev = 'ciT',       -- Cycle TODO backward
-                    org_priority = '<leader>o,', -- Set priority
+                    org_priority = 'ciP,', -- Set priority
                     org_priority_up = 'ciR',     -- Increase priority
                     org_priority_down = 'cir',   -- Decrease priority
 
