@@ -2,7 +2,10 @@ return {
 	"chrisgrieser/nvim-origami",
 	event = "VeryLazy",
 	opts = {
-		useLspFoldsWithTreesitterFallback = true,
+        useLspFoldsWithTreesitterFallback = {
+            enabled = true,
+            foldmethodIfNeitherIsAvailable = "indent", ---@type string|fun(bufnr: number): string
+        },
 		foldtext = {
 			lineCount = {
 				template = " %d Lines",
