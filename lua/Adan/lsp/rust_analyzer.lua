@@ -97,7 +97,13 @@ return {
         on_dir(cargo_workspace_root or cargo_crate_dir)
       else
         vim.schedule(function()
-          vim.notify(('[rust_analyzer] cmd failed with code %d: %s\n%s'):format(output.code, cmd, output.stderr))
+          vim.notify(
+            ('[rust_analyzer] cmd failed with code %d: %s\n%s'):format(
+              output.code,
+              cmd,
+              output.stderr
+            )
+          )
         end)
       end
     end)

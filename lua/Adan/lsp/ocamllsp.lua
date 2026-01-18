@@ -14,9 +14,12 @@ local function switch_impl_intf(bufnr, client)
   local method_name = 'ocamllsp/switchImplIntf'
   ---@diagnostic disable-next-line:param-type-mismatch
   if not client or not client:supports_method(method_name) then
-    return vim.notify(('method %s is not supported by any servers active on the current buffer'):format(method_name))
+    return vim.notify(
+      ('method %s is not supported by any servers active on the current buffer'):format(method_name)
+    )
   end
-  local uri = vim.lsp.util.make_given_range_params(nil, nil, bufnr, client.offset_encoding).textDocument.uri
+  local uri =
+    vim.lsp.util.make_given_range_params(nil, nil, bufnr, client.offset_encoding).textDocument.uri
   if not uri then
     return vim.notify('could not get URI for current buffer')
   end

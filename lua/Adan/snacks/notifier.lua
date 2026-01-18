@@ -1,8 +1,8 @@
 return {
-    "snacks.nvim",
-    opts = {
-        notifier = {
-            enabled = true,
-        },
+  'snacks.nvim',
+  opts = {
+    notifier = {
+      enabled = true,
     },
+  },
 }

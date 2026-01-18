@@ -2,60 +2,58 @@
 -- TELESCOPE SETUP
 -- =============================================================================
 
-local telescope = require("telescope")
+local telescope = require('telescope')
 local builtin = require('telescope.builtin')
 local actions = require('telescope.actions')
 
 -- Configure telescope before loading extensions
 telescope.setup({
-    defaults = {
-        -- Layout
-        layout_strategy = 'horizontal',
-        layout_config = {
-            horizontal = {
-                prompt_position = 'top',
-                preview_width = 0.5,
-                results_width = 0.8,
-            },
-            width = 0.95,
-            height = 0.85,
-            preview_cutoff = 120,
-        },
-        wrap_results = true,
-        preview = {
-            treesitter = {
-                enable = true,
-            },
-        },
-
-        -- Sorting
-        sorting_strategy = 'ascending', -- First result at top
-
-        -- Keymaps
-        mappings = {
-            i = { -- Insert mode
-                ['<Tab>'] = actions.move_selection_next,
-                ['<S-Tab>'] = actions.move_selection_previous,
-                ['<C-j>'] = actions.move_selection_next,
-                ['<C-k>'] = actions.move_selection_previous,
-            },
-            n = { -- Normal mode
-                ['<Tab>'] = actions.move_selection_next,
-                ['<S-Tab>'] = actions.move_selection_previous,
-                ['j'] = actions.move_selection_next,
-                ['k'] = actions.move_selection_previous,
-            },
-        },
+  defaults = {
+    -- Layout
+    layout_strategy = 'horizontal',
+    layout_config = {
+      horizontal = {
+        prompt_position = 'top',
+        preview_width = 0.5,
+        results_width = 0.8,
+      },
+      width = 0.95,
+      height = 0.85,
+      preview_cutoff = 120,
     },
-})
+    wrap_results = true,
+    preview = {
+      treesitter = {
+        enable = true,
+      },
+    },
 
+    -- Sorting
+    sorting_strategy = 'ascending', -- First result at top
+
+    -- Keymaps
+    mappings = {
+      i = { -- Insert mode
+        ['<Tab>'] = actions.move_selection_next,
+        ['<S-Tab>'] = actions.move_selection_previous,
+        ['<C-j>'] = actions.move_selection_next,
+        ['<C-k>'] = actions.move_selection_previous,
+      },
+      n = { -- Normal mode
+        ['<Tab>'] = actions.move_selection_next,
+        ['<S-Tab>'] = actions.move_selection_previous,
+        ['j'] = actions.move_selection_next,
+        ['k'] = actions.move_selection_previous,
+      },
+    },
+  },
+})
 
 -- =============================================================================
 -- EXTENSIONS
 -- =============================================================================
 
-telescope.load_extension("projects")
-
+telescope.load_extension('projects')
 
 -- =============================================================================
 -- KEYMAPS - FILE FINDING
@@ -66,12 +64,11 @@ vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Telescope find f
 
 -- Find files (current file's directory)
 vim.keymap.set('n', '<leader>fF', function()
-    builtin.find_files({ cwd = vim.fn.expand('%:p:h') })
+  builtin.find_files({ cwd = vim.fn.expand('%:p:h') })
 end, { desc = 'Find files in current dir' })
 
 -- Recent files
 vim.keymap.set('n', '<leader>fr', builtin.oldfiles, { desc = 'Telescope recent files' })
-
 
 -- =============================================================================
 -- KEYMAPS - SEARCH & GREP
@@ -82,9 +79,8 @@ vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = 'Telescope live gr
 
 -- Grep (current file's directory)
 vim.keymap.set('n', '<leader>fG', function()
-    builtin.live_grep({ cwd = vim.fn.expand('%:p:h') })
+  builtin.live_grep({ cwd = vim.fn.expand('%:p:h') })
 end, { desc = 'Grep in current dir' })
-
 
 -- =============================================================================
 -- KEYMAPS - NAVIGATION
@@ -99,53 +95,58 @@ vim.keymap.set('n', '<leader>fj', builtin.jumplist, { desc = 'Telescope jump lis
 -- Help tags
 vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Telescope help tags' })
 
-
 -- =============================================================================
 -- KEYMAPS - PROJECTS
 -- =============================================================================
 
 -- Find projects (history)
-vim.keymap.set('n', '<leader>fp', '<cmd>NeovimProjectHistory<CR>', { desc = 'Find projects (history)' })
+vim.keymap.set(
+  'n',
+  '<leader>fp',
+  '<cmd>NeovimProjectHistory<CR>',
+  { desc = 'Find projects (history)' }
+)
 
 -- Discover projects (from patterns)
 vim.keymap.set('n', '<leader>fP', '<cmd>NeovimProjectDiscover<CR>', { desc = 'Discover projects' })
 
 -- Load recent project
-vim.keymap.set('n', '<leader>Pl', '<cmd>NeovimProjectLoadRecent<CR>', { desc = 'Load recent project' })
+vim.keymap.set(
+  'n',
+  '<leader>Pl',
+  '<cmd>NeovimProjectLoadRecent<CR>',
+  { desc = 'Load recent project' }
+)
 
 -- Project operations (after switching project)
 vim.keymap.set('n', '<leader>Pf', function()
-    builtin.find_files({ cwd = vim.fn.getcwd() })
+  builtin.find_files({ cwd = vim.fn.getcwd() })
 end, { desc = 'Find files in project' })
 
 vim.keymap.set('n', '<leader>Pg', function()
-    builtin.live_grep({ cwd = vim.fn.getcwd() })
+  builtin.live_grep({ cwd = vim.fn.getcwd() })
 end, { desc = 'Grep in project' })
 
 vim.keymap.set('n', '<leader>Pr', function()
-    builtin.oldfiles({ cwd = vim.fn.getcwd() })
+  builtin.oldfiles({ cwd = vim.fn.getcwd() })
 end, { desc = 'Recent files in project' })
-
-
 
 -- =============================================================================
 -- KEYMAPS - Diagnostics
 -- =============================================================================
 
-vim.keymap.set("n", "<leader>fd", function()
-    require("telescope.builtin").diagnostics({
-        bufnr = 0,            -- Current buffer only
-        severity_limit = nil, -- Show all severities (error, warn, info, hint)
-        -- Or filter by severity:
-        -- severity = vim.diagnostic.severity.ERROR, -- Only errors
-    })
-end, { desc = "Find Diagnostics (buffer)" })
+vim.keymap.set('n', '<leader>fd', function()
+  require('telescope.builtin').diagnostics({
+    bufnr = 0, -- Current buffer only
+    severity_limit = nil, -- Show all severities (error, warn, info, hint)
+    -- Or filter by severity:
+    -- severity = vim.diagnostic.severity.ERROR, -- Only errors
+  })
+end, { desc = 'Find Diagnostics (buffer)' })
 
-vim.keymap.set("n", "<leader>fD", function()
-    require("telescope.builtin").diagnostics()
-end, { desc = "Find Diagnostics (workspace)" })
-
-
+vim.keymap.set('n', '<leader>fD', function()
+  require('telescope.builtin').diagnostics()
+end, { desc = 'Find Diagnostics (workspace)' })
 
 -- =============================================================================
 -- KEYMAPS - LSP
@@ -166,7 +167,6 @@ vim.keymap.set('n', '<leader>fi', builtin.lsp_implementations, { desc = 'LSP imp
 -- LSP definitions
 vim.keymap.set('n', '<leader>fD', builtin.lsp_definitions, { desc = 'LSP definitions' })
 
-
 -- =============================================================================
 -- KEYMAPS - GIT
 -- =============================================================================
@@ -175,9 +175,9 @@ vim.keymap.set('n', '<leader>fD', builtin.lsp_definitions, { desc = 'LSP definit
 vim.keymap.set('n', '<leader>gs', builtin.git_status, { desc = 'Git status' })
 
 vim.keymap.set('n', '<leader>gf', function()
-    builtin.git_files({
-        git_command = { "git", "diff", "--name-only", "HEAD", "--diff-filter=M" }
-    })
+  builtin.git_files({
+    git_command = { 'git', 'diff', '--name-only', 'HEAD', '--diff-filter=M' },
+  })
 end, { desc = 'Telescope git modified files' })
 
 -- Git commits (current buffer)
@@ -189,13 +189,17 @@ vim.keymap.set('n', '<leader>gC', builtin.git_commits, { desc = 'Git commits' })
 -- Git stash
 vim.keymap.set('n', '<leader>gS', builtin.git_stash, { desc = 'Git stash' })
 
-
 -- =============================================================================
 -- KEYMAPS - CURRENT BUFFER
 -- =============================================================================
 
 -- Search in current buffer
-vim.keymap.set('n', '<leader>/', builtin.current_buffer_fuzzy_find, { desc = 'Fuzzy find in buffer' })
+vim.keymap.set(
+  'n',
+  '<leader>/',
+  builtin.current_buffer_fuzzy_find,
+  { desc = 'Fuzzy find in buffer' }
+)
 
 -- =============================================================================
 -- KEYMAPS - SEARCH

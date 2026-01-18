@@ -1,2 +1,1 @@
-require("Adan")
-
+require('Adan')

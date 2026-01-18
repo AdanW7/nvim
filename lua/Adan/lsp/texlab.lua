@@ -168,10 +168,26 @@ return {
       { name = 'TexlabForward', fn = buf_search, desc = 'Forward search from current position' },
       { name = 'TexlabCancelBuild', fn = buf_cancel_build, desc = 'Cancel the current build' },
       { name = 'TexlabDependencyGraph', fn = dependency_graph, desc = 'Show the dependency graph' },
-      { name = 'TexlabCleanArtifacts', fn = command_factory('Artifacts'), desc = 'Clean the artifacts' },
-      { name = 'TexlabCleanAuxiliary', fn = command_factory('Auxiliary'), desc = 'Clean the auxiliary files' },
-      { name = 'TexlabFindEnvironments', fn = buf_find_envs, desc = 'Find the environments at current position' },
-      { name = 'TexlabChangeEnvironment', fn = buf_change_env, desc = 'Change the environment at current position' },
+      {
+        name = 'TexlabCleanArtifacts',
+        fn = command_factory('Artifacts'),
+        desc = 'Clean the artifacts',
+      },
+      {
+        name = 'TexlabCleanAuxiliary',
+        fn = command_factory('Auxiliary'),
+        desc = 'Clean the auxiliary files',
+      },
+      {
+        name = 'TexlabFindEnvironments',
+        fn = buf_find_envs,
+        desc = 'Find the environments at current position',
+      },
+      {
+        name = 'TexlabChangeEnvironment',
+        fn = buf_change_env,
+        desc = 'Change the environment at current position',
+      },
     }) do
       vim.api.nvim_buf_create_user_command(bufnr, 'Lsp' .. cmd.name, function()
         cmd.fn(client, bufnr)

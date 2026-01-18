@@ -1,8 +1,8 @@
 return {
-    "snacks.nvim",
-    opts = {
-        scope= {
-            enabled = true,
-        },
+  'snacks.nvim',
+  opts = {
+    scope = {
+      enabled = true,
     },
+  },
 }

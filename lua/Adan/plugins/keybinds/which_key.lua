@@ -1,79 +1,79 @@
 return {
-  "folke/which-key.nvim",
-  event = "VeryLazy",
+  'folke/which-key.nvim',
+  event = 'VeryLazy',
   opts = {
-    preset = "helix",
+    preset = 'helix',
     delay = 200,
     spec = {
-      { "<leader>b",  group = "Buffers" },
-      { "<leader>d",  group = "Debugger" },
-      { "<leader>w",  group = "Windows" },
-      { "<leader>t",  group = "Tabs/Terminal" },
-      { "t",          group = "Tab Navigation" },
-      { "<leader>tc", group = "Close Tabs" },
-      { "<leader>tm", group = "Move Tabs" },
-      { "<leader>l",  group = "LSP" },
-      { "<leader>p",  group = "Paste" },
-      { "<leader>P",  group = "Projects" },
-      { "<leader>c",  group = "Navigate Quick fix list" },
-      { "<leader>q",  group = "Open / Close Quick fix list" },
-      { "<leader>s",  group = "sessions" },
-      { "<leader>r",  group = "Reload" },
-      { "<leader>f",  group = "Telescope" },
-      { "<leader>g",  group = "Git" },
-      { "<leader>gb",  group = "Blame and Buffer options" },
-      { "<leader>h",  group = "Git Staging" },
-      { "<leader>o",  group = "Org Mode" },
-      { "<leader>of",  group = "Telescope" },
-      { "<leader>on",  group = "Open Org Note" },
-      { "<leader>or",  group = "Refile" },
-      { "<leader>wn", group = "Scratch buffer in New Window" },
+      { '<leader>b', group = 'Buffers' },
+      { '<leader>d', group = 'Debugger' },
+      { '<leader>w', group = 'Windows' },
+      { '<leader>t', group = 'Tabs/Terminal' },
+      { 't', group = 'Tab Navigation' },
+      { '<leader>tc', group = 'Close Tabs' },
+      { '<leader>tm', group = 'Move Tabs' },
+      { '<leader>l', group = 'LSP' },
+      { '<leader>p', group = 'Paste' },
+      { '<leader>P', group = 'Projects' },
+      { '<leader>c', group = 'Navigate Quick fix list' },
+      { '<leader>q', group = 'Open / Close Quick fix list' },
+      { '<leader>s', group = 'sessions' },
+      { '<leader>r', group = 'Reload' },
+      { '<leader>f', group = 'Telescope' },
+      { '<leader>g', group = 'Git' },
+      { '<leader>gb', group = 'Blame and Buffer options' },
+      { '<leader>h', group = 'Git Staging' },
+      { '<leader>o', group = 'Org Mode' },
+      { '<leader>of', group = 'Telescope' },
+      { '<leader>on', group = 'Open Org Note' },
+      { '<leader>or', group = 'Refile' },
+      { '<leader>wn', group = 'Scratch buffer in New Window' },
     },
     plugins = {
-      marks = true,           -- shows list of marks on ' and `
-      registers = true,       -- shows registers on " and @ in normal/visual mode
+      marks = true, -- shows list of marks on ' and `
+      registers = true, -- shows registers on " and @ in normal/visual mode
       spelling = {
-        enabled = true,       -- z= to select spelling suggestions
+        enabled = true, -- z= to select spelling suggestions
         suggestions = 20,
       },
       presets = {
-        operators = true,          -- adds help for operators like d, y, c
-        motions = true,            -- adds help for motions
-        text_objects = true,       -- adds help for text objects like iw, aw
-        windows = true,            -- default bindings on <c-w>
-        nav = true,                -- misc bindings for navigation
-        z = true,                  -- bindings for folds, spelling, etc.
-        g = true,                  -- bindings for g prefix
+        operators = true, -- adds help for operators like d, y, c
+        motions = true, -- adds help for motions
+        text_objects = true, -- adds help for text objects like iw, aw
+        windows = true, -- default bindings on <c-w>
+        nav = true, -- misc bindings for navigation
+        z = true, -- bindings for folds, spelling, etc.
+        g = true, -- bindings for g prefix
       },
     },
     win = {
-      border = "rounded",       -- "none", "single", "double", "rounded", "solid", "shadow"
+      border = 'rounded', -- "none", "single", "double", "rounded", "solid", "shadow"
       -- padding = { 1, 1},  -- {top/bottom, left/right}
-      title = true,             -- show window title
-      title_pos = "center",     -- "left", "center", "right"
+      title = true, -- show window title
+      title_pos = 'center', -- "left", "center", "right"
       -- wo = {
       --     winblend = 0,      -- transparency (0-100)
       -- },
     },
     disable = {
-      ft = { "TelescopePrompt" },
-      bt = { "terminal" },
+      ft = { 'TelescopePrompt' },
+      bt = { 'terminal' },
     },
     replace = {
       key = {
-        { "<Space>", "SPC" },
-        { "<CR>",    "RET" },
-        { "<Tab>",   "TAB" },
+        { '<Space>', 'SPC' },
+        { '<CR>', 'RET' },
+        { '<Tab>', 'TAB' },
       },
     },
   },
   keys = {
     {
-      "<leader>?",
+      '<leader>?',
       function()
-        require("which-key").show({ global = false })
+        require('which-key').show({ global = false })
       end,
-      desc = "Buffer Local Keymaps (which-key)",
+      desc = 'Buffer Local Keymaps (which-key)',
     },
   },
 }
