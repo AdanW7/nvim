@@ -28,7 +28,7 @@ return {
   --             -- include,
   --             -- logLevel,
   --             -- stubPath,
-  --             typeCheckingMode = "standard", -- "off", "basic", "standard" and "strict"
+  --             typeCheckingMode = "strict", -- "off", "basic", "standard" and "strict"
   --             -- typeshedPaths,
   --             useLibraryCodeForTypes =true,
   --             --
