@@ -9,6 +9,7 @@ return {
       zig = { 'zigfmt' },
       python = { 'ruff_format' },
       ocaml = { 'ocamlformat' },
+      gleam = { 'gleam' },
       org = {},
     },
 
@@ -18,7 +19,13 @@ return {
       lsp_format = 'fallback',
     },
 
-    formatters = {},
+    formatters = {
+      gleam = {
+        command = 'gleam',
+        args = { 'format', '--stdin' },
+        stdin = true,
+      },
+    },
     -- If this is set, Conform will run the formatter on save.
     -- It will pass the table to conform.format().
     -- This can also be a function that returns the table.
