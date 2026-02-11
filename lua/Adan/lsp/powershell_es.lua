@@ -25,6 +25,7 @@
 --- ```
 ---
 --- Note that the execution policy needs to be set to `Unrestricted` for the languageserver run under PowerShell
+--- Get-ChildItem -Path "C:\Tools\PowerShellEditorServices" -Recurse | Unblock-File
 ---
 --- If necessary, specific `cmd` can be defined instead of `bundle_path`.
 --- See [PowerShellEditorServices](https://github.com/PowerShell/PowerShellEditorServices#standard-input-and-output)
@@ -40,9 +41,12 @@
 return {
   cmd = function(dispatchers)
     local temp_path = vim.fn.stdpath('cache')
-    local bundle_path = vim.lsp.config.powershell_es.bundle_path
 
-    local shell = vim.lsp.config.powershell_es.shell or 'pwsh'
+    local bundle_path = vim.lsp.config.powershell_es.bundle_path
+      or vim.env.POWERSHELL_ES_BUNDLE_PATH
+      or 'C:/Tools'
+
+    local shell = vim.lsp.config.powershell_es.shell or 'powershell.exe'
 
     local command_fmt =
       [[& '%s/PowerShellEditorServices/Start-EditorServices.ps1' -BundledModulesPath '%s' -LogPath '%s/powershell_es.log' -SessionDetailsPath '%s/powershell_es.session.json' -FeatureFlags @() -AdditionalModules @() -HostName nvim -HostProfileId 0 -HostVersion 1.0.0 -Stdio -LogLevel Normal]]
