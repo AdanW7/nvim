@@ -73,7 +73,7 @@ require 'nvim-treesitter.configs'.setup {
     max_lines = 5,
     min_window_height = 0,
     line_numbers = true,
-    multiline_threshold = 20,
+    multiline_threshold = 10,
     trim_scope = 'outer',
     mode = 'cursor',
   },
