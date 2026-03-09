@@ -38,7 +38,8 @@ return {
 
       -- Override highlight groups (optional)
       highlights = {
-        -- Example: Comment = { fg = "$grey", fmt = "italic" },
+        SnacksIndent = { fg = '#5f79a6' },
+        SnacksIndentScope = { fg = '#7394cf', fmt = 'bold' },
       },
     })
     require('helix').load()

@@ -5,19 +5,21 @@ return {
     indent = {
       indent = {
         enabled = false,
-        char = '▎',
+        char = '▏',
         only_scope = true,
         only_current = true,
+        hl = 'SnacksIndent',
       },
       scope = {
-        char = '▎',
+        char = '▏',
         only_current = true,
+        hl = 'SnacksIndentScope',
       },
       animate = {
         enabled = true,
         duration = {
-          step = 8,
-          total = 120,
+          step = 4,
+          total = 80,
         },
       },
     },
