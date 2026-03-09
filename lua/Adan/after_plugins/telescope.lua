@@ -50,12 +50,6 @@ telescope.setup({
 })
 
 -- =============================================================================
--- EXTENSIONS
--- =============================================================================
-
-telescope.load_extension('projects')
-
--- =============================================================================
 -- KEYMAPS - FILE FINDING
 -- =============================================================================
 
@@ -94,42 +88,6 @@ vim.keymap.set('n', '<leader>fj', builtin.jumplist, { desc = 'Telescope jump lis
 
 -- Help tags
 vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Telescope help tags' })
-
--- =============================================================================
--- KEYMAPS - PROJECTS
--- =============================================================================
-
--- Find projects (history)
-vim.keymap.set(
-  'n',
-  '<leader>fp',
-  '<cmd>NeovimProjectHistory<CR>',
-  { desc = 'Find projects (history)' }
-)
-
--- Discover projects (from patterns)
-vim.keymap.set('n', '<leader>fP', '<cmd>NeovimProjectDiscover<CR>', { desc = 'Discover projects' })
-
--- Load recent project
-vim.keymap.set(
-  'n',
-  '<leader>Pl',
-  '<cmd>NeovimProjectLoadRecent<CR>',
-  { desc = 'Load recent project' }
-)
-
--- Project operations (after switching project)
-vim.keymap.set('n', '<leader>Pf', function()
-  builtin.find_files({ cwd = vim.fn.getcwd() })
-end, { desc = 'Find files in project' })
-
-vim.keymap.set('n', '<leader>Pg', function()
-  builtin.live_grep({ cwd = vim.fn.getcwd() })
-end, { desc = 'Grep in project' })
-
-vim.keymap.set('n', '<leader>Pr', function()
-  builtin.oldfiles({ cwd = vim.fn.getcwd() })
-end, { desc = 'Recent files in project' })
 
 -- =============================================================================
 -- KEYMAPS - Diagnostics
