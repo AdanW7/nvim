@@ -26,10 +26,10 @@ end
 -- Enable all successfully loaded LSPs
 if #loaded_lsps > 0 then
   vim.lsp.enable(loaded_lsps)
-  vim.notify(
-    'Loaded ' .. #loaded_lsps .. ' LSP(s): ' .. table.concat(loaded_lsps, ', '),
-    vim.log.levels.INFO
-  )
+  -- vim.notify(
+  --   'Loaded ' .. #loaded_lsps .. ' LSP(s): ' .. table.concat(loaded_lsps, ', '),
+  --   vim.log.levels.INFO
+  -- )
 end
 
 -- Report failures

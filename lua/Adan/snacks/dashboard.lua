@@ -1,3 +1,4 @@
+---@type LazySpec
 return {
   'folke/snacks.nvim',
   lazy = false,
@@ -55,25 +56,20 @@ return {
           padding = 1,
         },
         { icon = ' ', title = 'Projects', section = 'projects', indent = 2, padding = 1 },
-        { section = 'startup' },
+        function()
+          local stats = require('lazy.stats').stats()
+          local ms = math.floor(stats.startuptime * 100 + 0.5) / 100
+          return {
+            align = 'center',
+            text = {
+              { 'JADE VIM loaded ', hl = 'footer' },
+              { stats.loaded .. '/' .. stats.count, hl = 'special' },
+              { ' plugins in ', hl = 'footer' },
+              { ms .. 'ms', hl = 'special' },
+            },
+          }
+        end,
       },
     },
   },
-  config = function(_, opts)
-    local snacks = require('snacks')
-    snacks.setup(opts)
-
-    -- Force open dashboard on VimEnter if no files were opened
-    vim.api.nvim_create_autocmd('VimEnter', {
-      callback = function()
-        -- Only show dashboard if no arguments were passed
-        if vim.fn.argc() == 0 then
-          local buf_name = vim.api.nvim_buf_get_name(0)
-          if buf_name == '' then
-            snacks.dashboard.open()
-          end
-        end
-      end,
-    })
-  end,
 }

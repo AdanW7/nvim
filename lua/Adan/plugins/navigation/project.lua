@@ -1,3 +1,4 @@
+---@type LazySpec
 return {
   'coffebar/neovim-project',
   opts = {

@@ -1,3 +1,4 @@
+---@type LazySpec
 return {
   'AdanW7/Multi_Cursor.nvim',
   branch = 'main',

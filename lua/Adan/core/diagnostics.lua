@@ -1,3 +1,4 @@
+---@type table<integer, string>
 local diagnostic_signs = {
   [vim.diagnostic.severity.ERROR] = '',
   [vim.diagnostic.severity.WARN] = '',

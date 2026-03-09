@@ -1,6 +1,9 @@
+---@type LazySpec
 return {
-  'folke/snacks.nvim',
-  priority = 1000,
-  lazy = false,
-  import = 'Adan.snacks',
+  {
+    'folke/snacks.nvim',
+    priority = 1000,
+    lazy = false,
+  },
+  { import = 'Adan.snacks' },
 }
