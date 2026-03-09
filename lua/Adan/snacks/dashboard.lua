@@ -7,6 +7,19 @@ return {
     -- Disable netrw
     vim.g.loaded_netrw = 1
     vim.g.loaded_netrwPlugin = 1
+
+    vim.api.nvim_create_autocmd('FileType', {
+      pattern = 'snacks_dashboard',
+      callback = function()
+        local ok, snacks = pcall(require, 'snacks')
+        if not ok then
+          return
+        end
+        for _, picker in ipairs(snacks.picker.get({ source = 'explorer', tab = false })) do
+          picker:close()
+        end
+      end,
+    })
   end,
   opts = {
     dashboard = {
