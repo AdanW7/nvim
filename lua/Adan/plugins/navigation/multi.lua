@@ -1,114 +1,101 @@
 return {
-  'mg979/vim-visual-multi',
-  branch = 'master',
-  init = function()
-    -- Set VM leader to <leader>m
-    vim.g.VM_leader = vim.g.mapleader .. 'm'
+  'AdanW7/Multi_Cursor.nvim',
+  branch = 'main',
+  dependencies = {
+    { 'nvim-telescope/telescope.nvim', optional = true }, -- Optional picker backend (preferred in auto mode)
+    { 'folke/snacks.nvim', optional = true }, -- Optional picker backend fallback
+  },
+  opts = {
+    backend = 'lua', -- Use native Lua backend
+    picker = 'telescope', -- Picker strategy: auto | telescope | snacks | builtin
+    insert_mode = 'native', -- Use native insert handling for multicursor insert
+    multicursor_leader = '<leader>m', -- Base leader used to derive default VM-style mappings
 
-    -- Enable visual mode for all cursors
-    vim.g.VM_use_visual_mode = 1
+    default_mappings = true, -- Keep plugin default mappings enabled
+    check_mappings = true, -- Detect and report conflicting keymaps
+    show_warnings = true, -- Show runtime warnings (conflicts, edge cases, etc.)
 
-    -- Custom key mappings
-    vim.g.VM_maps = {
-      -- Core functionality
-      ['Find Under'] = '<leader>mn', -- Find word under cursor
-      ['Find Subword Under'] = '<leader>mN', -- Find subword under cursor
+    use_visual_mode = true, -- Enable visual-selection driven multicursor actions
+    mouse_mappings = true, -- Enable mouse-based cursor add/word/column mappings
 
-      -- Add cursors
-      ['Add Cursor Down'] = 'C', -- Add cursor down
-      ['Add Cursor Up'] = '<leader>mk', -- Add cursor up
-      ['Add Cursor At Pos'] = '<leader>ma', -- Add cursor at position
+    theme = 'helix', -- Multi-cursor highlight theme
+    highlight_matches = 'underline', -- Search match highlight style
 
-      -- Selection
-      ['Select All'] = '<leader>mA', -- Select all occurrences
-      ['Start Regex Search'] = '<leader>m/', -- Regex search
-      ['Select l'] = '<leader>ml', -- Select right
-      ['Select h'] = '<leader>mh', -- Select left
+    single_mode_maps = true, -- Enable single-region cycling maps in insert mode
+    single_mode_auto_reset = true, -- Auto-disable single-region mode after insert ends
 
-      -- Navigation
-      ['Find Next'] = 'n', -- Find next (buffer local)
-      ['Find Prev'] = 'N', -- Find previous (buffer local)
-      ['Goto Next'] = ']', -- Go to next
-      ['Goto Prev'] = '[', -- Go to previous
-      ['Skip Region'] = 'q', -- Skip and find next
-      ['Remove Region'] = 'Q', -- Remove region
+    set_statusline = 2, -- Update statusline while active (balanced refresh mode)
+    silent_exit = true, -- Do not notify when leaving multicursor mode
+    skip_shorter_lines = false, -- Allow vertical cursor add on shorter lines
 
-      -- Operations
-      ['Reselect Last'] = '<leader>mgS', -- Reselect last selections
-      ['Toggle Mappings'] = '<leader>m<Space>', -- Toggle mappings
+    enable_normal_key_passthrough = true, -- Replay listed normal-mode motions across cursors
+    normal_keys = {
+      'h',
+      'j',
+      'k',
+      'l', -- Basic motions
+      'w',
+      'W',
+      'b',
+      'B',
+      'e',
+      'E',
+      'ge',
+      'gE', -- Word motions
+      '0',
+      '^',
+      '$',
+      '%', -- Line/jump motions
+      'f',
+      'F',
+      't',
+      'T',
+      ',',
+      ';',
+      '|', -- Character-find motions
+      'gh',
+      'gs',
+      'gl', -- Custom remapped motions
+    },
 
-      -- Alignment and formatting
-      ['Align'] = '<leader>m=', -- Align regions
-      ['Align Char'] = '<leader>m<', -- Align by character
-      ['Align Regex'] = '<leader>m>', -- Align by regex
+    mappings = {
+      find_under = '<leader>mn', -- Add/find next occurrence of word under cursor
+      find_subword_under = '<leader>mN', -- Add/find subword under cursor
+      select_all = '<leader>mA', -- Select all matches for current search
+      regex_search = '<leader>m/', -- Prompt regex and create regions
 
-      -- Advanced operations
-      ['Replace Pattern'] = 'R', -- Replace in regions (buffer local)
-      ['Subtract Pattern'] = '<leader>ms', -- Subtract pattern
-      ['Transpose'] = '<leader>mt', -- Transpose
-      ['Duplicate'] = '<leader>md', -- Duplicate
+      add_cursor_at_pos = '<leader>ma', -- Toggle cursor at current position
+      add_cursor_down = { '<leader>mj', 'C' }, -- Add cursor below
+      add_cursor_up = '<leader>mk', -- Add cursor above
 
-      -- Case conversion
-      ['Case Conversion Menu'] = '<leader>mC', -- Case conversion menu
+      search_menu = '<leader>mp', -- Open search menu via configured picker
+      tools_menu = '<leader>mt', -- Open tools menu via configured picker
 
-      -- Numbers
-      ['Numbers'] = '<leader>mn', -- Append numbers
-      ['Numbers Append'] = '<leader>mN', -- Prepend numbers
+      skip = '<leader>mq', -- Skip current match and move on
+      remove = '<leader>mQ', -- Remove current region/cursor
+      reselect_last = '<leader>mg', -- Restore last cleared cursor set
 
-      -- Filters and transforms
-      ['Filter Regions'] = '<leader>mf', -- Filter regions
-      ['Transform Regions'] = '<leader>me', -- Transform with expression
+      toggle_mode = '<Tab>', -- Toggle cursor mode <-> extend mode
+      toggle_mappings = '<leader>m<Space>', -- Temporarily enable/disable MC mappings
+      clear = '<leader>m<Esc>', -- Clear all cursors and exit multicursor mode
 
-      -- Run commands
-      ['Run Normal'] = '<leader>mz', -- Run normal command
-      ['Run Visual'] = '<leader>mv', -- Run visual command
-      ['Run Ex'] = '<leader>mx', -- Run ex command
-      ['Run Macro'] = '<leader>m@', -- Run macro
-
-      -- Misc
-      ['Show Infoline'] = '<leader>mi', -- Show infoline
-      ['Toggle Single Region'] = '<leader>m<CR>', -- Single region mode
-
-      -- Undo/Redo (optional - uncomment if desired)
-      -- ["Undo"] = "u",
-      -- ["Redo"] = "<C-r>",
-
-      -- Operators
-      ['Select Operator'] = 's', -- Select operator (buffer local)
-      ['Find Operator'] = 'm', -- Find operator (buffer local)
-
-      -- Slash motion
-      ['Slash Search'] = 'g/', -- Slash motion (buffer local)
-
-      -- Mouse support (optional)
-      ['Mouse Cursor'] = '<C-LeftMouse>',
-      ['Mouse Word'] = '<C-RightMouse>',
-      ['Mouse Column'] = '<M-C-RightMouse>',
-    }
-
-    -- Additional settings
-    vim.g.VM_mouse_mappings = 1 -- Enable mouse support
-    vim.g.VM_theme = 'iceblue' -- Color scheme
-    vim.g.VM_highlight_matches = 'underline' -- How to highlight matches
-
-    -- Single region mode settings
-    vim.g.VM_single_mode_maps = {
-      ['<Tab>'] = '1', -- Cycle to next cursor in insert mode
-      ['<S-Tab>'] = '-1', -- Cycle to previous cursor in insert mode
-    }
-    vim.g.VM_single_mode_auto_reset = 1 -- Auto-exit single mode
-
-    -- Other useful settings
-    vim.g.VM_set_statusline = 2 -- Update statusline
-    vim.g.VM_silent_exit = 1 -- Don't show messages on exit
-    vim.g.VM_skip_shorter_lines = 0 -- Don't skip shorter lines
-  end,
+      show_registers = '<leader>m"', -- Show multicursor register state
+      rewrite_last_search = '<leader>mr', -- Rewrite last search from current word/selection
+    },
+  },
   keys = {
-    { '<leader>mn', mode = { 'n', 'x' }, desc = 'VM: Find word' },
-    { '<leader>mA', mode = { 'n', 'x' }, desc = 'VM: Select all' },
-    { '<leader>m/', mode = { 'n', 'x' }, desc = 'VM: Regex search' },
-    { '<leader>ma', mode = { 'n' }, desc = 'VM: Add cursor' },
-    { 'C', mode = { 'n' }, desc = 'VM: Add cursor down' },
-    { '<leader>mk', mode = { 'n' }, desc = 'VM: Add cursor up' },
+    { '<leader>mp', mode = { 'n', 'x' }, desc = 'MC: Search menu (picker)' }, -- Picker-backed search actions
+    { '<leader>mt', mode = { 'n', 'x' }, desc = 'MC: Tools menu (picker)' }, -- Picker-backed tools actions
+    { '<leader>mn', mode = { 'n', 'x' }, desc = 'MC: Find word' }, -- Word match add/find
+    { '<leader>mN', mode = { 'n', 'x' }, desc = 'MC: Find subword' }, -- Subword match add/find
+    { '<leader>mA', mode = { 'n', 'x' }, desc = 'MC: Select all' }, -- Select all matches
+    { '<leader>m/', mode = { 'n', 'x' }, desc = 'MC: Regex search' }, -- Regex search entry
+    { '<leader>ma', mode = { 'n' }, desc = 'MC: Add cursor at pos' }, -- Cursor toggle
+    { '<leader>mj', '<Cmd>MultiCursorAddCursorDown<CR>', mode = 'n', desc = 'MC: Add cursor down' },
+    { 'C', '<Cmd>MultiCursorAddCursorDown<CR>', mode = 'n', desc = 'MC: Add cursor down' },
+    { '<leader>mk', mode = { 'n' }, desc = 'MC: Add cursor up' }, -- Vertical add up
+    { '<Tab>', mode = { 'n' }, desc = 'MC: Toggle extend/cursor' }, -- Fast mode switch
+    { '<leader>m<Space>', mode = { 'n' }, desc = 'MC: Toggle mappings' }, -- Freeze/unfreeze keymap takeover
+    { '<leader>m<Esc>', mode = { 'n' }, desc = 'MC: Clear' }, -- Hard exit + clear
   },
 }
