@@ -101,6 +101,136 @@ vim.keymap.set({ 'v', 'x' }, '<Leader>R', [["+p]], {
 })
 
 -- =============================================================================
+-- WINDOW TRANSPOSE + DIRECTIONAL SWAP
+-- =============================================================================
+
+local function adjacent_winid(dir)
+  local cur_nr = vim.fn.winnr()
+  local nr = vim.fn.winnr(dir)
+  if nr == cur_nr then
+    return nil
+  end
+  return vim.fn.win_getid(nr)
+end
+
+local function swap_windows(win_a, win_b)
+  if not win_a or not win_b then
+    return false
+  end
+
+  local buf_a = vim.api.nvim_win_get_buf(win_a)
+  local buf_b = vim.api.nvim_win_get_buf(win_b)
+  local cur_a = vim.api.nvim_win_get_cursor(win_a)
+  local cur_b = vim.api.nvim_win_get_cursor(win_b)
+
+  vim.api.nvim_win_set_buf(win_a, buf_b)
+  vim.api.nvim_win_set_buf(win_b, buf_a)
+
+  pcall(vim.api.nvim_win_set_cursor, win_a, cur_b)
+  pcall(vim.api.nvim_win_set_cursor, win_b, cur_a)
+  return true
+end
+
+local function swap_with_direction(dir)
+  local cur = vim.api.nvim_get_current_win()
+  local target = adjacent_winid(dir)
+  if not target then
+    vim.notify('No adjacent window in that direction', vim.log.levels.WARN)
+    return
+  end
+  swap_windows(cur, target)
+end
+
+-- True transpose: flip orientation of current+adjacent pair
+local function transpose_pair_orientation()
+  local cur = vim.api.nvim_get_current_win()
+  local target = adjacent_winid('l')
+    or adjacent_winid('h')
+    or adjacent_winid('j')
+    or adjacent_winid('k')
+  if not target then
+    vim.notify('No adjacent window to transpose', vim.log.levels.WARN)
+    return
+  end
+
+  local p1 = vim.api.nvim_win_get_position(cur)
+  local p2 = vim.api.nvim_win_get_position(target)
+  local side_by_side = (p1[1] == p2[1])
+
+  local cur_buf = vim.api.nvim_win_get_buf(cur)
+  local tgt_buf = vim.api.nvim_win_get_buf(target)
+  local cur_pos = vim.api.nvim_win_get_cursor(cur)
+  local tgt_pos = vim.api.nvim_win_get_cursor(target)
+
+  local before = vim.api.nvim_tabpage_list_wins(0)
+  vim.api.nvim_set_current_win(target)
+  if side_by_side then
+    vim.cmd('split')
+  else
+    vim.cmd('vsplit')
+  end
+
+  local after = vim.api.nvim_tabpage_list_wins(0)
+  local seen, new_win = {}, nil
+  for _, w in ipairs(before) do
+    seen[w] = true
+  end
+  for _, w in ipairs(after) do
+    if not seen[w] then
+      new_win = w
+      break
+    end
+  end
+  if not new_win then
+    vim.notify('Failed to create transposed window', vim.log.levels.ERROR)
+    return
+  end
+
+  vim.api.nvim_win_set_buf(target, tgt_buf)
+  vim.api.nvim_win_set_buf(new_win, cur_buf)
+  pcall(vim.api.nvim_win_close, cur, false)
+
+  pcall(vim.api.nvim_win_set_cursor, target, tgt_pos)
+  pcall(vim.api.nvim_win_set_cursor, new_win, cur_pos)
+  vim.api.nvim_set_current_win(new_win)
+end
+
+vim.keymap.set('n', '<leader>wt', transpose_pair_orientation, {
+  noremap = true,
+  silent = true,
+  desc = 'Transpose pair orientation (left/right <-> top/bottom)',
+})
+
+vim.keymap.set('n', '<leader>wH', function()
+  swap_with_direction('h')
+end, {
+  noremap = true,
+  silent = true,
+  desc = 'Swap with left window',
+})
+vim.keymap.set('n', '<leader>wL', function()
+  swap_with_direction('l')
+end, {
+  noremap = true,
+  silent = true,
+  desc = 'Swap with right window',
+})
+vim.keymap.set('n', '<leader>wJ', function()
+  swap_with_direction('j')
+end, {
+  noremap = true,
+  silent = true,
+  desc = 'Swap with lower window',
+})
+vim.keymap.set('n', '<leader>wK', function()
+  swap_with_direction('k')
+end, {
+  noremap = true,
+  silent = true,
+  desc = 'Swap with upper window',
+})
+
+-- =============================================================================
 -- BUFFER NAVIGATION
 -- =============================================================================
 vim.keymap.set('n', 'gn', '<cmd>bnext<cr>', { desc = 'Next buffer' })
