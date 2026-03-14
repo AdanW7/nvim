@@ -11,7 +11,6 @@ return {
       python = { 'ruff_format' },
       ocaml = { 'ocamlformat' },
       gleam = { 'gleam' },
-      org = {},
     },
 
     -- Set this to change the default values when calling conform.format()
@@ -52,12 +51,7 @@ return {
     {
       '<leader>lf',
       function()
-        -- For org files, use orgmode's built-in formatting
-        if vim.bo.filetype == 'org' then
-          vim.cmd('normal! gggqG') -- Format whole file
-        else
-          require('conform').format({ async = true, lsp_fallback = true })
-        end
+        require('conform').format({ async = true, lsp_fallback = true })
       end,
       mode = { 'n', 'v' },
       desc = 'LSP Format',
