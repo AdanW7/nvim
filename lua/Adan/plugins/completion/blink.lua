@@ -59,7 +59,6 @@ return {
     -- elsewhere in your config, without redefining it, due to `opts_extend`
     sources = {
       per_filetype = {
-        org = { 'lsp', 'path', 'snippets', 'buffer', 'orgmode' },
       },
       -- compat = {},
       default = {
@@ -68,13 +67,7 @@ return {
         'snippets',
         'buffer',
       },
-      providers = {
-        orgmode = {
-          name = 'Orgmode',
-          module = 'orgmode.org.autocompletion.blink',
-          fallbacks = { 'buffer' },
-        },
-      },
+      providers = {},
     },
 
     fuzzy = {

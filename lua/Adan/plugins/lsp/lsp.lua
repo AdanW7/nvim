@@ -27,7 +27,7 @@ return {
           lua_ls = true,
           marksman = true,
           nixd = true,
-          ocamllsp = true,
+          ocamllsp = false,
           rust_analyzer = true,
           texlab = true,
           ty = true,
