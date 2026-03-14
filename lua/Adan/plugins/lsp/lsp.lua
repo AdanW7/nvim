@@ -28,7 +28,6 @@ return {
           marksman = true,
           nixd = true,
           ocamllsp = true,
-          basedpyright = false,
           rust_analyzer = true,
           texlab = true,
           ty = true,
@@ -119,6 +118,7 @@ return {
             init_options = {
               pyrefly = {
                 displayTypeErrors = 'force-on',
+                skipLspConfigIndexing = true,
               },
             },
           },
@@ -142,10 +142,6 @@ return {
         cfg.capabilities = vim.tbl_deep_extend('force', {}, capabilities, cfg.capabilities or {})
         vim.lsp.config(name, cfg)
 
-        if name == 'pyrefly' and not vim.g.pyrefly_lsp_enabled then
-          return
-        end
-
         vim.lsp.enable(name)
       end
 
@@ -165,19 +161,6 @@ return {
         mason_lsp.setup({ ensure_installed = ensure })
       end
 
-      vim.api.nvim_create_user_command('PyreflyLspToggle', function()
-        vim.g.pyrefly_lsp_enabled = not vim.g.pyrefly_lsp_enabled
-        if vim.g.pyrefly_lsp_enabled then
-          vim.lsp.enable('pyrefly')
-          vim.notify('Pyrefly LSP enabled', vim.log.levels.INFO)
-        else
-          local clients = vim.lsp.get_clients({ name = 'pyrefly' })
-          for _, client in ipairs(clients) do
-            vim.lsp.stop_client(client.id, true)
-          end
-          vim.notify('Pyrefly LSP disabled', vim.log.levels.INFO)
-        end
-      end, {})
     end,
   },
   {
