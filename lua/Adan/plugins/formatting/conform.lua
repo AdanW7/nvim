@@ -11,6 +11,7 @@ return {
       python = { 'ruff_format' },
       ocaml = { 'ocamlformat' },
       gleam = { 'gleam' },
+      markdown = { 'prettierd' },
     },
 
     -- Set this to change the default values when calling conform.format()

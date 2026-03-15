@@ -8,16 +8,6 @@ return {
       { 'mason-org/mason-lspconfig.nvim', config = function() end },
     },
     opts = function()
-      local function root_pattern(patterns)
-        return function(fname)
-          local path = fname and fname ~= '' and fname or vim.api.nvim_buf_get_name(0)
-          if path == '' then
-            return (vim.uv or vim.loop).cwd()
-          end
-          return vim.fs.root(path, patterns) or (vim.uv or vim.loop).cwd()
-        end
-      end
-
       return {
         servers = {
           bashls = true,
@@ -31,12 +21,14 @@ return {
           rust_analyzer = true,
           texlab = true,
           ty = true,
+          tombi = true,
           ruff = true,
           pyrefly = true,
           ts_ls = true,
           yamlls = true,
           zls = true,
           powershell_es = true,
+          markdown_oxide = true,
         },
       }
     end,
