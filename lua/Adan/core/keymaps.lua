@@ -473,19 +473,11 @@ end, { desc = 'Reload config' })
 -- =============================================================================
 -- Create / Open a Daily Note Markdown file
 -- =============================================================================
-vim.keymap.set('n', '<leader>nn', function()
-  -- Get today's date in Obsidian format (YYYY-MM-DD)
+vim.keymap.set('n', '<leader>n', function()
   local date = os.date('%Y-%m-%d')
 
   -- Detect OS and set path accordingly
-  local dir
-  if vim.fn.has('win32') == 1 or vim.fn.has('win64') == 1 then
-    -- Windows OneDrive path
-    dir = 'C:/Users/awodzins/OneDrive - Milwaukee Tool/Documents/Notes/Daily notes'
-  else
-    -- Linux/Mac path
-    dir = vim.fn.expand('~/Notes/DailyNotes')
-  end
+  local dir = vim.fn.expand('~/Notes/DailyNotes')
 
   local filepath = dir .. '/' .. date .. '.md'
 
