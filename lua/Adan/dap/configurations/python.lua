@@ -1,2 +1,0 @@
--- Python configurations are handled by dap-python plugin
--- No additional configuration needed

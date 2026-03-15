@@ -3,7 +3,7 @@ local dap = require('dap')
 dap.configurations.zig = {
   {
     name = 'Launch (zig build)',
-    type = 'lldb',
+    type = 'codelldb',
     request = 'launch',
     program = function()
       vim.fn.system('zig build')
@@ -36,7 +36,7 @@ dap.configurations.zig = {
   },
   {
     name = 'Launch (custom executable)',
-    type = 'lldb',
+    type = 'codelldb',
     request = 'launch',
     program = function()
       return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
@@ -50,7 +50,7 @@ dap.configurations.zig = {
   },
   {
     name = 'Attach to process',
-    type = 'lldb',
+    type = 'codelldb',
     request = 'attach',
     pid = require('dap.utils').pick_process,
     args = {},

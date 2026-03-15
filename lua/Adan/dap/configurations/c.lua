@@ -73,7 +73,7 @@ end
 dap.configurations.c = {
   {
     name = 'Launch (auto-detect build)',
-    type = 'lldb',
+    type = 'codelldb',
     request = 'launch',
     program = find_executable,
     cwd = '${workspaceFolder}',
@@ -86,7 +86,7 @@ dap.configurations.c = {
   },
   {
     name = 'Launch (custom executable)',
-    type = 'lldb',
+    type = 'codelldb',
     request = 'launch',
     program = function()
       return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
@@ -100,7 +100,7 @@ dap.configurations.c = {
   },
   {
     name = 'Attach to process',
-    type = 'lldb',
+    type = 'codelldb',
     request = 'attach',
     pid = require('dap.utils').pick_process,
     args = {},

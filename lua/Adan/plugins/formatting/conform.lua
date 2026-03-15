@@ -1,4 +1,4 @@
----@type LazySpec
+---@type Adan.LazySpec
 return {
   'stevearc/conform.nvim',
   event = { 'BufReadPre', 'BufNewFile' },

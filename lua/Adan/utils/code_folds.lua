@@ -1,9 +1,13 @@
 local M = {}
 
-local fold_ranges = {} -- { [bufnr] = { { start_line = <1 based>, end_line = <1 based> }, }, }
-local fold_ranges_map = {} -- { [bufnr] = { [start_line] = { start_line = <1 based>, end_line = <1 based> }, }, }
-local current_fold = nil -- { start_line = <1 based>, end_line = <1 based> }
+---@type Adan.FoldRanges
+local fold_ranges = {}
+---@type Adan.FoldRangeMap
+local fold_ranges_map = {}
+---@type Adan.FoldRange|nil
+local current_fold = nil
 
+---@param bufnr Adan.Bufnr
 function M.update_ranges(bufnr)
   local client = vim.lsp.get_clients({ bufnr = bufnr, method = 'textDocument/foldingRange' })[1]
   if not client then
@@ -23,8 +27,8 @@ function M.update_ranges(bufnr)
       return
     end
 
-    -- Rebuild fold ranges as a map for O(1) in statuscol
-    local ranges_map = {}
+    -- Rebuild fold ranges as a map in statuscol
+    local ranges_map = {} ---@type table<integer, Adan.FoldRange>
     for i, range in ipairs(ranges) do
       ranges[i] = {
         start_line = range.startLine + 1,
@@ -43,13 +47,16 @@ function M.update_ranges(bufnr)
   end)
 end
 
+---@param row integer
+---@param bufnr Adan.Bufnr
+---@return Adan.FoldRange|nil
 function M.update_current_fold(row, bufnr)
   local ranges = fold_ranges[bufnr]
   if not ranges then
     return nil
   end
 
-  local best_range = nil
+  local best_range = nil ---@type Adan.FoldRange|nil
 
   for i = 1, #ranges do
     local range = ranges[i]
@@ -65,6 +72,7 @@ function M.update_current_fold(row, bufnr)
   current_fold = best_range
 end
 
+---@param bufnr Adan.Bufnr
 function M.clear(bufnr)
   fold_ranges[bufnr] = nil
   fold_ranges_map[bufnr] = nil
@@ -88,6 +96,7 @@ function M.goto_previous_fold()
   end
 end
 
+---@return string
 function M.statuscol()
   local winid = vim.g.statusline_winid
   local bufnr = vim.api.nvim_win_get_buf(winid)

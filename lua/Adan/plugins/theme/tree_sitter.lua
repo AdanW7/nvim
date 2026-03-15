@@ -1,4 +1,4 @@
----@type LazySpec
+---@type Adan.LazySpec
 return {
   'nvim-treesitter/nvim-treesitter',
   branch = 'master',

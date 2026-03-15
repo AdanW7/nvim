@@ -70,7 +70,7 @@ local function set_project_scope_telescope_keymaps()
   end, { desc = 'Recent files in project' })
 end
 
----@type LazySpec
+---@type Adan.LazySpec
 local neovim_project_spec = {
   'coffebar/neovim-project',
   opts = {
@@ -121,7 +121,7 @@ local neovim_project_spec = {
   priority = 100,
 }
 
----@type LazySpec
+---@type Adan.LazySpec
 local project_nvim_spec = {
   'DrKJeff16/project.nvim',
   opts = {
@@ -241,7 +241,7 @@ local project_nvim_spec = {
   priority = 100,
 }
 
----@type LazySpec
+---@type Adan.LazySpec
 local selected_spec = use_project_nvim and project_nvim_spec or neovim_project_spec
 
 return selected_spec

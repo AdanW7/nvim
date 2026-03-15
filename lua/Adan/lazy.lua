@@ -17,7 +17,7 @@ end
 vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   spec = (function()
-    local spec = {}
+    local spec = {} ---@type Adan.LazySpecArray
     local plugins_path = vim.fn.stdpath('config') .. '/lua/Adan/plugins'
     local handle = vim.loop.fs_scandir(plugins_path)
     if handle then

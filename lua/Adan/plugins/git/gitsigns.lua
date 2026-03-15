@@ -1,4 +1,4 @@
----@type LazySpec
+---@type Adan.LazySpec
 return {
   'lewis6991/gitsigns.nvim',
   event = { 'BufReadPre', 'BufNewFile' },

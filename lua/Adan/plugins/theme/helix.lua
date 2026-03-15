@@ -1,4 +1,4 @@
----@type LazySpec
+---@type Adan.LazySpec
 return {
   'AdanW7/helix.nvim',
   lazy = false,

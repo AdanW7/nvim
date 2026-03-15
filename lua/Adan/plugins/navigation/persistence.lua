@@ -92,7 +92,7 @@ local function session_select_session()
   persistence.select()
 end
 
----@type LazySpec
+---@type Adan.LazySpec
 return {
   'folke/persistence.nvim',
   event = 'BufReadPre',

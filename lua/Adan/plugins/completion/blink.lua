@@ -1,4 +1,4 @@
----@type LazySpec
+---@type Adan.LazySpec
 return {
   'saghen/blink.cmp',
   -- optional: provides snippets for the snippet source

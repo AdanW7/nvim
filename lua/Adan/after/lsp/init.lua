@@ -1,17 +1,19 @@
----@type vim.lsp.Config
-local pyrefly_config = {
+local M = {}
+
+---@type Adan.LspConfig
+M.pyrefly = {
   settings = {
     python = {
       pyrefly = {
         displayTypeErrors = 'force-on',
+        skipLspConfigIndexing = true,
       },
     },
   },
 }
 
-vim.lsp.config('pyrefly', pyrefly_config)
-
-local ruff_config = {
+---@type Adan.LspConfig
+M.ruff = {
   settings = {
     ['indent-width'] = 4,
     ['line-length'] = 120,
@@ -28,9 +30,8 @@ local ruff_config = {
   },
 }
 
-vim.lsp.config('ruff', ruff_config)
-
-local powershell_config = {
+---@type Adan.LspConfig
+M.powershell = {
   bundle_path = vim.env.POWERSHELL_ES_BUNDLE_PATH
     or (vim.fn.stdpath('data') .. '/mason/packages/powershell-editor-services'),
   shell = (vim.fn.has('win32') == 1 and 'powershell.exe')
@@ -57,4 +58,10 @@ local powershell_config = {
   },
 }
 
-vim.lsp.config('powershell_es', powershell_config)
+function M.apply()
+  vim.lsp.config('pyrefly', M.pyrefly)
+  vim.lsp.config('ruff', M.ruff)
+  vim.lsp.config('powershell_es', M.powershell)
+end
+
+return M

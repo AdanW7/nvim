@@ -1,4 +1,4 @@
----@type LazySpec
+---@type Adan.LazySpec
 return {
   'akinsho/bufferline.nvim',
   event = 'VeryLazy',

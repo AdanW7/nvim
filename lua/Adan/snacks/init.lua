@@ -1,4 +1,4 @@
----@type LazySpec[]
+---@type Adan.LazySpecArray
 return {
   require('Adan.snacks.dashboard'),
   require('Adan.snacks.explorer'),

@@ -1,4 +1,4 @@
----@type LazySpec
+---@type Adan.LazySpec
 return {
   'tiagovla/scope.nvim',
   event = 'VeryLazy',

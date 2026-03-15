@@ -1,4 +1,4 @@
----@type LazySpec
+---@type Adan.LazySpec
 return {
   'nvim-telescope/telescope.nvim',
   tag = '0.1.8',

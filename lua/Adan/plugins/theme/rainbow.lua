@@ -1,4 +1,4 @@
----@type LazySpec
+---@type Adan.LazySpec
 return {
   'HiPhish/rainbow-delimiters.nvim',
   lazy = false,

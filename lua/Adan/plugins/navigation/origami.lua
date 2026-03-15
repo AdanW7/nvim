@@ -1,4 +1,4 @@
----@type LazySpec
+---@type Adan.LazySpec
 return {
   'chrisgrieser/nvim-origami',
   event = 'VeryLazy',

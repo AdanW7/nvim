@@ -1,4 +1,4 @@
----@type LazySpec
+---@type Adan.LazySpec
 return {
   {
     'mfussenegger/nvim-dap',
@@ -7,6 +7,7 @@ return {
       'theHamsta/nvim-dap-virtual-text',
       'nvim-neotest/nvim-nio',
       'mason-org/mason.nvim',
+      'jay-babu/mason-nvim-dap.nvim',
       'leoluz/nvim-dap-go',
       {
         'mfussenegger/nvim-dap-python',
@@ -14,6 +15,11 @@ return {
       },
     },
     config = function()
+      require('mason-nvim-dap').setup({
+        ensure_installed = { 'codelldb' },
+        automatic_setup = false,
+      })
+
       -- Load UI configuration
       require('Adan.dap.ui')
 
@@ -27,8 +33,8 @@ return {
       require('Adan.dap.configurations.c')
       require('Adan.dap.configurations.cpp')
       require('Adan.dap.configurations.rust')
-      require('Adan.dap.configurations.go')
-      require('Adan.dap.configurations.python')
+      -- dap-go manages its own configurations
+      -- dap-python manages its own configurations
 
       -- Load keymaps
       require('Adan.dap.keymaps')

@@ -1,7 +1,7 @@
 ---@type { virtual_text: boolean|table|nil, virtual_lines: boolean|table|nil }|nil
 local zen_diag_state = nil
 
----@type LazySpec
+---@type Adan.LazySpec
 return {
   'folke/snacks.nvim',
   opts = {

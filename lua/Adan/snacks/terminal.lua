@@ -12,7 +12,7 @@ local function toggle_terminal()
   Snacks.terminal()
 end
 
----@type LazySpec
+---@type Adan.LazySpec
 return {
   'folke/snacks.nvim',
   opts = function(_, opts)

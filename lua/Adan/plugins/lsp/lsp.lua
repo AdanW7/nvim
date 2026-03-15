@@ -1,4 +1,4 @@
----@type LazySpec[]
+---@type Adan.LazySpecArray
 return {
   {
     'neovim/nvim-lspconfig',
@@ -37,6 +37,11 @@ return {
       local ok_blink, blink = pcall(require, 'blink.cmp')
       if ok_blink and type(blink.get_lsp_capabilities) == 'function' then
         capabilities = blink.get_lsp_capabilities(capabilities)
+      end
+
+      local ok_overrides, overrides = pcall(require, 'Adan.after.lsp')
+      if ok_overrides and type(overrides.apply) == 'function' then
+        overrides.apply()
       end
 
       local function setup_server(name, cfg)
