@@ -1,5 +1,5 @@
 require('Adan.core')
 require('Adan.lazy')
 require('Adan.autocommands')
-require('Adan.after_plugins')
+require('Adan.after')
 require('Adan.UserCommands')
