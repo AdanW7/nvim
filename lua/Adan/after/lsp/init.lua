@@ -31,7 +31,7 @@ M.ruff = {
 }
 
 ---@type Adan.LspConfig
-M.powershell = {
+M.powershell_es = {
   bundle_path = vim.env.POWERSHELL_ES_BUNDLE_PATH
     or (vim.fn.stdpath('data') .. '/mason/packages/powershell-editor-services'),
   shell = (vim.fn.has('win32') == 1 and 'powershell.exe')
@@ -57,11 +57,5 @@ M.powershell = {
     },
   },
 }
-
-function M.apply()
-  vim.lsp.config('pyrefly', M.pyrefly)
-  vim.lsp.config('ruff', M.ruff)
-  vim.lsp.config('powershell_es', M.powershell)
-end
 
 return M

@@ -8,7 +8,9 @@ return {
       { 'mason-org/mason-lspconfig.nvim', config = function() end },
     },
     opts = function()
-      return {
+      local ok_overrides, overrides = pcall(require, 'Adan.after.lsp')
+
+      local servers = {
         servers = {
           bashls = true,
           clangd = true,
@@ -31,17 +33,22 @@ return {
           markdown_oxide = true,
         },
       }
+
+      if ok_overrides and type(overrides) == 'table' then
+        for name, cfg in pairs(overrides) do
+          if cfg ~= nil then
+            servers.servers[name] = cfg
+          end
+        end
+      end
+
+      return servers
     end,
     config = function(_, opts)
       local capabilities = vim.lsp.protocol.make_client_capabilities()
       local ok_blink, blink = pcall(require, 'blink.cmp')
       if ok_blink and type(blink.get_lsp_capabilities) == 'function' then
         capabilities = blink.get_lsp_capabilities(capabilities)
-      end
-
-      local ok_overrides, overrides = pcall(require, 'Adan.after.lsp')
-      if ok_overrides and type(overrides.apply) == 'function' then
-        overrides.apply()
       end
 
       local function setup_server(name, cfg)
