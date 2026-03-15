@@ -1,4 +1,4 @@
--- dont use ruff for hover, use Pyright
+-- Dont use ruff for hover
 vim.api.nvim_create_autocmd('LspAttach', {
   group = vim.api.nvim_create_augroup('lsp_attach_disable_ruff_hover', { clear = true }),
   callback = function(args)
@@ -7,7 +7,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
       return
     end
     if client.name == 'ruff' then
-      -- Disable hover in favor of Pyright
       client.server_capabilities.hoverProvider = false
     end
   end,
