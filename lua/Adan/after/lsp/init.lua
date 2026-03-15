@@ -34,9 +34,10 @@ M.ruff = {
 M.powershell_es = {
   bundle_path = vim.env.POWERSHELL_ES_BUNDLE_PATH
     or (vim.fn.stdpath('data') .. '/mason/packages/powershell-editor-services'),
-  shell = (vim.fn.has('win32') == 1 and 'powershell.exe')
-    or (vim.fn.executable('pwsh') == 1 and 'pwsh')
+  shell = (vim.fn.executable('pwsh') == 1 and 'pwsh')
+    or (vim.fn.has('win32') == 1 and 'powershell.exe')
     or 'powershell',
+  filetypes = { 'ps1', 'psm1', 'psd1', 'ps1xml', 'powershell' },
   settings = {
     powershell = {
       codeFormatting = {
