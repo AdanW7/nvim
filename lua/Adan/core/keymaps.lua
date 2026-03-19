@@ -386,15 +386,9 @@ vim.keymap.set('t', '<A-l>', '<C-\\><C-n><C-w>l', { desc = 'Exit terminal to rig
 -- QUICKFIX LIST
 -- =============================================================================
 
--- Quickfix navigation
-vim.keymap.set('n', '<leader>cn', '<cmd>cnext<CR>', { desc = 'Next quickfix item' })
-vim.keymap.set('n', '<leader>cp', '<cmd>cprev<CR>', { desc = 'Previous quickfix item' })
-vim.keymap.set('n', '<leader>cf', '<cmd>cfirst<CR>', { desc = 'First quickfix item' })
-vim.keymap.set('n', '<leader>cl', '<cmd>clast<CR>', { desc = 'Last quickfix item' })
-
 -- Quickfix history
-vim.keymap.set('n', '<leader>co', '<cmd>colder<CR>', { desc = 'Older quickfix list' })
-vim.keymap.set('n', '<leader>ce', '<cmd>cnewer<CR>', { desc = 'Newer quickfix list' })
+vim.keymap.set('n', '<leader>qp', '<cmd>colder<CR>', { desc = 'Older quickfix list' })
+vim.keymap.set('n', '<leader>qn', '<cmd>cnewer<CR>', { desc = 'Newer quickfix list' })
 
 -- Quickfix window
 vim.keymap.set('n', '<leader>qo', '<cmd>copen<CR>', { desc = 'Open quickfix list' })
@@ -450,25 +444,22 @@ vim.keymap.set('n', '<leader>cd', '<cmd>lua vim.fn.chdir(vim.fn.expand("%:p:h"))
 })
 
 -- =============================================================================
--- PLUGIN-SPECIFIC
--- =============================================================================
-
--- Neo-tree
-vim.keymap.set(
-  'n',
-  '<leader>e',
-  ':Neotree filesystem reveal left<CR>',
-  { desc = 'Toggle Neo-tree' }
-)
-
--- =============================================================================
 -- RELOAD CONFIG
 -- =============================================================================
 
 vim.keymap.set('n', '<leader>rc', function()
-  vim.cmd('source ' .. vim.env.MYVIMRC)
-  vim.notify('Config reloaded!', vim.log.levels.INFO)
-end, { desc = 'Reload config' })
+  -- Clear Lua modules under "Adan"
+  for name, _ in pairs(package.loaded) do
+    if name:match('^Adan') then
+      package.loaded[name] = nil
+    end
+  end
+
+  -- Reload init.lua (which re-requires 'Adan')
+  dofile(vim.fn.stdpath('config') .. '/init.lua')
+
+  vim.notify('Full config reloaded!', vim.log.levels.INFO)
+end, { desc = 'Reload entire config' })
 
 -- =============================================================================
 -- Create / Open a Daily Note Markdown file

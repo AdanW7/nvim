@@ -1,13 +1,22 @@
 local M = {}
 
 ---@type Adan.LspConfig
-M.pyrefly = {
+-- M.pyrefly = {
+--   cmd = { 'pyrefly', 'lsp' },
+--   settings = {
+--     python = {
+--       pyrefly = {
+--         displayTypeErrors = 'force-on',
+--       },
+--     },
+--   },
+-- }
+
+---@type Adan.LspConfig
+M.ty = {
   settings = {
-    python = {
-      pyrefly = {
-        displayTypeErrors = 'force-on',
-        skipLspConfigIndexing = true,
-      },
+    ty = {
+      diagnosticMode = 'openFilesOnly',
     },
   },
 }
