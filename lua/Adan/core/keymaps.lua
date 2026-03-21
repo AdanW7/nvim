@@ -417,6 +417,10 @@ vim.keymap.set(
   { noremap = true, silent = true }
 )
 
+vim.keymap.set('n', '<leader>ih', function()
+  vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+end, { noremap = true, silent = true })
+
 -- LSP restart
 vim.keymap.set('n', '<leader>lr', function()
   local clients = vim.lsp.get_clients()
