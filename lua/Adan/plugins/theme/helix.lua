@@ -40,6 +40,9 @@ return {
       highlights = {
         SnacksIndent = { fg = '#5f79a6' },
         SnacksIndentScope = { fg = '#7394cf', fmt = 'bold' },
+        ColorfulMenuFallback = { fg = '#89b4fa', fmt = 'bold' },
+        ColorfulMenuDim = { fg = '#6c7d9b' },
+        ColorfulMenuArgs = { fg = '#e0b97f' },
         -- Soften diff backgrounds for readability
         DiffAdd = { bg = '#2d4432' },
         DiffChange = { bg = '#344353' },

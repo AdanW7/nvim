@@ -5,6 +5,7 @@ return {
   dependencies = {
     'rafamadriz/friendly-snippets',
     'L3MON4D3/LuaSnip',
+    'xzbdmw/colorful-menu.nvim',
   },
 
   -- use a release tag to download pre-built binaries
@@ -41,7 +42,49 @@ return {
       },
       menu = {
         draw = {
-          treesitter = { 'lsp' },
+          columns = { { 'kind_icon' }, { 'label', gap = 1 } },
+          components = {
+            label = {
+              text = function(ctx)
+                local cm = require('colorful-menu')
+                local client = vim.lsp.get_client_by_id(ctx.item.client_id)
+                local ls = client and client.name or nil
+                if ls == 'pyrefly' then
+                  ls = 'pylsp'
+                end
+                local highlights_info = cm.highlights(ctx.item, ls)
+                if highlights_info ~= nil then
+                  return highlights_info.text
+                end
+                return ctx.label
+              end,
+              highlight = function(ctx)
+                local cm = require('colorful-menu')
+                local client = vim.lsp.get_client_by_id(ctx.item.client_id)
+                local ls = client and client.name or nil
+                if ls == 'pyrefly' then
+                  ls = 'pylsp'
+                end
+
+                local highlights = {}
+                local highlights_info = cm.highlights(ctx.item, ls)
+                if highlights_info ~= nil then
+                  for _, info in ipairs(highlights_info.highlights or {}) do
+                    table.insert(highlights, {
+                      info.range[1],
+                      info.range[2],
+                      group = info[1],
+                    })
+                  end
+                end
+
+                for _, idx in ipairs(ctx.label_matched_indices) do
+                  table.insert(highlights, { idx, idx + 1, group = 'BlinkCmpLabelMatch' })
+                end
+                return highlights
+              end,
+            },
+          },
         },
       },
       documentation = {
@@ -58,8 +101,7 @@ return {
     -- Default list of enabled providers defined so that you can extend it
     -- elsewhere in your config, without redefining it, due to `opts_extend`
     sources = {
-      per_filetype = {
-      },
+      per_filetype = {},
       -- compat = {},
       default = {
         'lsp',
