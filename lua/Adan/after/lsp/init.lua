@@ -68,4 +68,52 @@ M.powershell_es = {
   },
 }
 
+---@type Adan.LspConfig
+M.jade_toml = {
+  cmd = (function()
+    local uname = vim.uv.os_uname()
+    local sys = uname.sysname
+    local machine = uname.machine
+    local os
+    if sys == 'Darwin' then
+      os = 'macos'
+    elseif sys == 'Linux' then
+      os = 'linux'
+    elseif sys:match('Windows') then
+      os = 'windows'
+    else
+      os = sys:lower()
+    end
+
+    local arch
+    if machine == 'x86_64' or machine == 'amd64' then
+      arch = 'x86_64'
+    elseif machine == 'arm64' or machine == 'aarch64' then
+      arch = 'aarch64'
+    else
+      arch = machine
+    end
+
+    local exe = 'jade_toml_lsp' .. (os == 'windows' and '.exe' or '')
+    local root = vim.fn.expand('~/.config/nvim/custom_lsp/jade_toml/bin')
+    local release_path = string.format('%s/%s/%s/release/%s', root, os, arch, exe)
+    if vim.fn.executable(release_path) == 1 then
+      return { release_path }
+    end
+
+    local debug_path = string.format('%s/%s/%s/debug/%s', root, os, arch, exe)
+    return { vim.fn.executable(debug_path) == 1 and debug_path or release_path }
+  end)(),
+  filetypes = { 'toml', },
+  root_markers = { 'jade.toml', '.git' },
+  settings = {
+    jade = {
+      diagnostics = {
+        enabled = true,
+        severity = 'warning',
+      },
+    },
+  },
+}
+
 return M
