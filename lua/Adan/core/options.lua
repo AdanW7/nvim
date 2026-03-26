@@ -94,7 +94,7 @@ vim.opt.completeopt = { 'menuone', 'popup', 'noinsert' } -- Completion menu opti
 vim.opt.swapfile = false -- Disable swap files
 
 -- Undo
-vim.opt.undodir = os.getenv('HOME') .. '/.vim/undodir' -- Directory for undo files
+vim.opt.undodir = os.getenv('HOME') .. '/.local/share/nvim/undo' -- Directory for undo files
 vim.opt.undofile = true -- Enable persistent undo
 
 -- =============================================================================
