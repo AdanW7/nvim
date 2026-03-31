@@ -8,7 +8,7 @@ return {
       { 'mason-org/mason-lspconfig.nvim', config = function() end },
     },
     opts = function()
-      local ok_overrides, overrides = pcall(require, 'Adan.after.lsp')
+      local ok_overrides, overrides = pcall(require, 'Adan.overrides.lsp')
 
       local servers = {
         servers = {

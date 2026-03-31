@@ -10,12 +10,12 @@ This repo is organized by responsibility: core bootstrap and settings live at th
 
 ## `lua/Adan/` Layout
 
-- [`init.lua`](./lua/Adan/init.lua) — main module entry; loads core, lazy, autocommands, after, and user commands.
+- [`init.lua`](./lua/Adan/init.lua) — main module entry; loads core, lazy, autocommands, overrides, and user commands.
 - [`core/`](./lua/Adan/core/) — baseline config (options, keymaps, compatibility shims).
 - [`lazy.lua`](./lua/Adan/lazy.lua) — lazy.nvim bootstrap and import wiring.
 - [`plugins/`](./lua/Adan/plugins/) — all plugin specs, grouped by category.
 - [`autocommands/`](./lua/Adan/autocommands/) — general and plugin-specific autocommands.
-- [`after/`](./lua/Adan/after/) — post-setup configuration (LSP, telescope, treesitter).
+- [`overrides/`](./lua/Adan/overrides/) — Advanced setup configuration (LSP, telescope, treesitter).
 - [`UserCommands/`](./lua/Adan/UserCommands/) — custom user commands.
 - [`dap/`](./lua/Adan/dap/) — DAP adapters/configurations and UI/keymaps.
 - [`snacks/`](./lua/Adan/snacks/) — Snacks-specific config modules.
@@ -44,8 +44,8 @@ Each folder holds lazy.nvim specs for that feature set.
 1. [`init.lua`](./init.lua) → [`lua/Adan/init.lua`](./lua/Adan/init.lua)
 2. [`core/`](./lua/Adan/core/) (options + keymaps)
 3. [`lazy.lua`](./lua/Adan/lazy.lua) (plugin manager bootstrap)
+3. [`pack.lua`](./lua/Adan/pack.lua) (built in plugin manager)
 4. [`autocommands/`](./lua/Adan/autocommands/)
-5. [`after/`](./lua/Adan/after/) (post-plugin setup)
 6. [`UserCommands/`](./lua/Adan/UserCommands/)
 
 ## Notes

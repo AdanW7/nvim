@@ -482,3 +482,11 @@ vim.keymap.set('n', '<leader>n', function()
   -- Open the file (creates it if it doesn't exist)
   vim.cmd('edit ' .. filepath)
 end, { desc = "Open today's daily note" })
+
+-- =============================================================================
+-- undo tree keymap
+-- =============================================================================
+
+vim.keymap.set('n', '<leader>u', function()
+  require('undotree').open()
+end, { desc = 'Toggle undotree' })

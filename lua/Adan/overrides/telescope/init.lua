@@ -196,3 +196,32 @@ vim.keymap.set('n', '<leader>fq', builtin.quickfix, { desc = 'Quickfix list' })
 
 -- Location list
 vim.keymap.set('n', '<leader>fl', builtin.loclist, { desc = 'Location list' })
+
+-- =============================================================================
+-- Diff view compare
+-- =============================================================================
+vim.keymap.set('n', '<leader>dv', function()
+  local action_state = require('telescope.actions.state')
+
+  builtin.find_files({
+    prompt_title = 'Diff: Select first file',
+    attach_mappings = function(prompt_bufnr)
+      actions.select_default:replace(function()
+        local first = action_state.get_selected_entry().path
+        actions.close(prompt_bufnr)
+        builtin.find_files({
+          prompt_title = 'Diff: Select second file (first: ' .. vim.fn.fnamemodify(first, ':~:.') .. ')',
+          attach_mappings = function(prompt_bufnr2)
+            actions.select_default:replace(function()
+              local second = action_state.get_selected_entry().path
+              actions.close(prompt_bufnr2)
+              require('difftool').open(first, second)
+            end)
+            return true
+          end,
+        })
+      end)
+      return true
+    end,
+  })
+end, { desc = 'Diff two files via picker' })
