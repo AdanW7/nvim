@@ -5,12 +5,12 @@
 local telescope = require('telescope')
 local builtin = require('telescope.builtin')
 local actions = require('telescope.actions')
+local themes = require('telescope.themes')
 
 -- Configure telescope before loading extensions
 telescope.setup({
-  defaults = {
+  defaults = themes.get_ivy({
     -- Layout
-    layout_strategy = 'horizontal',
     layout_config = {
       horizontal = {
         prompt_position = 'top',
@@ -18,7 +18,7 @@ telescope.setup({
         results_width = 0.8,
       },
       width = 0.95,
-      height = 0.85,
+      height = 0.5,
       preview_cutoff = 120,
     },
     wrap_results = true,
@@ -46,7 +46,7 @@ telescope.setup({
         ['k'] = actions.move_selection_previous,
       },
     },
-  },
+  }),
 })
 
 -- =============================================================================
@@ -102,10 +102,6 @@ vim.keymap.set('n', '<leader>fd', function()
   })
 end, { desc = 'Find Diagnostics (buffer)' })
 
-vim.keymap.set('n', '<leader>fD', function()
-  require('telescope.builtin').diagnostics()
-end, { desc = 'Find Diagnostics (workspace)' })
-
 -- =============================================================================
 -- KEYMAPS - LSP
 -- =============================================================================
@@ -140,6 +136,8 @@ end, { desc = 'Telescope git modified files' })
 
 -- Git commits (current buffer)
 vim.keymap.set('n', '<leader>gbc', builtin.git_bcommits, { desc = 'Git buffer commits' })
+
+vim.keymap.set('n', '<leader>gB', builtin.git_branches, { desc = 'Git branches' })
 
 -- Git commits (all)
 vim.keymap.set('n', '<leader>gC', builtin.git_commits, { desc = 'Git commits' })
@@ -210,7 +208,9 @@ vim.keymap.set('n', '<leader>dv', function()
         local first = action_state.get_selected_entry().path
         actions.close(prompt_bufnr)
         builtin.find_files({
-          prompt_title = 'Diff: Select second file (first: ' .. vim.fn.fnamemodify(first, ':~:.') .. ')',
+          prompt_title = 'Diff: Select second file (first: '
+            .. vim.fn.fnamemodify(first, ':~:.')
+            .. ')',
           attach_mappings = function(prompt_bufnr2)
             actions.select_default:replace(function()
               local second = action_state.get_selected_entry().path
@@ -225,3 +225,13 @@ vim.keymap.set('n', '<leader>dv', function()
     end,
   })
 end, { desc = 'Diff two files via picker' })
+
+-- =============================================================================
+--Man pages
+-- =============================================================================
+vim.keymap.set('n', '<leader>fM', builtin.man_pages, { desc = 'Man pages' })
+
+-- =============================================================================
+-- Spell suggest for word under cursor
+-- =============================================================================
+vim.keymap.set('n', '<leader>fz', builtin.spell_suggest, { desc = 'Spell suggestions' })
