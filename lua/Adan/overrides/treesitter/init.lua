@@ -9,7 +9,7 @@ require('nvim-treesitter').install {
   'git_config',
   'git_rebase',
   'gitattributes',
-  'gitcommit',
+  -- 'gitcommit', -- this causes error on windows currently
   'gitignore',
   'http',
   'latex',
