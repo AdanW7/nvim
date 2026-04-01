@@ -417,9 +417,9 @@ vim.keymap.set(
   { noremap = true, silent = true }
 )
 
-vim.keymap.set('n', '<leader>ih', function()
+vim.keymap.set('n', '<leader>lh', function()
   vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
-end, { noremap = true, silent = true })
+end, { noremap = true, silent = true, desc="Toggle inlay hints"})
 
 -- LSP restart
 vim.keymap.set('n', '<leader>lr', function()

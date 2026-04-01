@@ -11,6 +11,7 @@ return {
       { '<leader>w', group = 'Windows' },
       { '<leader>t', group = 'Tabs/Terminal' },
       { 't', group = 'Tab Navigation' },
+      { 'm', group = 'Multi-cursor' },
       { '<leader>tc', group = 'Close Tabs' },
       { '<leader>tm', group = 'Move Tabs' },
       { '<leader>l', group = 'LSP' },
