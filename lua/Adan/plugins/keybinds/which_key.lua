@@ -1,8 +1,9 @@
----@type Adan.LazySpec
-return {
-  'folke/which-key.nvim',
-  event = 'VeryLazy',
-  opts = {
+local M = {}
+
+function M.setup()
+  vim.pack.add({ 'https://github.com/folke/which-key.nvim' }, { load = true, confirm = false })
+
+  require('which-key').setup({
     preset = 'helix',
     delay = 200,
     spec = {
@@ -28,30 +29,26 @@ return {
       { '<leader>wn', group = 'Scratch buffer in New Window' },
     },
     plugins = {
-      marks = true, -- shows list of marks on ' and `
-      registers = true, -- shows registers on " and @ in normal/visual mode
+      marks = true,
+      registers = true,
       spelling = {
-        enabled = true, -- z= to select spelling suggestions
+        enabled = true,
         suggestions = 20,
       },
       presets = {
-        operators = true, -- adds help for operators like d, y, c
-        motions = true, -- adds help for motions
-        text_objects = true, -- adds help for text objects like iw, aw
-        windows = true, -- default bindings on <c-w>
-        nav = true, -- misc bindings for navigation
-        z = true, -- bindings for folds, spelling, etc.
-        g = true, -- bindings for g prefix
+        operators = true,
+        motions = true,
+        text_objects = true,
+        windows = true,
+        nav = true,
+        z = true,
+        g = true,
       },
     },
     win = {
-      border = 'rounded', -- "none", "single", "double", "rounded", "solid", "shadow"
-      -- padding = { 1, 1},  -- {top/bottom, left/right}
-      title = true, -- show window title
-      title_pos = 'center', -- "left", "center", "right"
-      -- wo = {
-      --     winblend = 0,      -- transparency (0-100)
-      -- },
+      border = 'rounded',
+      title = true,
+      title_pos = 'center',
     },
     disable = {
       ft = { 'TelescopePrompt' },
@@ -64,14 +61,11 @@ return {
         { '<Tab>', 'TAB' },
       },
     },
-  },
-  keys = {
-    {
-      '<leader>?',
-      function()
-        require('which-key').show({ global = false })
-      end,
-      desc = 'Buffer Local Keymaps (which-key)',
-    },
-  },
-}
+  })
+
+  vim.keymap.set('n', '<leader>?', function()
+    require('which-key').show({ global = false })
+  end, { desc = 'Buffer Local Keymaps (which-key)' })
+end
+
+return M

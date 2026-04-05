@@ -1,10 +1,10 @@
 local uv = vim.uv or vim.loop
+local M = {}
 
 ---@return { session: string, dir: string, branch?: string }[]
 local function session_items(persistence)
-  ---@type { session: string, dir: string, branch?: string }[]
   local items = {}
-  local have = {} ---@type table<string, boolean>
+  local have = {}
   local sessions = persistence.list()
   for _, session in ipairs(sessions) do
     if uv.fs_stat(session) then
@@ -92,46 +92,30 @@ local function session_select_session()
   persistence.select()
 end
 
----@type Adan.LazySpec
-return {
-  'folke/persistence.nvim',
-  event = 'BufReadPre',
-  opts = {},
-  keys = {
-    {
-      '<leader>ss',
-      function()
-        require('persistence').load()
-      end,
-      desc = 'Restore Session for the Current Directory',
-    },
-    {
-      '<leader>sS',
-      function()
-        require('persistence').select()
-      end,
-      desc = 'Select a Session to Load',
-    },
-    {
-      '<leader>st',
-      function()
-        session_select_session()
-      end,
-      desc = 'Session Picker (Telescope/Snacks)',
-    },
-    {
-      '<leader>sl',
-      function()
-        require('persistence').load({ last = true })
-      end,
-      desc = 'Restore Last Session',
-    },
-    {
-      '<leader>sd',
-      function()
-        require('persistence').stop()
-      end,
-      desc = "Don't Save Current Session",
-    },
-  },
-}
+function M.setup()
+  vim.pack.add({ 'https://github.com/folke/persistence.nvim' }, { load = true, confirm = false })
+
+  require('persistence').setup({})
+
+  vim.keymap.set('n', '<leader>ss', function()
+    require('persistence').load()
+  end, { desc = 'Restore Session for the Current Directory' })
+
+  vim.keymap.set('n', '<leader>sS', function()
+    require('persistence').select()
+  end, { desc = 'Select a Session to Load' })
+
+  vim.keymap.set('n', '<leader>st', function()
+    session_select_session()
+  end, { desc = 'Session Picker (Telescope/Snacks)' })
+
+  vim.keymap.set('n', '<leader>sl', function()
+    require('persistence').load({ last = true })
+  end, { desc = 'Restore Last Session' })
+
+  vim.keymap.set('n', '<leader>sd', function()
+    require('persistence').stop()
+  end, { desc = "Don't Save Current Session" })
+end
+
+return M

@@ -1,5 +1,3 @@
----@alias Adan.LazySpec LazySpec
----@alias Adan.LazySpecArray LazySpec[]
 ---@alias Adan.LspConfig vim.lsp.Config
 ---@alias Adan.OilSetupOpts oil.SetupOpts
 ---@alias Adan.Bufnr integer

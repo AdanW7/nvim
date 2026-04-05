@@ -1,9 +1,9 @@
----@type Adan.LazySpec
-return {
-  'snacks.nvim',
-  opts = {
-    scope = {
-      enabled = true,
-    },
-  },
-}
+local M = {}
+
+function M.extend_opts(opts)
+  opts.scope = {
+    enabled = true,
+  }
+end
+
+return M

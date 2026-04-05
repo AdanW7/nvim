@@ -1,9 +1,9 @@
----@type Adan.LazySpec
-return {
-  'snacks.nvim',
-  opts = {
-    notifier = {
-      enabled = true,
-    },
-  },
-}
+local M = {}
+
+function M.extend_opts(opts)
+  opts.notifier = {
+    enabled = true,
+  }
+end
+
+return M

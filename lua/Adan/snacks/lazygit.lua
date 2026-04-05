@@ -1,41 +1,43 @@
----@type Adan.LazySpec
-return {
-  'snacks.nvim',
-  opts = {
-    lazygit = {
-      enabled = true,
-      configure = true,
-      theme = {
-        -- Customize lazygit theme to match your colorscheme
-        [241] = { fg = 'Special' },
-        activeBorderColor = { fg = 'MatchParen', bold = true },
-        inactiveBorderColor = { fg = 'FloatBorder' },
-        searchingActiveBorderColor = { fg = 'MatchParen', bold = true },
-        selectedLineBgColor = { bg = 'Visual' },
-      },
+local M = {}
+
+function M.extend_opts(opts)
+  opts.lazygit = {
+    enabled = true,
+    configure = true,
+    theme = {
+      [241] = { fg = 'Special' },
+      activeBorderColor = { fg = 'MatchParen', bold = true },
+      inactiveBorderColor = { fg = 'FloatBorder' },
+      searchingActiveBorderColor = { fg = 'MatchParen', bold = true },
+      selectedLineBgColor = { bg = 'Visual' },
     },
-  },
-  keys = {
+  }
+end
+
+function M.keys()
+  return {
     {
-      '<leader>gg',
-      function()
+      lhs = '<leader>gg',
+      rhs = function()
         Snacks.lazygit()
       end,
       desc = 'LazyGit',
     },
     {
-      '<leader>gG',
-      function()
+      lhs = '<leader>gG',
+      rhs = function()
         Snacks.lazygit.log()
       end,
       desc = 'LazyGit Log',
     },
     {
-      '<leader>gbh',
-      function()
+      lhs = '<leader>gbh',
+      rhs = function()
         Snacks.lazygit.log_file()
       end,
       desc = 'LazyGit Current File History',
     },
-  },
-}
+  }
+end
+
+return M

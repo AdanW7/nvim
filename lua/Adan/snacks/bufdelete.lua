@@ -1,48 +1,41 @@
----@type Adan.LazySpec
-return {
-  'folke/snacks.nvim',
-  keys = {
-    -- Delete current buffer
+local M = {}
+
+function M.keys()
+  return {
     {
-      '<leader>bd',
-      function()
+      lhs = '<leader>bd',
+      rhs = function()
         Snacks.bufdelete()
       end,
       desc = 'Delete Buffer',
     },
-
-    -- Force delete current buffer
     {
-      '<leader>bD',
-      function()
+      lhs = '<leader>bD',
+      rhs = function()
         Snacks.bufdelete({ force = true })
       end,
       desc = 'Delete Buffer (Force)',
     },
-
-    -- Delete all other buffers (keep current)
     {
-      '<leader>bo',
-      function()
+      lhs = '<leader>bo',
+      rhs = function()
         Snacks.bufdelete.other()
       end,
       desc = 'Delete Other Buffers',
     },
-
-    -- Delete all buffers
     {
-      '<leader>ba',
-      function()
+      lhs = '<leader>ba',
+      rhs = function()
         Snacks.bufdelete.all()
       end,
       desc = 'Delete All Buffers',
     },
-
-    -- Reload all buffers
     {
-      '<leader>br',
-      '<cmd>checktime<CR>',
+      lhs = '<leader>br',
+      rhs = '<cmd>checktime<CR>',
       desc = 'Reload All Buffers',
     },
-  },
-}
+  }
+end
+
+return M

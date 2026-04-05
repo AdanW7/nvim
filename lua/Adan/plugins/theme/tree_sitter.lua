@@ -1,14 +1,13 @@
----@type Adan.LazySpec
-return {
-  'nvim-treesitter/nvim-treesitter',
-  branch = 'main',
-  lazy = false,
-  build = ':TSUpdate',
-  dependencies = {
-    'nvim-treesitter/nvim-treesitter-context',
-    { 'nvim-treesitter/nvim-treesitter-textobjects', branch = 'main' },
-  },
-  config = function()
-    require('Adan.overrides.treesitter')
-  end,
-}
+local M = {}
+
+function M.setup()
+  vim.pack.add({
+    { src = 'https://github.com/nvim-treesitter/nvim-treesitter', version = 'main' },
+    'https://github.com/nvim-treesitter/nvim-treesitter-context',
+    { src = 'https://github.com/nvim-treesitter/nvim-treesitter-textobjects', version = 'main' },
+  }, { load = true, confirm = false })
+
+  require('Adan.overrides.treesitter')
+end
+
+return M

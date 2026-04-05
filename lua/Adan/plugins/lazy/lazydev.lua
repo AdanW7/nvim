@@ -1,14 +1,14 @@
----@type Adan.LazySpec
-return {
-  'folke/lazydev.nvim',
-  ft = 'lua', -- only load on lua files
-  opts = {
-    library = {
-      -- See the configuration section for more details
-      -- Load luvit types when the `vim.uv` word is found
-      { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
+local M = {}
 
+function M.setup()
+  vim.pack.add({ 'https://github.com/folke/lazydev.nvim' }, { load = true, confirm = false })
+
+  require('lazydev').setup({
+    library = {
+      { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
       { path = 'render-markdown.nvim', words = { 'render%-markdown' } },
     },
-  },
-}
+  })
+end
+
+return M

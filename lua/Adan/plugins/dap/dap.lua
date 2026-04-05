@@ -1,43 +1,38 @@
----@type Adan.LazySpec
-return {
-  {
-    'mfussenegger/nvim-dap',
-    dependencies = {
-      'rcarriga/nvim-dap-ui',
-      'theHamsta/nvim-dap-virtual-text',
-      'nvim-neotest/nvim-nio',
-      'mason-org/mason.nvim',
-      'jay-babu/mason-nvim-dap.nvim',
-      'leoluz/nvim-dap-go',
-      {
-        'mfussenegger/nvim-dap-python',
-        cond = vim.fn.has('unix') == 1,
-      },
-    },
-    config = function()
-      require('mason-nvim-dap').setup({
-        ensure_installed = { 'codelldb' },
-        automatic_setup = false,
-      })
+local M = {}
 
-      -- Load UI configuration
-      require('Adan.dap.ui')
+function M.setup()
+  local specs = {
+    'https://github.com/mfussenegger/nvim-dap',
+    'https://github.com/rcarriga/nvim-dap-ui',
+    'https://github.com/theHamsta/nvim-dap-virtual-text',
+    'https://github.com/nvim-neotest/nvim-nio',
+    'https://github.com/mason-org/mason.nvim',
+    'https://github.com/jay-babu/mason-nvim-dap.nvim',
+    'https://github.com/leoluz/nvim-dap-go',
+  }
 
-      -- Load adapters
-      require('Adan.dap.adapters.lldb')
-      require('Adan.dap.adapters.go')
-      require('Adan.dap.adapters.python')
+  if vim.fn.has('unix') == 1 then
+    table.insert(specs, 'https://github.com/mfussenegger/nvim-dap-python')
+  end
 
-      -- Load configurations
-      require('Adan.dap.configurations.zig')
-      require('Adan.dap.configurations.c')
-      require('Adan.dap.configurations.cpp')
-      require('Adan.dap.configurations.rust')
-      -- dap-go manages its own configurations
-      -- dap-python manages its own configurations
+  vim.pack.add(specs, { load = true, confirm = false })
 
-      -- Load keymaps
-      require('Adan.dap.keymaps')
-    end,
-  },
-}
+  require('mason-nvim-dap').setup({
+    ensure_installed = { 'codelldb' },
+    automatic_setup = false,
+  })
+
+  require('Adan.dap.ui')
+  require('Adan.dap.adapters.lldb')
+  require('Adan.dap.adapters.go')
+  require('Adan.dap.adapters.python')
+
+  require('Adan.dap.configurations.zig')
+  require('Adan.dap.configurations.c')
+  require('Adan.dap.configurations.cpp')
+  require('Adan.dap.configurations.rust')
+
+  require('Adan.dap.keymaps')
+end
+
+return M

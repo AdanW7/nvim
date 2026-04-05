@@ -1,4 +1,4 @@
-local use_project_nvim = true
+local M = {}
 
 local function open_telescope_projects()
   local ok_telescope, telescope = pcall(require, 'telescope')
@@ -41,12 +41,12 @@ local function ensure_project_nvim_compat_commands()
   end)
 
   define('ProjectConfig', function()
-    local ok_cfg, cfg = pcall(require, 'project_nvim.config')
-    if ok_cfg then
-      vim.print(cfg.options)
+    local ok_project, project = pcall(require, 'project')
+    if ok_project and type(project.get_config) == 'function' then
+      vim.print(project.get_config())
       return
     end
-    vim.notify('project_nvim config not available', vim.log.levels.WARN)
+    vim.notify('project config not available', vim.log.levels.WARN)
   end)
 
   define('ProjectDelete', function()
@@ -70,61 +70,17 @@ local function set_project_scope_telescope_keymaps()
   end, { desc = 'Recent files in project' })
 end
 
----@type Adan.LazySpec
-local neovim_project_spec = {
-  'coffebar/neovim-project',
-  opts = {
-    projects = {
-      '~/.config/*',
-      '~/orgfiles',
-      'C:/MTRepos/*',
-      'C:/Users/awodzins/OneDrive - Milwaukee Tool/Documents/Notes',
-    },
-    last_session_on_startup = false,
-    dashboard_mode = true,
-    session_manager_opts = {
-      autosave_ignore_dirs = {
-        vim.fn.expand('~'),
-        '/tmp',
-      },
-      autosave_ignore_filetypes = {
-        'gitcommit',
-        'gitrebase',
-        'qf',
-        'toggleterm',
-      },
-    },
-    picker = {
-      type = 'telescope',
-    },
-  },
-  init = function()
-    vim.opt.sessionoptions:append('globals')
-    set_project_scope_telescope_keymaps()
-  end,
-  config = function()
-    pcall(function()
-      require('telescope').load_extension('projects')
-    end)
-  end,
-  keys = {
-    { '<leader>fp', '<cmd>NeovimProjectHistory<CR>', desc = 'Find projects (history)' },
-    { '<leader>fP', '<cmd>NeovimProjectDiscover<CR>', desc = 'Discover projects' },
-    { '<leader>Pl', '<cmd>NeovimProjectLoadRecent<CR>', desc = 'Load recent project' },
-  },
-  dependencies = {
-    { 'nvim-lua/plenary.nvim' },
-    { 'nvim-telescope/telescope.nvim' },
-    { 'Shatur/neovim-session-manager' },
-  },
-  lazy = false,
-  priority = 100,
-}
+function M.setup()
+  vim.pack.add({
+    'https://github.com/DrKJeff16/project.nvim',
+    'https://github.com/nvim-lua/plenary.nvim',
+    'https://github.com/nvim-telescope/telescope.nvim',
+  }, { load = true, confirm = false })
 
----@type Adan.LazySpec
-local project_nvim_spec = {
-  'DrKJeff16/project.nvim',
-  opts = {
+  vim.opt.sessionoptions:append('globals')
+  set_project_scope_telescope_keymaps()
+
+  require('project').setup({
     manual_mode = false,
     sync_root_with_cwd = true,
     respect_buf_cwd = true,
@@ -163,85 +119,23 @@ local project_nvim_spec = {
     fzf_lua = {
       enabled = false,
     },
-  },
-  init = function()
-    vim.opt.sessionoptions:append('globals')
-    set_project_scope_telescope_keymaps()
-  end,
-  config = function(_, opts)
-    require('project_nvim').setup(opts)
-    ensure_project_nvim_compat_commands()
-    pcall(function()
-      require('telescope').load_extension('projects')
-    end)
-  end,
-  keys = {
-    {
-      '<leader>fp',
-      function()
-        open_telescope_projects()
-      end,
-      desc = 'Find projects',
-    },
-    {
-      '<leader>fP',
-      function()
-        vim.cmd('ProjectRecents')
-      end,
-      desc = 'Recent projects',
-    },
-    {
-      '<leader>Pl',
-      function()
-        vim.cmd('ProjectSession')
-      end,
-      desc = 'Project session',
-    },
-    {
-      '<leader>Pa',
-      function()
-        vim.cmd('ProjectAdd')
-      end,
-      desc = 'Project add',
-    },
-    {
-      '<leader>PR',
-      function()
-        vim.cmd('ProjectRoot')
-      end,
-      desc = 'Project root',
-    },
-    {
-      '<leader>PC',
-      function()
-        vim.cmd('ProjectConfig')
-      end,
-      desc = 'Project config',
-    },
-    {
-      '<leader>PD',
-      function()
-        vim.cmd('ProjectDelete')
-      end,
-      desc = 'Project delete',
-    },
-    {
-      '<leader>PS',
-      function()
-        vim.cmd('ProjectSession')
-      end,
-      desc = 'Project session picker',
-    },
-  },
-  dependencies = {
-    { 'nvim-lua/plenary.nvim' },
-    { 'nvim-telescope/telescope.nvim' },
-  },
-  lazy = false,
-  priority = 100,
-}
+  })
+  ensure_project_nvim_compat_commands()
 
----@type Adan.LazySpec
-local selected_spec = use_project_nvim and project_nvim_spec or neovim_project_spec
+  pcall(function()
+    require('telescope').load_extension('projects')
+  end)
 
-return selected_spec
+  vim.keymap.set('n', '<leader>fp', function()
+    open_telescope_projects()
+  end, { desc = 'Find projects' })
+  vim.keymap.set('n', '<leader>fP', '<cmd>ProjectRecents<CR>', { desc = 'Recent projects' })
+  vim.keymap.set('n', '<leader>Pl', '<cmd>ProjectSession<CR>', { desc = 'Project session' })
+  vim.keymap.set('n', '<leader>Pa', '<cmd>ProjectAdd<CR>', { desc = 'Project add' })
+  vim.keymap.set('n', '<leader>PR', '<cmd>ProjectRoot<CR>', { desc = 'Project root' })
+  vim.keymap.set('n', '<leader>PC', '<cmd>ProjectConfig<CR>', { desc = 'Project config' })
+  vim.keymap.set('n', '<leader>PD', '<cmd>ProjectDelete<CR>', { desc = 'Project delete' })
+  vim.keymap.set('n', '<leader>PS', '<cmd>ProjectSession<CR>', { desc = 'Project session picker' })
+end
+
+return M

@@ -1,11 +1,12 @@
----@type Adan.LazySpec
-return {
-  'nvim-telescope/telescope.nvim',
-  dependencies = {
-    'nvim-lua/plenary.nvim',
-    'ahmedkhalf/project.nvim',
-  },
-  config = function()
-    require('Adan.overrides.telescope')
-  end,
-}
+local M = {}
+
+function M.setup()
+  vim.pack.add({
+    'https://github.com/nvim-telescope/telescope.nvim',
+    'https://github.com/nvim-lua/plenary.nvim',
+  }, { load = true, confirm = false })
+
+  require('Adan.overrides.telescope')
+end
+
+return M

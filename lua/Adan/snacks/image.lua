@@ -1,8 +1,7 @@
----@type Adan.LazySpec
-return {
-  'folke/snacks.nvim',
-  ---@type snacks.Config
-  opts = {
-    image = {},
-  },
-}
+local M = {}
+
+function M.extend_opts(opts)
+  opts.image = {}
+end
+
+return M

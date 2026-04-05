@@ -1,47 +1,23 @@
----@type Adan.LazySpec
-return {
-  {
-    'nvim-mini/mini.ai',
-    version = '*',
-    config = function()
-      require('mini.ai').setup()
-    end,
-  },
-  {
-    'nvim-mini/mini.icons',
-    version = '*',
-    config = function()
-      require('mini.icons').setup()
-    end,
-  },
-  {
-    'nvim-mini/mini.pairs',
-    version = '*',
-    config = function()
-      require('mini.pairs').setup()
-    end,
-  },
-  {
-    'nvim-mini/mini.comment',
-    version = '*',
-    config = function()
-      require('mini.comment').setup()
-    end,
-  },
-  {
-    'nvim-mini/mini.surround',
-    version = '*',
-    config = function()
-      require('mini.surround').setup({
-        respect_selection_type = true,
-      })
-    end,
-  },
-  {
-    'nvim-mini/mini.cursorword',
-    version = '*',
-    config = function()
-      require('mini.cursorword').setup({ delay = 100 })
-    end,
-  },
-}
+local M = {}
+
+function M.setup()
+  vim.pack.add({
+    { src = 'https://github.com/nvim-mini/mini.ai', version = 'stable' },
+    { src = 'https://github.com/nvim-mini/mini.icons', version = 'stable' },
+    { src = 'https://github.com/nvim-mini/mini.pairs', version = 'stable' },
+    { src = 'https://github.com/nvim-mini/mini.comment', version = 'stable' },
+    { src = 'https://github.com/nvim-mini/mini.surround', version = 'stable' },
+    { src = 'https://github.com/nvim-mini/mini.cursorword', version = 'stable' },
+  }, { load = true, confirm = false })
+
+  require('mini.ai').setup()
+  require('mini.icons').setup()
+  require('mini.pairs').setup()
+  require('mini.comment').setup()
+  require('mini.surround').setup({
+    respect_selection_type = true,
+  })
+  require('mini.cursorword').setup({ delay = 100 })
+end
+
+return M

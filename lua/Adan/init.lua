@@ -1,5 +1,4 @@
 require('Adan.core')
-require('Adan.lazy')
 require('Adan.pack')
 require('Adan.autocommands')
 require('Adan.UserCommands')
