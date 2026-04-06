@@ -31,8 +31,6 @@ function M.setup()
   require('Adan.dap.configurations.c')
   require('Adan.dap.configurations.cpp')
   require('Adan.dap.configurations.rust')
-
-  require('Adan.dap.keymaps')
 end
 
 return M

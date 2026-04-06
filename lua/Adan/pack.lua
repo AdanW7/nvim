@@ -10,7 +10,7 @@ local modules = {
 
   'Adan.plugins.lsp.lsp',
   'Adan.plugins.formatting.conform',
-  'Adan.plugins.dap.dap',
+  'Adan.plugins.dap.bootstrap',
   'Adan.plugins.lazy.lazydev',
 
   'Adan.plugins.navigation.telescope',
