@@ -1,16 +1,16 @@
 local M = {}
 
 ---@type Adan.LspConfig
--- M.pyrefly = {
---   cmd = { 'pyrefly', 'lsp' },
---   settings = {
---     python = {
---       pyrefly = {
---         displayTypeErrors = 'force-on',
---       },
---     },
---   },
--- }
+M.pyrefly = {
+  cmd = { 'pyrefly', 'lsp' },
+  settings = {
+    python = {
+      pyrefly = {
+        displayTypeErrors = 'force-on',
+      },
+    },
+  },
+}
 
 ---@type Adan.LspConfig
 M.ty = {
