@@ -27,7 +27,13 @@ function M.setup()
       accept = {
         auto_brackets = { enabled = true },
       },
+      trigger = {
+        prefetch_on_insert = true,
+        show_on_keyword = true,
+      },
       menu = {
+        auto_show = true,
+        auto_show_delay_ms = 0,
         draw = {
           columns = { { 'kind_icon' }, { 'label', gap = 1 } },
           components = {
@@ -86,7 +92,12 @@ function M.setup()
     sources = {
       per_filetype = {},
       default = { 'lsp', 'path', 'snippets', 'buffer' },
-      providers = {},
+      providers = {
+        lsp = {
+          async = true,
+          timeout_ms = 250,
+        },
+      },
     },
     fuzzy = {
       implementation = 'prefer_rust',
