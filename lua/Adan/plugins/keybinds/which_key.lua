@@ -11,6 +11,7 @@ function M.setup()
       { '<leader>d', group = 'Debugger' },
       { '<leader>w', group = 'Windows' },
       { '<leader>t', group = 'Tabs/Terminal' },
+      { '<leader>y', group = 'Yank' },
       { 't', group = 'Tab Navigation' },
       { 'm', group = 'Multi-cursor' },
       { '<leader>tc', group = 'Close Tabs' },

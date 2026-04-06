@@ -35,7 +35,7 @@ function M.setup()
 
   local ok_overrides, overrides = pcall(require, 'Adan.overrides.lsp')
 
-  local servers = {
+  local default_servers = {
     bashls = true,
     clangd = true,
     gleam = true,
@@ -56,8 +56,8 @@ function M.setup()
     ty = true,
     yamlls = true,
     zls = true,
-    zuban = false,
   }
+  local servers = vim.deepcopy(default_servers)
 
   if ok_overrides and type(overrides) == 'table' then
     for name, cfg in pairs(overrides) do
@@ -73,7 +73,7 @@ function M.setup()
     capabilities = blink.get_lsp_capabilities(capabilities)
   end
 
-  local function setup_server(name, cfg)
+  local function setup_server_config(name, cfg)
     if cfg == true then
       cfg = {}
     elseif cfg == false or cfg == nil then
@@ -82,23 +82,44 @@ function M.setup()
 
     cfg.capabilities = vim.tbl_deep_extend('force', {}, capabilities, cfg.capabilities or {})
     vim.lsp.config(name, cfg)
+  end
+
+  local function auto_enable_server(name, cfg)
+    if default_servers[name] ~= true then
+      return
+    end
+    if cfg == false or cfg == nil then
+      return
+    end
     vim.lsp.enable(name)
   end
 
   for name, cfg in pairs(servers) do
-    setup_server(name, cfg)
+    setup_server_config(name, cfg)
+    auto_enable_server(name, cfg)
   end
 
   local ok_mason, mason_lsp = pcall(require, 'mason-lspconfig')
   if ok_mason then
     local mapping = require('mason-lspconfig.mappings').get_mason_map().lspconfig_to_package
     local ensure = {}
+    local auto_enable_include = {}
+
+    for name, cfg in pairs(default_servers) do
+      if cfg == true then
+        table.insert(auto_enable_include, name)
+      end
+    end
+
     for name, cfg in pairs(servers) do
-      if cfg ~= false and mapping[name] then
+      if default_servers[name] == true and cfg ~= false and mapping[name] then
         table.insert(ensure, name)
       end
     end
-    mason_lsp.setup({ ensure_installed = ensure })
+    mason_lsp.setup({
+      ensure_installed = ensure,
+      automatic_enable = auto_enable_include,
+    })
   end
 
   vim.keymap.set('n', '<leader>cm', '<cmd>Mason<cr>', { desc = 'Mason' })

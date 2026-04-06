@@ -77,6 +77,10 @@ vim.keymap.set({ 'n', 'v' }, '<Leader>y', [["+y]], {
   silent = true,
   desc = 'save text to system clipboard',
 })
+vim.keymap.set({ 'n' }, '<Leader>ys', function()
+  vim.fn.setreg('+', vim.v.servername)
+end, { desc = 'Copy servername to clipboard' })
+
 vim.keymap.set('n', '<Leader>Y', [["+Y]], {
   silent = true,
   desc = 'save current line to system clipboard',
@@ -233,8 +237,8 @@ end, {
 -- =============================================================================
 -- BUFFER NAVIGATION
 -- =============================================================================
-vim.keymap.set('n', 'gn', '<cmd>bnext<cr>', { desc = 'Next buffer' })
-vim.keymap.set('n', 'gp', '<cmd>bprevious<cr>', { desc = 'Previous buffer' })
+vim.keymap.set({ 'n' }, 'gn', '<cmd>bnext<cr>', { desc = 'Next buffer' })
+vim.keymap.set({ 'n' }, 'gp', '<cmd>bprevious<cr>', { desc = 'Previous buffer' })
 
 -- =============================================================================
 -- WINDOW MANAGEMENT
@@ -419,7 +423,7 @@ vim.keymap.set(
 
 vim.keymap.set('n', '<leader>lh', function()
   vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
-end, { noremap = true, silent = true, desc="Toggle inlay hints"})
+end, { noremap = true, silent = true, desc = 'Toggle inlay hints' })
 
 -- LSP restart
 vim.keymap.set('n', '<leader>lr', function()
