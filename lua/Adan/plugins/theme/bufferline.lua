@@ -6,10 +6,19 @@ function M.setup()
     'https://github.com/nvim-tree/nvim-web-devicons',
   }, { load = true, confirm = false })
 
+  local function scope_close(bufnr)
+    local ok_scope, scope_core = pcall(require, 'scope.core')
+    if ok_scope and type(scope_core.close_buffer) == 'function' then
+      scope_core.close_buffer({ buf = bufnr, force = true, ask = false })
+      return
+    end
+    pcall(vim.cmd, ('bdelete! %d'):format(bufnr))
+  end
+
   local opts = {
     options = {
-      close_command = 'bdelete! %d',
-      right_mouse_command = 'bdelete! %d',
+      close_command = scope_close,
+      right_mouse_command = scope_close,
       diagnostics = 'nvim_lsp',
       diagnostics_indicator = function(count, level)
         local icon = level:match('error') and ' ' or ' '

@@ -14,6 +14,7 @@ local modules = {
   'Adan.plugins.lazy.lazydev',
 
   'Adan.plugins.navigation.telescope',
+  'Adan.plugins.navigation.scope',
   'Adan.plugins.navigation.project',
   'Adan.plugins.navigation.persistence',
   'Adan.plugins.navigation.multi',

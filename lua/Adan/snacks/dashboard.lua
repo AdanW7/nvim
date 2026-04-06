@@ -6,7 +6,10 @@ function M.pre_setup()
 
   vim.api.nvim_create_autocmd('FileType', {
     pattern = 'snacks_dashboard',
-    callback = function()
+    callback = function(args)
+      -- Keep dashboard out of tab-scoped buffer sets (scope.nvim).
+      vim.bo[args.buf].buflisted = false
+
       local ok, snacks = pcall(require, 'snacks')
       if not ok then
         return
