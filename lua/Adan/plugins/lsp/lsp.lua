@@ -38,9 +38,10 @@ function M.setup()
   local default_servers = {
     bashls = true,
     clangd = true,
+    cmake = true,
     gleam = true,
     gopls = true,
-    jade_toml = true,
+    jade_toml = false,
     lua_ls = true,
     marksman = true,
     markdown_oxide = true,
@@ -51,11 +52,12 @@ function M.setup()
     ruff = true,
     rust_analyzer = true,
     texlab = true,
-    tombi = false,
+    tombi = true,
     ts_ls = true,
     ty = true,
     yamlls = true,
     zls = true,
+    lemminx = true,
   }
   local servers = vim.deepcopy(default_servers)
 
