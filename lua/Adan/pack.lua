@@ -1,6 +1,5 @@
 local modules = {
   'Adan.plugins.theme.helix',
-  'Adan.plugins.theme.rainbow',
   'Adan.plugins.theme.tree_sitter',
   'Adan.plugins.snacks.snacks',
 
@@ -11,7 +10,6 @@ local modules = {
   'Adan.plugins.lsp.lsp',
   'Adan.plugins.formatting.conform',
   'Adan.plugins.dap.bootstrap',
-  'Adan.plugins.lazy.lazydev',
 
   'Adan.plugins.navigation.telescope',
   'Adan.plugins.navigation.scope',

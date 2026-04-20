@@ -42,6 +42,7 @@ function M.setup()
     gleam = true,
     gopls = true,
     jade_toml = false,
+    harper_ls = false,
     lua_ls = true,
     marksman = true,
     markdown_oxide = true,

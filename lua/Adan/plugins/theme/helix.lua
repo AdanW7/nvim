@@ -6,7 +6,7 @@ function M.setup()
   require('helix').setup({
     transparent = false,
     term_colors = true,
-    ending_tildes = false,
+    ending_tildes = true,
     code_style = {
       comments = 'italic',
       keywords = 'none',

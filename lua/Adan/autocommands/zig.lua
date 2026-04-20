@@ -28,8 +28,6 @@ vim.api.nvim_create_autocmd('FileType', {
       wk.add({ { '<leader>lb', group = 'Zig Build', buffer = bufnr } })
     end
 
-    vim.keymap.set('n', '<leader>lf', ':!zig fmt %<CR>', { buffer = bufnr, desc = 'Format file' })
-
     vim.keymap.set('n', '<leader>lbp', function()
       zig_make('zig build')
     end, { buffer = bufnr, desc = 'Build project' })
