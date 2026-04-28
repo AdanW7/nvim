@@ -1,16 +1,28 @@
 local modules = {
+  -- theme plugins
   'Adan.plugins.theme.helix',
   'Adan.plugins.theme.tree_sitter',
+  'Adan.plugins.theme.bufferline',
+  'Adan.plugins.theme.lualine',
+  'Adan.plugins.markdown.render-markdown',
+
+  -- keybinds
+  'Adan.plugins.keybinds.which_key',
+
+  -- snacks
   'Adan.plugins.snacks.snacks',
 
+  -- completion
   'Adan.plugins.completion.colorful-menu',
   'Adan.plugins.completion.blink',
   'Adan.plugins.snippets.luasnip',
 
+  -- lsp / dap
   'Adan.plugins.lsp.lsp',
   'Adan.plugins.formatting.conform',
-  'Adan.plugins.dap.bootstrap',
+  -- 'Adan.plugins.dap.bootstrap', # commenting out dap because I find i don't actually use it but im keeping the config code incase i use it in the future
 
+  -- navigation plugins
   'Adan.plugins.navigation.telescope',
   'Adan.plugins.navigation.scope',
   'Adan.plugins.navigation.project',
@@ -19,14 +31,11 @@ local modules = {
   'Adan.plugins.navigation.oil',
   'Adan.plugins.navigation.origami',
 
+  -- git plugins
   'Adan.plugins.git.gitsigns',
-  'Adan.plugins.git.neogit',
 
-  'Adan.plugins.keybinds.which_key',
-  'Adan.plugins.markdown.render-markdown',
+  -- mini
   'Adan.plugins.mini.mini',
-  'Adan.plugins.theme.bufferline',
-  'Adan.plugins.theme.lualine',
 }
 
 local function safe_setup(module_name)
@@ -44,6 +53,7 @@ local function safe_setup(module_name)
   end
 end
 
+-- built in plugins
 pcall(vim.cmd, 'packadd nvim.undotree')
 pcall(vim.cmd, 'packadd nvim.difftool')
 

@@ -30,7 +30,6 @@ Each folder holds imperative plugin setup modules for that feature set.
 - [`plugins/formatting/`](./lua/Adan/plugins/formatting/) — formatters and formatting orchestration.
 - [`plugins/git/`](./lua/Adan/plugins/git/) — Git UI and integrations.
 - [`plugins/keybinds/`](./lua/Adan/plugins/keybinds/) — which-key and keymap helpers.
-- [`plugins/lazy/`](./lua/Adan/plugins/lazy/) — Lua-dev tooling plugin setup.
 - [`plugins/lsp/`](./lua/Adan/plugins/lsp/) — LSP setup and related tools.
 - [`plugins/markdown/`](./lua/Adan/plugins/markdown/) — Markdown-specific tooling.
 - [`plugins/mini/`](./lua/Adan/plugins/mini/) — mini.nvim modules.
@@ -45,10 +44,9 @@ Each folder holds imperative plugin setup modules for that feature set.
 2. [`core/`](./lua/Adan/core/) (options + keymaps)
 3. [`pack.lua`](./lua/Adan/pack.lua) (`vim.pack` plugin manager + setup)
 4. [`autocommands/`](./lua/Adan/autocommands/)
-6. [`UserCommands/`](./lua/Adan/UserCommands/)
+5. [`UserCommands/`](./lua/Adan/UserCommands/)
 
 ## Notes
 
 - Plugin setup modules are grouped to make it easy to find and reason about a feature area.
 - When adding a new feature, prefer placing its plugin setup module in the relevant `plugins/<category>/` folder and any runtime logic in [`autocommands/`](./lua/Adan/autocommands/) or [`utils/`](./lua/Adan/utils/) as needed.
-

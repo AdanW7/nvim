@@ -3,7 +3,7 @@ local M = {}
 function M.setup()
   vim.pack.add({
     'https://github.com/stevearc/oil.nvim',
-    'https://github.com/nvim-tree/nvim-web-devicons',
+    'https://github.com/nvim-mini/mini.icons',
   }, { load = true, confirm = false })
 
   vim.keymap.set('n', '-', '<CMD>Oil<CR>', { desc = 'Open parent directory' })
