@@ -81,7 +81,7 @@ function M.setup()
   set_project_scope_telescope_keymaps()
 
   require('project').setup({
-    manual_mode = false,
+    manual_mode = true,
     sync_root_with_cwd = true,
     respect_buf_cwd = true,
     update_focused_file = {
