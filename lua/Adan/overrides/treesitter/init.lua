@@ -16,6 +16,7 @@ require('nvim-treesitter').install {
   'lua',
   'markdown',
   'markdown_inline',
+  'odin',
   'powershell',
   'python',
   'query',

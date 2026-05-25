@@ -38,7 +38,7 @@ function M.setup()
   local default_servers = {
     bashls = true,
     clangd = true,
-    cmake = true,
+    -- cmake = true,
     gleam = true,
     gopls = true,
     jade_toml = false,
@@ -58,6 +58,7 @@ function M.setup()
     ty = true,
     yamlls = true,
     zls = true,
+    ols = true,
     lemminx = true,
   }
   local servers = vim.deepcopy(default_servers)
