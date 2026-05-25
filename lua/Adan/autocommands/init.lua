@@ -1,5 +1,3 @@
-require('Adan.autocommands.general')
-require('Adan.autocommands.ruff')
-require('Adan.autocommands.tex')
-require('Adan.autocommands.zig')
-require('Adan.autocommands.dune')
+require('Adan.autocommands.ui')
+require('Adan.autocommands.lsp')
+require('Adan.autocommands.editing')

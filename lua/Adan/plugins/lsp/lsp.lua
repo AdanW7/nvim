@@ -41,7 +41,6 @@ function M.setup()
     -- cmake = true,
     gleam = true,
     gopls = true,
-    jade_toml = false,
     harper_ls = false,
     lua_ls = true,
     marksman = true,
