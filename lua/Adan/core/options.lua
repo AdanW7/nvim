@@ -120,3 +120,10 @@ vim.g.have_nerd_font = true -- Enable Nerd Font icons
 -- CSS style lsp color box
 -- =============================================================================
 vim.lsp.document_color.enable(true, nil, { style = 'virtual' })
+
+
+-- =============================================================================
+-- Grep program set to rg
+-- =============================================================================
+vim.opt.grepprg = "rg --vimgrep --smart-case"
+vim.opt.grepformat = "%f:%l:%c:%m"

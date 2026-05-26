@@ -20,6 +20,7 @@ local modules = {
   -- lsp / dap
   'Adan.plugins.lsp.lsp',
   'Adan.plugins.formatting.conform',
+  'Adan.plugins.dev.lazydev',
   -- 'Adan.plugins.dap.bootstrap', # commenting out dap because I find i don't actually use it but im keeping the config code incase i use it in the future
 
   -- navigation plugins
