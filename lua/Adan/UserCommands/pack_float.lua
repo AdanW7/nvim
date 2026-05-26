@@ -5,6 +5,9 @@ local M = {}
 local ns = api.nvim_create_namespace('pack_float_ui')
 local max_commits = 12
 
+---@class PackFloatPlugData : vim.pack.PlugData
+---@field rev_to? string
+
 local state = {
   bufnr = nil,
   winid = nil,
@@ -22,7 +25,12 @@ local state = {
   expanded = {},
   line_to_name = {},
   name_to_line = {},
+  show_loaded = true,
+  show_inactive = true,
+  only_updates = false,
 }
+
+local render
 
 local function setup_highlights()
   local links = {
@@ -71,6 +79,13 @@ end
 
 local function is_pending(plugin)
   return plugin.rev and plugin.rev_to and plugin.rev ~= plugin.rev_to
+end
+
+local function first_branch(plugin)
+  if plugin and plugin.branches and plugin.branches[1] then
+    return plugin.branches[1]
+  end
+  return 'main'
 end
 
 local function sort_by_name(items)
@@ -135,8 +150,6 @@ local function load_fast_plugin_list()
   end
   state.status = tostring(plugins_or_err)
 end
-
-local render
 
 local function checking_label()
   local dots = string.rep('.', math.max(1, state.check_dot_count))
@@ -219,7 +232,7 @@ local function build_content()
   add(header, 'PackFloatTitle')
 
   local help =
-    ' [r] refresh  [u] update plugin  [U] update all  [d] delete  [Enter] details  [q] close'
+    ' [r] refresh  [u] update plugin  [U] update all  [l] loaded  [i] inactive  [o] updates-only  [Enter] details  [q] close'
   local help_row = add(help)
   for start_pos, end_pos in help:gmatch('()%b[]()') do
     add_hl(help_row, start_pos - 1, end_pos - 1, 'PackFloatKey')
@@ -294,19 +307,31 @@ local function build_content()
     end
   end
 
-  add('')
-  add((' Loaded (%d)'):format(#state.clean), 'PackFloatSection')
-  for _, plugin in ipairs(state.clean) do
-    add_plugin(plugin, false)
-  end
+  if not state.only_updates then
+    if state.show_loaded then
+      add('')
+      add((' Loaded (%d)'):format(#state.clean), 'PackFloatSection')
+      for _, plugin in ipairs(state.clean) do
+        add_plugin(plugin, false)
+      end
+    else
+      add('')
+      add((' Loaded (%d) [hidden]'):format(#state.clean), 'PackFloatSection')
+    end
 
-  add('')
-  add((' Inactive (%d)'):format(#state.not_loaded), 'PackFloatSection')
-  if #state.not_loaded == 0 then
-    add('  no inactive plugins', 'PackFloatMuted')
-  else
-    for _, plugin in ipairs(state.not_loaded) do
-      add_plugin(plugin, false)
+    if state.show_inactive then
+      add('')
+      add((' Inactive (%d)'):format(#state.not_loaded), 'PackFloatSection')
+      if #state.not_loaded == 0 then
+        add('  no inactive plugins', 'PackFloatMuted')
+      else
+        for _, plugin in ipairs(state.not_loaded) do
+          add_plugin(plugin, false)
+        end
+      end
+    else
+      add('')
+      add((' Inactive (%d) [hidden]'):format(#state.not_loaded), 'PackFloatSection')
     end
   end
 
@@ -359,7 +384,7 @@ end
 
 local function refresh_local()
   vim.schedule(function()
-    local ok, plugins_or_err = pcall(vim.pack.get, nil, { offline = true })
+    local ok, plugins_or_err = pcall(vim.pack.get, nil)
     if not ok then
       state.status = tostring(plugins_or_err)
       render()
@@ -419,14 +444,35 @@ local function refresh_fetch_async()
         if fetch_result.code ~= 0 then
           failures = failures + 1
         else
-          local ok, plugin_data = pcall(vim.pack.get, { name }, { offline = true })
-          if ok and plugin_data[1] then
-            replace_plugin(plugin_data[1])
-            if is_pending(plugin_data[1]) then
-              load_commits(plugin_data[1], check_id)
-            end
-          else
+          local ok, plugin_data = pcall(vim.pack.get, { name })
+          if not (ok and plugin_data[1]) then
             failures = failures + 1
+          else
+            local current = plugin_data[1]
+            ---@cast current PackFloatPlugData
+            local branch = first_branch(current)
+            vim.system({
+              'git',
+              '-C',
+              current.path,
+              'rev-parse',
+              '--verify',
+              'refs/remotes/origin/' .. branch,
+            }, { text = true }, function(rev_result)
+              vim.schedule(function()
+                if state.check_id ~= check_id or not valid_buffer() then
+                  return
+                end
+                if rev_result.code == 0 then
+                  current.rev_to = vim.trim(rev_result.stdout or '')
+                end
+                replace_plugin(current)
+                if is_pending(current) then
+                  load_commits(current, check_id)
+                end
+                render()
+              end)
+            end)
           end
         end
 
@@ -581,6 +627,17 @@ local function toggle_details()
   end
 end
 
+local function toggle_flag(key)
+  state[key] = not state[key]
+  if key == 'show_inactive' and state.only_updates then
+    state.only_updates = false
+  end
+  if key == 'show_loaded' and state.only_updates then
+    state.only_updates = false
+  end
+  render()
+end
+
 local function map(lhs, rhs, desc)
   vim.keymap.set('n', lhs, rhs, {
     buffer = state.bufnr,
@@ -599,6 +656,15 @@ local function setup_keymaps()
   map('u', update_current, 'Update plugin')
   map('U', update_all, 'Update all pending')
   map('d', delete_current, 'Delete plugin from disk')
+  map('l', function()
+    toggle_flag('show_loaded')
+  end, 'Toggle loaded section')
+  map('i', function()
+    toggle_flag('show_inactive')
+  end, 'Toggle inactive section')
+  map('o', function()
+    toggle_flag('only_updates')
+  end, 'Toggle updates-only view')
   map('<CR>', toggle_details, 'Toggle details')
   map(']]', function()
     jump(1)
@@ -626,8 +692,10 @@ function M.open(opts)
 
   local columns = vim.o.columns
   local screen_lines = vim.o.lines
-  local width = math.min(100, math.max(64, math.floor(columns * 0.82)))
-  local height = math.min(32, math.max(18, math.floor(screen_lines * 0.72)))
+  local width = math.max(80, math.floor(columns * 0.92))
+  local height = math.max(22, math.floor(screen_lines * 0.86))
+  width = math.min(width, columns - 4)
+  height = math.min(height, screen_lines - 4)
 
   state.winid = api.nvim_open_win(state.bufnr, true, {
     relative = 'editor',

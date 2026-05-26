@@ -64,6 +64,17 @@ M.ty = {
 }
 
 ---@type Adan.LspConfig
+M.lua_ls = {
+  settings = {
+    Lua = {
+      diagnostics = {
+        globals = { 'vim' },
+      },
+    },
+  },
+}
+
+---@type Adan.LspConfig
 M.ruff = {
   settings = {
     ['indent-width'] = 4,
