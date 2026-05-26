@@ -4,13 +4,6 @@ function M.extend_opts(opts)
   opts.lazygit = {
     enabled = true,
     configure = true,
-    theme = {
-      [241] = { fg = 'Special' },
-      activeBorderColor = { fg = 'MatchParen', bold = true },
-      inactiveBorderColor = { fg = 'FloatBorder' },
-      searchingActiveBorderColor = { fg = 'MatchParen', bold = true },
-      selectedLineBgColor = { bg = 'Visual' },
-    },
   }
 end
 

@@ -1,5 +1,47 @@
 local M = {}
 
+local function powershell_settings_path()
+  local path = (vim.uv.os_tmpdir() or '/private/tmp') .. '/psscriptanalyzer-settings.psd1'
+  local lines = {
+    '@{',
+    '    IncludeRules = @()',
+    '    ExcludeRules = @()',
+    '    Rules = @{',
+    '        PSUseConsistentIndentation = @{',
+    '            Enable = $true',
+    "            Kind = 'space'",
+    '            IndentationSize = 4',
+    '        }',
+    '        PSUseConsistentWhitespace = @{ Enable = $true }',
+    '        PSUseConsistentLineEndings = @{ Enable = $true }',
+    '        PSPlaceOpenBrace = @{',
+    '            Enable = $true',
+    '            OnSameLine = $true',
+    '            NewLineAfter = $true',
+    '            IgnoreOneLineBlock = $false',
+    '        }',
+    '        PSPlaceCloseBrace = @{',
+    '            Enable = $true',
+    '            NewLineAfter = $true',
+    '            IgnoreOneLineBlock = $false',
+    '        }',
+    '        PSUseCorrectCasing = @{ Enable = $true }',
+    '        PSAvoidUsingCmdletAliases = @{ Enable = $false }',
+    '        PSAvoidLongLines = @{',
+    '            Enable = $true',
+    '            MaximumLineLength = 120',
+    '        }',
+    '    }',
+    '}',
+  }
+
+  local ok = pcall(vim.fn.writefile, lines, path)
+  if not ok then
+    return nil
+  end
+  return path
+end
+
 ---@type Adan.LspConfig
 M.pyrefly = {
   cmd = { 'pyrefly', 'lsp' },
@@ -62,7 +104,7 @@ M.powershell_es = {
         whitespaceAroundOperator = true,
       },
       scriptAnalysis = {
-        settingsPath = vim.fn.stdpath('config') .. '/psscriptanalyzer/Settings.psd1',
+        settingsPath = powershell_settings_path(),
       },
     },
   },
