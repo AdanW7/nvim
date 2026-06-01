@@ -50,3 +50,10 @@ Each folder holds imperative plugin setup modules for that feature set.
 
 - Plugin setup modules are grouped to make it easy to find and reason about a feature area.
 - When adding a new feature, prefer placing its plugin setup module in the relevant `plugins/<category>/` folder and any runtime logic in [`autocommands/`](./lua/Adan/autocommands/) or [`utils/`](./lua/Adan/utils/) as needed.
+
+## Required software to use this config
+
+- ripgrep
+- fd
+- custom zsl lsp
+- tree-sitter

@@ -4,7 +4,6 @@ local modules = {
   'Adan.plugins.theme.tree_sitter',
   'Adan.plugins.theme.bufferline',
   'Adan.plugins.theme.lualine',
-  'Adan.plugins.markdown.render-markdown',
 
   -- keybinds
   'Adan.plugins.keybinds.which_key',

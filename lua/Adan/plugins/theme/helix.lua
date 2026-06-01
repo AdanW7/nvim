@@ -1,9 +1,7 @@
 local M = {}
-
+local helix = require('helix')
 function M.setup()
-  vim.pack.add({ 'https://github.com/AdanW7/helix.nvim' }, { load = true, confirm = false })
-
-  require('helix').setup({
+  helix.setup({
     transparent = false,
     term_colors = true,
     ending_tildes = true,
@@ -40,7 +38,7 @@ function M.setup()
       DiffviewDiffAddDim = { bg = '#263225' },
     },
   })
-  require('helix').load()
+  helix.load()
 end
 
 return M

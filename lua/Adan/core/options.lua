@@ -121,12 +121,11 @@ vim.g.have_nerd_font = true -- Enable Nerd Font icons
 -- =============================================================================
 vim.lsp.document_color.enable(true, nil, { style = 'virtual' })
 
-
 -- =============================================================================
 -- Grep program set to rg
 -- =============================================================================
-vim.opt.grepprg = "rg --vimgrep --smart-case"
-vim.opt.grepformat = "%f:%l:%c:%m"
+vim.opt.grepprg = 'rg --vimgrep --smart-case'
+vim.opt.grepformat = '%f:%l:%c:%m'
 
 -- =============================================================================
 -- enable ui2 mode
