@@ -1,10 +1,9 @@
-local group = vim.api.nvim_create_augroup('AdanUiAutocmds', { clear = true })
-
+-- Highlight yanked text
+local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
 vim.api.nvim_create_autocmd('TextYankPost', {
-  group = group,
   pattern = '*',
   callback = function()
-    vim.highlight.on_yank({ timeout = 170 })
+    vim.highlight.on_yank({ higroup = 'YankHighlight', timeout = 170 })
   end,
-  desc = 'Highlight yanked text',
+  group = highlight_group,
 })
