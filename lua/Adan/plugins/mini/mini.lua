@@ -6,6 +6,7 @@ function M.setup()
 
   require('mini.ai').setup()
   require('mini.icons').setup()
+  require('mini.icons').mock_nvim_web_devicons()
   require('mini.pairs').setup()
 
   vim.keymap.set('n', 's', '<Nop>', { noremap = true })

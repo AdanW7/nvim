@@ -2,19 +2,22 @@ local modules = {
   -- theme plugins
   'Adan.plugins.theme.helix',
   'Adan.plugins.theme.tree_sitter',
-  'Adan.plugins.theme.bufferline',
-  'Adan.plugins.theme.lualine',
 
   -- keybinds
   'Adan.plugins.keybinds.which_key',
+
+  -- mini
+  'Adan.plugins.mini.mini',
+
+  -- lua line and buffer line are after mini for icons
+  'Adan.plugins.theme.bufferline',
+  'Adan.plugins.theme.lualine',
 
   -- snacks
   'Adan.plugins.snacks.snacks',
 
   -- completion
-  'Adan.plugins.completion.colorful-menu',
   'Adan.plugins.completion.blink',
-  'Adan.plugins.snippets.luasnip',
 
   -- lsp / dap
   'Adan.plugins.lsp.lsp',
@@ -33,9 +36,6 @@ local modules = {
 
   -- git plugins
   'Adan.plugins.git.gitsigns',
-
-  -- mini
-  'Adan.plugins.mini.mini',
 }
 
 local function safe_setup(module_name)

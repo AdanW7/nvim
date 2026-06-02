@@ -3,7 +3,6 @@ local M = {}
 function M.setup()
   vim.pack.add({
     { src = 'https://github.com/akinsho/bufferline.nvim', version = 'main' },
-    'https://github.com/nvim-tree/nvim-web-devicons',
   }, { load = true, confirm = false })
 
   local function scope_close(bufnr)

@@ -3,7 +3,6 @@ local M = {}
 function M.setup()
   vim.pack.add({
     'https://github.com/nvim-lualine/lualine.nvim',
-    'https://github.com/nvim-tree/nvim-web-devicons',
   }, { load = true, confirm = false })
 
   require('lualine').setup({
