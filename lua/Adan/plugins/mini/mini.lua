@@ -1,23 +1,25 @@
 local M = {}
-
 function M.setup()
   vim.pack.add({
-    { src = 'https://github.com/nvim-mini/mini.ai', version = 'stable' },
-    { src = 'https://github.com/nvim-mini/mini.icons', version = 'stable' },
-    { src = 'https://github.com/nvim-mini/mini.pairs', version = 'stable' },
-    { src = 'https://github.com/nvim-mini/mini.comment', version = 'stable' },
-    { src = 'https://github.com/nvim-mini/mini.surround', version = 'stable' },
-    { src = 'https://github.com/nvim-mini/mini.cursorword', version = 'stable' },
+    { src = 'https://github.com/echasnovski/mini.nvim', version = 'stable' },
   }, { load = true, confirm = false })
 
   require('mini.ai').setup()
   require('mini.icons').setup()
   require('mini.pairs').setup()
-  require('mini.comment').setup()
+
+  vim.keymap.set('n', 's', '<Nop>', { noremap = true })
   require('mini.surround').setup({
     respect_selection_type = true,
   })
   require('mini.cursorword').setup({ delay = 100 })
+  require('mini.jump').setup({
+    mappings = {
+      repeat_jump = '', -- disable repeat
+    },
+    delay = {
+      idle_stop = 1, -- stop immediately after jump
+    },
+  })
 end
-
 return M

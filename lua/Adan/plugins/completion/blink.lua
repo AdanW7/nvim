@@ -1,14 +1,10 @@
 local M = {}
-
 function M.setup()
   vim.pack.add({
     { src = 'https://github.com/saghen/blink.lib', version = 'main' },
     { src = 'https://github.com/saghen/blink.cmp', version = 'main' },
     'https://github.com/rafamadriz/friendly-snippets',
-    { src = 'https://github.com/L3MON4D3/LuaSnip', version = 'master' },
-    'https://github.com/xzbdmw/colorful-menu.nvim',
   }, { load = true, confirm = false })
-
   require('blink.cmp').setup({
     keymap = {
       ['<M-CR>'] = { 'accept', 'fallback' },
@@ -37,48 +33,6 @@ function M.setup()
         auto_show_delay_ms = 0,
         draw = {
           columns = { { 'kind_icon' }, { 'label', gap = 1 } },
-          components = {
-            label = {
-              text = function(ctx)
-                local cm = require('colorful-menu')
-                local client = vim.lsp.get_client_by_id(ctx.item.client_id)
-                local ls = client and client.name or nil
-                if ls == 'pyrefly' then
-                  ls = 'pylsp'
-                end
-                local highlights_info = cm.highlights(ctx.item, ls)
-                if highlights_info ~= nil then
-                  return highlights_info.text
-                end
-                return ctx.label
-              end,
-              highlight = function(ctx)
-                local cm = require('colorful-menu')
-                local client = vim.lsp.get_client_by_id(ctx.item.client_id)
-                local ls = client and client.name or nil
-                if ls == 'pyrefly' then
-                  ls = 'pylsp'
-                end
-
-                local highlights = {}
-                local highlights_info = cm.highlights(ctx.item, ls)
-                if highlights_info ~= nil then
-                  for _, info in ipairs(highlights_info.highlights or {}) do
-                    table.insert(highlights, {
-                      info.range[1],
-                      info.range[2],
-                      group = info[1],
-                    })
-                  end
-                end
-
-                for _, idx in ipairs(ctx.label_matched_indices) do
-                  table.insert(highlights, { idx, idx + 1, group = 'BlinkCmpLabelMatch' })
-                end
-                return highlights
-              end,
-            },
-          },
         },
       },
       documentation = {
@@ -106,5 +60,4 @@ function M.setup()
     },
   })
 end
-
 return M

@@ -28,6 +28,13 @@ function M.setup()
       { '<leader>gb', group = 'Blame and Buffer options' },
       { '<leader>h', group = 'Git Staging' },
       { '<leader>wn', group = 'Scratch buffer in New Window' },
+      { 's', group = 'Surround' },
+      { 'sa', desc = 'Add surrounding' },
+      { 'sd', desc = 'Delete surrounding' },
+      { 'sr', desc = 'Replace surrounding' },
+      { 'sf', desc = 'Find surrounding (right)' },
+      { 'sF', desc = 'Find surrounding (left)' },
+      { 'sh', desc = 'Highlight surrounding' },
     },
     plugins = {
       marks = true,
