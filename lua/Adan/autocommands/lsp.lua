@@ -13,3 +13,16 @@ vim.api.nvim_create_autocmd('LspAttach', {
   end,
   desc = 'LSP: Disable hover capability from Ruff',
 })
+
+vim.api.nvim_create_autocmd('FileType', {
+  group = group,
+  pattern = 'zsl',
+  callback = function()
+    vim.lsp.start({
+      name = 'ZSL LSP',
+      cmd = { 'zsl', 'lsp' },
+      root_dir = vim.loop.cwd(),
+      flags = { exit_timeout = 1000 },
+    })
+  end,
+})

@@ -14,6 +14,7 @@ require('nvim-treesitter').install {
   'http',
   'latex',
   'lua',
+  'javascript',
   'markdown',
   'markdown_inline',
   'odin',
@@ -114,3 +115,25 @@ end, { desc = 'Swap next parameter' })
 vim.keymap.set('n', '<leader>A', function()
   swap.swap_previous('@parameter.inner')
 end, { desc = 'Swap previous parameter' })
+
+-- custom tree sitter setup
+local ext = (jit.os == 'Windows') and 'dll' or 'so'
+local so = vim.fn.stdpath('data') .. '/parsers/zsl/parser.' .. ext
+
+if vim.fn.filereadable(so) == 0 then
+  vim.fn.mkdir(vim.fn.fnamemodify(so, ':h'), 'p')
+  local src = vim.fn.stdpath('config') .. '/parsers/zsl/src/parser.c'
+
+  local result = vim.system({ 'cc', '-shared', '-fPIC', '-o', so, src }, { text = true }):wait()
+
+  if result.code ~= 0 then
+    vim.notify('ZSL parser compile failed:\n' .. (result.stderr or ''), vim.log.levels.ERROR)
+    return
+  end
+end
+
+vim.treesitter.language.add('zsl', { path = so })
+vim.treesitter.language.register('zsl', 'zsl')
+vim.filetype.add({
+  extension = { zsl = 'zsl' },
+})

@@ -13,6 +13,7 @@ function M.setup()
       ocaml = { 'ocamlformat' },
       gleam = { 'gleam' },
       markdown = { 'prettierd' },
+      zsl = { 'zsl' },
     },
     default_format_opts = {
       lsp_format = 'fallback',
@@ -21,6 +22,12 @@ function M.setup()
       gleam = {
         command = 'gleam',
         args = { 'format', '--stdin' },
+        stdin = true,
+      },
+      zsl = {
+        inherit = false,
+        command = 'zsl',
+        args = { 'fmt', '--stdin' },
         stdin = true,
       },
     },
