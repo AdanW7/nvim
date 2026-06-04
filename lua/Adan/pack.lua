@@ -9,9 +9,8 @@ local modules = {
   -- mini
   'Adan.plugins.mini.mini',
 
-  -- lua line and buffer line are after mini for icons
+  -- buffer line is after mini for icons
   'Adan.plugins.theme.bufferline',
-  'Adan.plugins.theme.lualine',
 
   -- snacks
   'Adan.plugins.snacks.snacks',
@@ -54,8 +53,8 @@ local function safe_setup(module_name)
 end
 
 -- built in plugins
-pcall(vim.cmd, 'packadd nvim.undotree')
-pcall(vim.cmd, 'packadd nvim.difftool')
+pcall(vim.cmd.packadd --[[@as function]], 'nvim.undotree')
+pcall(vim.cmd.packadd --[[@as function]], 'nvim.difftool')
 
 for _, module_name in ipairs(modules) do
   safe_setup(module_name)
