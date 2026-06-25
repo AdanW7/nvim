@@ -18,7 +18,8 @@ do
     if not buf_num or buf_num < 1 then
       return false
     end
-    return vim.bo[buf_num].buflisted and vim.api.nvim_buf_is_valid(buf_num)
+    return vim.api.nvim_get_option_value('buflisted', { buf = buf_num })
+      and vim.api.nvim_buf_is_valid(buf_num)
   end
   function utils.get_valid_buffers()
     local ids = {}
@@ -40,7 +41,7 @@ do
       end
       if not buf_is_open and buf_name ~= '' then
         vim.api.nvim_command('badd ' .. buf_name)
-        vim.api.nvim_buf_set_option(vim.fn.bufnr(buf_name), 'buflisted', false)
+        vim.api.nvim_set_option_value('buflisted', false, { buf = vim.fn.bufnr(buf_name) })
       end
     end
   end
@@ -58,7 +59,7 @@ do
   end
   local core = { cache = {}, last_tab = 0 }
   function core.on_tab_new_entered()
-    vim.api.nvim_buf_set_option(0, 'buflisted', true)
+    vim.api.nvim_set_option_value('buflisted', true, { buf = 0 })
   end
   function core.on_tab_enter()
     if config.hooks.pre_tab_enter then
@@ -69,7 +70,7 @@ do
     if buf_nums then
       for _, k in pairs(buf_nums) do
         if vim.api.nvim_buf_is_valid(k) then
-          vim.api.nvim_buf_set_option(k, 'buflisted', true)
+          vim.api.nvim_set_option_value('buflisted', true, { buf = k })
         end
       end
     end
@@ -84,7 +85,7 @@ do
     local tab = vim.api.nvim_get_current_tabpage()
     core.cache[tab] = utils.get_valid_buffers()
     for _, k in pairs(core.cache[tab]) do
-      vim.api.nvim_buf_set_option(k, 'buflisted', false)
+      vim.api.nvim_set_option_value('buflisted', false, { buf = k })
     end
     core.last_tab = tab
     if config.hooks.post_tab_leave then
@@ -134,7 +135,7 @@ do
     end
     if buffer_exists_in_other_tabs then
       if #buffers_in_current_tab > 1 then
-        vim.api.nvim_buf_set_option(current_buf, 'buflisted', false)
+        vim.api.nvim_set_option_value('buflisted', false, { buf = current_buf })
         vim.cmd([[bprev]])
       else
         vim.cmd('tabclose')
@@ -169,14 +170,14 @@ do
     target_bufs[#target_bufs + 1] = bufnr
     core.cache[target] = target_bufs
     if #utils.get_valid_buffers() > 1 then
-      vim.api.nvim_buf_set_option(bufnr, 'buflisted', false)
+      vim.api.nvim_set_option_value('buflisted', false, { buf = bufnr })
       if bufnr == vim.api.nvim_get_current_buf() then
         vim.cmd('bprevious')
       end
     end
   end
   function core.move_current_buf(opts)
-    if not vim.api.nvim_buf_get_option(0, 'buflisted') then
+    if not vim.api.nvim_get_option_value('buflisted', { buf = 0 }) then
       return
     end
     local target = tonumber(opts.args)
@@ -189,7 +190,7 @@ do
     end
     local target_handle = vim.api.nvim_list_tabpages()[target]
     if target_handle == nil then
-      vim.api.nvim_err_writeln('Invalid target tab')
+      vim.notify('Invalid target tab', vim.log.levels.ERROR)
       return
     end
     core.move_buf(vim.api.nvim_get_current_buf(), target_handle)
@@ -208,138 +209,148 @@ do
     )
     vim.api.nvim_create_user_command('ScopeList', core.print_summary, {})
     vim.api.nvim_create_user_command('ScopeMoveBuf', core.move_current_buf, { nargs = '?' })
-    local ok, telescope = pcall(require, 'telescope')
-    if ok then
-      local finders = require('telescope.finders')
-      local conf = require('telescope.config').values
-      local make_entry = require('telescope.make_entry')
-      local pickers = require('telescope.pickers')
-      local actions = require('telescope.actions')
-      local action_state = require('telescope.actions.state')
-      local transform = require('telescope.actions.mt').transform_mod
-      local function get_all_scope_buffers()
-        local bufs = {}
-        for _, tab_bufs in pairs(core.cache) do
-          for _, buf in pairs(tab_bufs) do
-            table.insert(bufs, buf)
-          end
+
+    -- Defer telescope integration until after startup
+    vim.api.nvim_create_autocmd('User', {
+      pattern = 'TelescopeReady',
+      once = true,
+      callback = function()
+        local ok, telescope = pcall(require, 'telescope')
+        if not ok then
+          return
         end
-        return bufs
-      end
-      local function find_buffer_tabindex(bufnr)
-        for tabi, bufs in pairs(core.cache) do
-          for _, b in pairs(bufs) do
-            if b == bufnr then
-              return tabi
+        local _ = telescope -- registered via telescope._extensions below
+        local finders = require('telescope.finders')
+        local conf = require('telescope.config').values
+        local make_entry = require('telescope.make_entry')
+        local pickers = require('telescope.pickers')
+        local actions = require('telescope.actions')
+        local action_state = require('telescope.actions.state')
+        local transform = require('telescope.actions.mt').transform_mod
+        local function get_all_scope_buffers()
+          local bufs = {}
+          for _, tab_bufs in pairs(core.cache) do
+            for _, buf in pairs(tab_bufs) do
+              table.insert(bufs, buf)
+            end
+          end
+          return bufs
+        end
+        local function find_buffer_tabindex(bufnr)
+          for tabi, bufs in pairs(core.cache) do
+            for _, b in pairs(bufs) do
+              if b == bufnr then
+                return tabi
+              end
             end
           end
         end
-      end
-      local function scope_buffers(opts)
-        opts = opts or {}
-        core.revalidate()
-        local all = vim.tbl_filter(function(b)
-          return vim.fn.buflisted(b) == 1
-        end, vim.api.nvim_list_bufs())
-        for _, b in ipairs(get_all_scope_buffers()) do
-          if not vim.tbl_contains(all, b) then
-            all[#all + 1] = b
+        local function scope_buffers(opts)
+          opts = opts or {}
+          core.revalidate()
+          local all = vim.tbl_filter(function(b)
+            return vim.fn.buflisted(b) == 1
+          end, vim.api.nvim_list_bufs())
+          for _, b in ipairs(get_all_scope_buffers()) do
+            if not vim.tbl_contains(all, b) then
+              all[#all + 1] = b
+            end
           end
-        end
-        local bufnrs = vim.tbl_filter(function(b)
-          if opts.show_all_buffers == false and not vim.api.nvim_buf_is_loaded(b) then
-            return false
+          local bufnrs = vim.tbl_filter(function(b)
+            if opts.show_all_buffers == false and not vim.api.nvim_buf_is_loaded(b) then
+              return false
+            end
+            if opts.ignore_current_buffer and b == vim.api.nvim_get_current_buf() then
+              return false
+            end
+            if
+              opts.cwd_only
+              and not string.find(vim.api.nvim_buf_get_name(b), vim.uv.cwd(), 1, true)
+            then
+              return false
+            end
+            if
+              not opts.cwd_only
+              and opts.cwd
+              and not string.find(vim.api.nvim_buf_get_name(b), opts.cwd, 1, true)
+            then
+              return false
+            end
+            return true
+          end, all)
+          if not next(bufnrs) then
+            return
           end
-          if opts.ignore_current_buffer and b == vim.api.nvim_get_current_buf() then
-            return false
+          if opts.sort_mru then
+            table.sort(bufnrs, function(a, b)
+              return vim.fn.getbufinfo(a)[1].lastused > vim.fn.getbufinfo(b)[1].lastused
+            end)
           end
-          if
-            opts.cwd_only
-            and not string.find(vim.api.nvim_buf_get_name(b), vim.loop.cwd(), 1, true)
-          then
-            return false
+          local buffers = {}
+          local default_selection_idx = 1
+          for _, bufnr in ipairs(bufnrs) do
+            local flag = bufnr == vim.fn.bufnr('') and '%'
+              or (bufnr == vim.fn.bufnr('#') and '#' or ' ')
+            if opts.sort_lastused and not opts.ignore_current_buffer and flag == '#' then
+              default_selection_idx = 2
+            end
+            local element = { bufnr = bufnr, flag = flag, info = vim.fn.getbufinfo(bufnr)[1] }
+            if opts.sort_lastused and (flag == '#' or flag == '%') then
+              table.insert(buffers, ((buffers[1] and buffers[1].flag == '%') and 2 or 1), element)
+            else
+              table.insert(buffers, element)
+            end
           end
-          if
-            not opts.cwd_only
-            and opts.cwd
-            and not string.find(vim.api.nvim_buf_get_name(b), opts.cwd, 1, true)
-          then
-            return false
-          end
-          return true
-        end, all)
-        if not next(bufnrs) then
-          return
-        end
-        if opts.sort_mru then
-          table.sort(bufnrs, function(a, b)
-            return vim.fn.getbufinfo(a)[1].lastused > vim.fn.getbufinfo(b)[1].lastused
-          end)
-        end
-        local buffers = {}
-        local default_selection_idx = 1
-        for _, bufnr in ipairs(bufnrs) do
-          local flag = bufnr == vim.fn.bufnr('') and '%'
-            or (bufnr == vim.fn.bufnr('#') and '#' or ' ')
-          if opts.sort_lastused and not opts.ignore_current_buffer and flag == '#' then
-            default_selection_idx = 2
-          end
-          local element = { bufnr = bufnr, flag = flag, info = vim.fn.getbufinfo(bufnr)[1] }
-          if opts.sort_lastused and (flag == '#' or flag == '%') then
-            table.insert(buffers, ((buffers[1] and buffers[1].flag == '%') and 2 or 1), element)
-          else
-            table.insert(buffers, element)
-          end
-        end
-        opts.bufnr_width = opts.bufnr_width or #tostring(math.max(unpack(bufnrs)))
-        pickers
-          .new(opts, {
-            prompt_title = 'Scope Buffers',
-            finder = finders.new_table({
-              results = buffers,
-              entry_maker = opts.entry_maker or make_entry.gen_from_buffer(opts),
-            }),
-            previewer = conf.grep_previewer(opts),
-            sorter = conf.generic_sorter(opts),
-            default_selection_index = default_selection_idx,
-            attach_mappings = function(prompt_bufnr, map)
-              local open_in_window = transform({
-                run = function()
+          opts.bufnr_width = opts.bufnr_width or #tostring(math.max(unpack(bufnrs)))
+          pickers
+            .new(opts, {
+              prompt_title = 'Scope Buffers',
+              finder = finders.new_table({
+                results = buffers,
+                entry_maker = opts.entry_maker or make_entry.gen_from_buffer(opts),
+              }),
+              previewer = conf.grep_previewer(opts),
+              sorter = conf.generic_sorter(opts),
+              default_selection_index = default_selection_idx,
+              attach_mappings = function(prompt_bufnr, map)
+                local open_in_window = transform({
+                  run = function()
+                    local sel = action_state.get_selected_entry()
+                    if not sel then
+                      return
+                    end
+                    actions.close(prompt_bufnr)
+                    vim.cmd('buffer ' .. sel.bufnr)
+                  end,
+                })
+                map('i', '<C-w>', open_in_window.run)
+                map('n', '<C-w>', open_in_window.run)
+                actions.select_default:replace(function()
                   local sel = action_state.get_selected_entry()
-                  if not sel then
-                    return
-                  end
                   actions.close(prompt_bufnr)
+                  local tabi = find_buffer_tabindex(sel.bufnr)
+                  if tabi then
+                    vim.api.nvim_set_current_tabpage(tabi)
+                  end
                   vim.cmd('buffer ' .. sel.bufnr)
-                end,
-              })
-              map('i', '<C-w>', open_in_window.run)
-              map('n', '<C-w>', open_in_window.run)
-              actions.select_default:replace(function()
-                local sel = action_state.get_selected_entry()
-                actions.close(prompt_bufnr)
-                local tabi = find_buffer_tabindex(sel.bufnr)
-                if tabi then
-                  vim.api.nvim_set_current_tabpage(tabi)
-                end
-                vim.cmd('buffer ' .. sel.bufnr)
-              end)
-              return true
-            end,
-          })
-          :find()
-      end
-      require('telescope._extensions')['scope'] = {
-        exports = { buffers = scope_buffers },
-      }
-      vim.keymap.set('n', '<leader>fB', scope_buffers, { desc = 'All buffers (all tabs)' })
-      vim.keymap.set(
-        'n',
-        '<leader>tmb',
-        '<cmd>ScopeMoveBuf<cr>',
-        { desc = 'Move buffer to a specific tab' }
-      )
-    end
+                end)
+                return true
+              end,
+            })
+            :find()
+        end
+        require('telescope._extensions')['scope'] = {
+          exports = { buffers = scope_buffers },
+        }
+        vim.keymap.set('n', '<leader>fB', scope_buffers, { desc = 'All buffers (all tabs)' })
+        vim.keymap.set(
+          'n',
+          '<leader>tmb',
+          '<cmd>ScopeMoveBuf<cr>',
+          { desc = 'Move buffer to a specific tab' }
+        )
+      end,
+    })
   end
 end
 -- ============================================================

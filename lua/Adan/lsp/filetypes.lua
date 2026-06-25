@@ -7,6 +7,7 @@ M.extension_filetypes = {
   psd1 = 'psd1',
   psm1 = 'psm1',
   xsl = 'xsl',
+  tmx = 'toml',
 }
 
 M.pattern_filetypes = {

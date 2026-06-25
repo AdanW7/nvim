@@ -1,5 +1,12 @@
 local M = {}
 
+local function telescope(picker)
+  return function()
+    require('Adan.plugins.telescope').load()
+    require('telescope.builtin')[picker]()
+  end
+end
+
 function M.pre_setup()
   vim.g.loaded_netrw = 1
   vim.g.loaded_netrwPlugin = 1
@@ -35,20 +42,26 @@ function M.extend_opts(opts)
  ░██████   ░██    ░██ ░███████   ░██████████       ░███    ░██████░██       ░██
 ]],
       keys = {
-        { icon = '󰈞 ', key = 'f', desc = 'Find File', action = ':Telescope find_files' },
+        {
+          icon = '󰈞 ',
+          key = 'f',
+          desc = 'Find File',
+          action = telescope('find_files'),
+        },
         { icon = ' ', key = 'n', desc = 'New File', action = ':ene | startinsert' },
-        { icon = '󰋚 ', key = 'r', desc = 'Recent Files', action = ':Telescope oldfiles' },
-        { icon = '󰱼 ', key = 'g', desc = 'Find Text', action = ':Telescope live_grep' },
+        {
+          icon = '󰋚 ',
+          key = 'r',
+          desc = 'Recent Files',
+          action = telescope('oldfiles'),
+        },
+        {
+          icon = '󰱼 ',
+          key = 'g',
+          desc = 'Find Text',
+          action = telescope('live_grep'),
+        },
         { icon = ' ', key = 'c', desc = 'Config', action = ':e $MYVIMRC' },
-        --- I dont feel i have actually ever leveraged persistence, i might re-enable it at somepoint but for now im leaving it commented out
-        -- {
-        --   icon = '󰦛 ',
-        --   key = 's',
-        --   desc = 'Restore Session',
-        --   action = function()
-        --     require('persistence').load()
-        --   end,
-        -- },
         {
           icon = '󰚰 ',
           key = 'u',

@@ -396,3 +396,11 @@ end, { desc = "Open today's daily note" })
 vim.keymap.set('n', '<leader>u', function()
   require('undotree').open()
 end, { desc = 'Toggle undotree' })
+
+-- =============================================================================
+-- Mason Lazy Load
+-- =============================================================================
+
+vim.keymap.set('n', '<leader>cm', function()
+  require('Adan.lsp.mason').open()
+end, { desc = 'Mason' })

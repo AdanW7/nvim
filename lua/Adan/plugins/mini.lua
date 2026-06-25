@@ -4,6 +4,9 @@ function M.setup()
     { src = 'https://github.com/echasnovski/mini.nvim', version = 'stable' },
   }, { load = true, confirm = false })
 
+  require('mini.icons').setup()
+  require('mini.icons').mock_nvim_web_devicons()
+
   local spec_ts = require('mini.ai').gen_spec.treesitter
   require('mini.ai').setup({
     mappings = {
@@ -29,44 +32,12 @@ function M.setup()
     },
   })
 
-  -- Movement
-  local function jump(side, ai, id, lhs, desc)
-    vim.keymap.set({ 'n', 'x', 'o' }, lhs, function()
-      MiniAi.move_cursor(side, ai, id, {
-        search_method = side == 'left' and 'prev' or 'next',
-      })
-    end, { desc = desc })
-  end
-
-  --           side      ai   id   lhs
-  jump('right', 'a', 'f', ']f', 'Next function')
-  jump('left', 'a', 'f', '[f', 'Prev function')
-  jump('right', 'a', 'c', ']c', 'Next class')
-  jump('left', 'a', 'c', '[c', 'Prev class')
-  jump('right', 'a', 'i', ']i', 'Next conditional')
-  jump('left', 'a', 'i', '[i', 'Prev conditional')
-  jump('right', 'a', 'l', ']l', 'Next loop')
-  jump('left', 'a', 'l', '[l', 'Prev loop')
-  jump('right', 'a', 'a', ']a', 'Next parameter')
-  jump('left', 'a', 'a', '[a', 'Prev parameter')
-  jump('right', 'a', '/', ']/', 'Next comment')
-  jump('left', 'a', '/', '[/', 'Prev comment')
-
-  require('mini.icons').setup()
-  require('mini.icons').mock_nvim_web_devicons()
   require('mini.pairs').setup()
-  vim.keymap.set('n', 's', '<Nop>', { noremap = true })
-  require('mini.surround').setup({
-    respect_selection_type = true,
-  })
+  require('mini.surround').setup({ respect_selection_type = true })
   require('mini.cursorword').setup({ delay = 100 })
   require('mini.jump').setup({
-    mappings = {
-      repeat_jump = '',
-    },
-    delay = {
-      idle_stop = 1,
-    },
+    mappings = { repeat_jump = '' },
+    delay = { idle_stop = 1 },
   })
   require('mini.statusline').setup({
     content = {
@@ -91,5 +62,27 @@ function M.setup()
     },
   })
   require('mini.tabline').setup()
+
+  local function jump(side, ai, id, lhs, desc)
+    vim.keymap.set({ 'n', 'x', 'o' }, lhs, function()
+      MiniAi.move_cursor(side, ai, id, {
+        search_method = side == 'left' and 'prev' or 'next',
+      })
+    end, { desc = desc })
+  end
+  jump('right', 'a', 'f', ']f', 'Next function')
+  jump('left', 'a', 'f', '[f', 'Prev function')
+  jump('right', 'a', 'c', ']c', 'Next class')
+  jump('left', 'a', 'c', '[c', 'Prev class')
+  jump('right', 'a', 'i', ']i', 'Next conditional')
+  jump('left', 'a', 'i', '[i', 'Prev conditional')
+  jump('right', 'a', 'l', ']l', 'Next loop')
+  jump('left', 'a', 'l', '[l', 'Prev loop')
+  jump('right', 'a', 'a', ']a', 'Next parameter')
+  jump('left', 'a', 'a', '[a', 'Prev parameter')
+  jump('right', 'a', '/', ']/', 'Next comment')
+  jump('left', 'a', '/', '[/', 'Prev comment')
+
+  vim.keymap.set('n', 's', '<Nop>', { noremap = true })
 end
 return M

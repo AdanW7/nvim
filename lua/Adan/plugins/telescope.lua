@@ -1,6 +1,29 @@
 local M = {}
 
-function M.setup()
+local function ensure_fzf_native()
+  local path = vim.fn.stdpath('data') .. '/site/pack/core/opt/telescope-fzf-native.nvim'
+  local ext = vim.fn.has('win32') == 1 and 'dll' or 'so'
+  local lib = path .. '/build/libfzf.' .. ext
+  if vim.fn.filereadable(lib) == 1 then
+    return
+  end
+  vim.notify('Building telescope-fzf-native...')
+  vim.system({ 'make' }, { cwd = path, text = true }, function(obj)
+    vim.schedule(function()
+      if obj.code == 0 then
+        vim.notify('fzf-native built')
+      else
+        vim.notify(obj.stderr or 'build failed', vim.log.levels.ERROR)
+      end
+    end)
+  end)
+end
+
+local function load_telescope()
+  if package.loaded['telescope'] then
+    return
+  end
+
   vim.pack.add({
     'https://github.com/nvim-telescope/telescope.nvim',
     'https://github.com/nvim-lua/plenary.nvim',
@@ -8,39 +31,10 @@ function M.setup()
   }, { load = true, confirm = false })
 
   local telescope = require('telescope')
-  local builtin = require('telescope.builtin')
   local actions = require('telescope.actions')
   local themes = require('telescope.themes')
 
-  local function ensure_fzf_native()
-    local path = vim.fn.stdpath('data') .. '/site/pack/core/opt/telescope-fzf-native.nvim'
-
-    local ext = vim.fn.has('win32') == 1 and 'dll' or 'so'
-
-    local lib = path .. '/build/libfzf.' .. ext
-
-    if vim.fn.filereadable(lib) == 1 then
-      return
-    end
-
-    vim.notify('Building telescope-fzf-native...')
-
-    vim.system({ 'make' }, {
-      cwd = path,
-      text = true,
-    }, function(obj)
-      vim.schedule(function()
-        if obj.code == 0 then
-          vim.notify('fzf-native built')
-        else
-          vim.notify(obj.stderr or 'build failed', vim.log.levels.ERROR)
-        end
-      end)
-    end)
-  end
-
   telescope.setup({
-
     defaults = themes.get_ivy({
       layout_config = {
         height = 0.5,
@@ -73,99 +67,129 @@ function M.setup()
       },
     },
   })
+
   ensure_fzf_native()
 
-  -- Fzf native load/warning
   local ok, err = pcall(telescope.load_extension, 'fzf')
   if not ok then
-    vim.schedule(function()
-      vim.notify(
-        table.concat({
-          'Failed to load telescope-fzf-native.',
-          '',
-          err,
-        }, '\n'),
-        vim.log.levels.WARN,
-        { title = 'Telescope FZF Native' }
-      )
-    end)
+    vim.notify(
+      table.concat({ 'Failed to load telescope-fzf-native.', '', err }, '\n'),
+      vim.log.levels.WARN,
+      { title = 'Telescope FZF Native' }
+    )
   end
 
-  -- keymaps
+  vim.api.nvim_exec_autocmds('User', { pattern = 'TelescopeReady' })
+end
+
+M.load = load_telescope
+
+function M.setup()
+  load_telescope()
 
   local map = function(lhs, rhs, desc)
     vim.keymap.set('n', lhs, rhs, { desc = desc })
   end
 
-  -- Resume last picker
-  map('<leader>fe', builtin.resume, 'Resume last picker')
+  local function b(picker, opts)
+    return function()
+      require('telescope.builtin')[picker](opts)
+    end
+  end
+
+  local function bf(picker, get_opts)
+    return function()
+      require('telescope.builtin')[picker](get_opts())
+    end
+  end
+
+  -- Resume
+  map('<leader>fe', b('resume'), 'Resume last picker')
 
   -- Files
-  map('<leader>ff', builtin.find_files, 'Find files')
-  map('<leader>fF', function()
-    builtin.find_files({ cwd = vim.fn.expand('%:p:h') })
-  end, 'Find files in current dir')
-  map('<leader>fr', builtin.oldfiles, 'Recent files')
+  map('<leader>ff', b('find_files'), 'Find files')
+  map(
+    '<leader>fF',
+    bf('find_files', function()
+      return { cwd = vim.fn.expand('%:p:h') }
+    end),
+    'Find files in current dir'
+  )
+  map('<leader>fr', b('oldfiles'), 'Recent files')
 
   -- Grep
-  map('<leader>fg', builtin.live_grep, 'Live grep')
-  map('<leader>fG', function()
-    builtin.live_grep({ cwd = vim.fn.expand('%:p:h') })
-  end, 'Grep in current dir')
-  map('<leader>fw', builtin.grep_string, 'Grep word under cursor')
+  map('<leader>fg', b('live_grep'), 'Live grep')
+  map(
+    '<leader>fG',
+    bf('live_grep', function()
+      return { cwd = vim.fn.expand('%:p:h') }
+    end),
+    'Grep in current dir'
+  )
+  map('<leader>fw', b('grep_string'), 'Grep word under cursor')
 
   vim.keymap.set('v', '<leader>fw', function()
     local text = vim.fn.getregion(vim.fn.getpos('.'), vim.fn.getpos('v'))
-    builtin.grep_string({ search = table.concat(text, '\n') })
+    require('telescope.builtin').grep_string({ search = table.concat(text, '\n') })
   end, { desc = 'Grep visual selection' })
 
   -- Navigation
-  map('<leader>fb', builtin.buffers, 'Buffers')
-  map('<leader>fj', builtin.jumplist, 'Jump list')
-  map('<leader>fh', builtin.help_tags, 'Help tags')
+  map('<leader>fb', b('buffers'), 'Buffers')
+  map('<leader>fj', b('jumplist'), 'Jump list')
+  map('<leader>fh', b('help_tags'), 'Help tags')
 
   -- Diagnostics
-  map('<leader>fd', function()
-    builtin.diagnostics({ bufnr = 0 })
-  end, 'Diagnostics (buffer)')
+  map(
+    '<leader>fd',
+    bf('diagnostics', function()
+      return { bufnr = 0 }
+    end),
+    'Diagnostics (buffer)'
+  )
 
   -- LSP
-  map('<leader>fs', builtin.lsp_document_symbols, 'Document symbols')
-  map('<leader>fS', builtin.lsp_workspace_symbols, 'Workspace symbols')
-  map('<leader>fR', builtin.lsp_references, 'LSP references')
-  map('<leader>fi', builtin.lsp_implementations, 'LSP implementations')
-  map('<leader>fD', builtin.lsp_definitions, 'LSP definitions')
-  map('<leader>ft', builtin.lsp_type_definitions, 'LSP type definitions')
+  map('<leader>fs', b('lsp_document_symbols'), 'Document symbols')
+  map('<leader>fS', b('lsp_workspace_symbols'), 'Workspace symbols')
+  map('<leader>fR', b('lsp_references'), 'LSP references')
+  map('<leader>fi', b('lsp_implementations'), 'LSP implementations')
+  map('<leader>fD', b('lsp_definitions'), 'LSP definitions')
+  map('<leader>ft', b('lsp_type_definitions'), 'LSP type definitions')
 
   -- Git
-  map('<leader>gs', builtin.git_status, 'Git status')
-  map('<leader>gf', function()
-    builtin.git_files({ git_command = { 'git', 'diff', '--name-only', 'HEAD', '--diff-filter=M' } })
-  end, 'Git modified files')
-  map('<leader>gbc', builtin.git_bcommits, 'Git buffer commits')
-  map('<leader>gB', builtin.git_branches, 'Git branches')
-  map('<leader>gC', builtin.git_commits, 'Git commits')
-  map('<leader>gS', builtin.git_stash, 'Git stash')
+  map('<leader>gs', b('git_status'), 'Git status')
+  map(
+    '<leader>gf',
+    bf('git_files', function()
+      return { git_command = { 'git', 'diff', '--name-only', 'HEAD', '--diff-filter=M' } }
+    end),
+    'Git modified files'
+  )
+  map('<leader>gbc', b('git_bcommits'), 'Git buffer commits')
+  map('<leader>gB', b('git_branches'), 'Git branches')
+  map('<leader>gC', b('git_commits'), 'Git commits')
+  map('<leader>gS', b('git_stash'), 'Git stash')
 
   -- Buffer / search
-  map('<leader>/', builtin.current_buffer_fuzzy_find, 'Fuzzy find in buffer')
-  map('<leader>f/', builtin.search_history, 'Search history')
-  map('<leader>f:', builtin.command_history, 'Command history')
-  map('<leader>fm', builtin.marks, 'Marks')
-  map('<leader>f"', builtin.registers, 'Registers')
-  map('<leader>fk', builtin.keymaps, 'Keymaps')
+  map('<leader>/', b('current_buffer_fuzzy_find'), 'Fuzzy find in buffer')
+  map('<leader>f/', b('search_history'), 'Search history')
+  map('<leader>f:', b('command_history'), 'Command history')
+  map('<leader>fm', b('marks'), 'Marks')
+  map('<leader>f"', b('registers'), 'Registers')
+  map('<leader>fk', b('keymaps'), 'Keymaps')
 
   -- Vim
-  map('<leader>fa', builtin.autocommands, 'Autocommands')
-  map('<leader>fo', builtin.vim_options, 'Vim options')
-  map('<leader>fq', builtin.quickfix, 'Quickfix list')
-  map('<leader>fQ', builtin.quickfixhistory, 'Quickfix history')
-  map('<leader>fl', builtin.loclist, 'Location list')
-  map('<leader>fM', builtin.man_pages, 'Man pages')
-  map('<leader>fz', builtin.spell_suggest, 'Spell suggestions')
+  map('<leader>fa', b('autocommands'), 'Autocommands')
+  map('<leader>fo', b('vim_options'), 'Vim options')
+  map('<leader>fq', b('quickfix'), 'Quickfix list')
+  map('<leader>fQ', b('quickfixhistory'), 'Quickfix history')
+  map('<leader>fl', b('loclist'), 'Location list')
+  map('<leader>fM', b('man_pages'), 'Man pages')
+  map('<leader>fz', b('spell_suggest'), 'Spell suggestions')
 
   -- Diff two files
   map('<leader>dv', function()
+    local builtin = require('telescope.builtin')
+    local actions = require('telescope.actions')
     local action_state = require('telescope.actions.state')
     builtin.find_files({
       prompt_title = 'Diff: Select first file',

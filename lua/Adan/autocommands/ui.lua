@@ -7,3 +7,9 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
   group = highlight_group,
 })
+
+vim.api.nvim_create_autocmd('FileType', {
+  callback = function()
+    pcall(vim.treesitter.start)
+  end,
+})
