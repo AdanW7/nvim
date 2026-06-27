@@ -10,7 +10,7 @@ function M.setup()
       { '<leader>b', group = 'Buffers' },
       { '<leader>d', group = 'Debugger' },
       { '<leader>w', group = 'Windows' },
-      { '<leader>t', group = 'Tabs/Terminal' },
+      { '<leader>t', group = 'Tabs' },
       { '<leader>y', group = 'Yank' },
       { 'y', desc = 'Yank' },
       { 'Y', desc = 'Yank line' },

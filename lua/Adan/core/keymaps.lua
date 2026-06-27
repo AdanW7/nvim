@@ -232,17 +232,12 @@ end, { desc = 'New scratch buffer (horizontal)' })
 -- =============================================================================
 
 -- Tab creation
-vim.keymap.set(
-  { 'n', 't' },
-  '<Leader>ta',
-  '<cmd>tabnew<CR>',
-  { silent = true, desc = 'create a new tab' }
-)
+vim.keymap.set({ 'n', 't' }, '<Leader>ta', '<cmd>tabnew<CR>', { silent = true, desc = 'Tab: new' })
 vim.keymap.set(
   { 'n', 't' },
   '<Leader>tb',
   '<cmd>tabedit %<CR>',
-  { silent = true, desc = 'open current buffer in new tab' }
+  { silent = true, desc = 'Tab: buffer in new tab' }
 )
 
 -- Tab closing
@@ -250,33 +245,41 @@ vim.keymap.set(
   { 'n', 't' },
   '<Leader>tcc',
   '<cmd>tabclose<CR>',
-  { silent = true, desc = 'close current tab' }
+  { silent = true, desc = 'Tab: close current' }
 )
 vim.keymap.set(
   { 'n', 't' },
   '<Leader>tco',
   '<cmd>tabonly<CR>',
-  { silent = true, desc = 'close other tabs' }
+  { silent = true, desc = 'Tab: close others' }
 )
 
 -- Tab navigation
-vim.keymap.set({ 'n', 't' }, '<Leader>t1', '1gt', { desc = 'goto tab 1' })
-vim.keymap.set({ 'n', 't' }, '<Leader>t2', '2gt', { desc = 'goto tab 2' })
-vim.keymap.set({ 'n', 't' }, '<Leader>t3', '3gt', { desc = 'goto tab 3' })
+vim.keymap.set({ 'n', 't' }, '<Leader>t1', '1gt', { desc = 'Tab: go to 1' })
+vim.keymap.set({ 'n', 't' }, '<Leader>t2', '2gt', { desc = 'Tab: go to 2' })
+vim.keymap.set({ 'n', 't' }, '<Leader>t3', '3gt', { desc = 'Tab: go to 3' })
 
 -- Tab reordering
 vim.keymap.set(
   { 'n', 't' },
   '<Leader>tm>',
   '<cmd>tabmove +1<CR>',
-  { silent = true, desc = 'move current tab to the right' }
+  { silent = true, desc = 'Tab: move right' }
 )
 vim.keymap.set(
   { 'n', 't' },
   '<Leader>tm<',
   '<cmd>tabmove -1<CR>',
-  { silent = true, desc = 'move current tab to the left' }
+  { silent = true, desc = 'Tab: move left' }
 )
+
+vim.keymap.set({ 'n', 't' }, '<Leader>tw', function()
+  require('Adan.core.workspace').set_root()
+end, { silent = true, desc = 'Tab: set workspace root' })
+
+vim.keymap.set({ 'n', 't' }, '<Leader>tn', function()
+  require('Adan.core.workspace').new_tab_with_root()
+end, { silent = true, desc = 'Tab: new tab + set workspace root' })
 
 -- =============================================================================
 -- TERMINAL MODE

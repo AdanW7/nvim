@@ -27,13 +27,6 @@ end
 function M.keys()
   return {
     {
-      lhs = '<leader>ts',
-      rhs = function()
-        Snacks.terminal(nil, { win = { position = 'bottom' } })
-      end,
-      desc = 'Toggle Terminal (split)',
-    },
-    {
       lhs = '<c-/>',
       rhs = function()
         toggle_terminal()

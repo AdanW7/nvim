@@ -84,6 +84,54 @@ end
 
 M.load = load_telescope
 
+-- ---------------------------------------------------------------------------
+-- Picker helpers
+-- ---------------------------------------------------------------------------
+
+---Picker with fixed options.
+---@param picker string
+---@param opts? table
+local function b(picker, opts)
+  return function()
+    require('telescope.builtin')[picker](opts)
+  end
+end
+
+---Picker with options resolved lazily at call time.
+---@param picker string
+---@param get_opts fun(): table
+local function bf(picker, get_opts)
+  return function()
+    require('telescope.builtin')[picker](get_opts())
+  end
+end
+
+---Workspace-scoped picker: merges cwd = workspace.root() at call time.
+---@param picker string
+---@param opts? table
+local function wb(picker, opts)
+  return function()
+    require('telescope.builtin')[picker](
+      vim.tbl_extend('force', { cwd = require('Adan.core.workspace').root() }, opts or {})
+    )
+  end
+end
+
+---Workspace-scoped picker with lazily resolved extra options.
+---@param picker string
+---@param get_opts fun(): table
+local function wbf(picker, get_opts)
+  return function()
+    require('telescope.builtin')[picker](
+      vim.tbl_extend('force', { cwd = require('Adan.core.workspace').root() }, get_opts())
+    )
+  end
+end
+
+-- ---------------------------------------------------------------------------
+-- Keymap setup
+-- ---------------------------------------------------------------------------
+
 function M.setup()
   load_telescope()
 
@@ -91,52 +139,43 @@ function M.setup()
     vim.keymap.set('n', lhs, rhs, { desc = desc })
   end
 
-  local function b(picker, opts)
-    return function()
-      require('telescope.builtin')[picker](opts)
-    end
-  end
-
-  local function bf(picker, get_opts)
-    return function()
-      require('telescope.builtin')[picker](get_opts())
-    end
-  end
-
   -- Resume
-  map('<leader>fe', b('resume'), 'Resume last picker')
+  map('<leader>fe', b('resume'), 'Telescope: resume last picker')
 
-  -- Files
-  map('<leader>ff', b('find_files'), 'Find files')
+  -- Files (workspace-scoped)
+  map('<leader>ff', wb('find_files'), 'Telescope: find files')
+  map('<leader>fr', wb('oldfiles'), 'Telescope: recent files')
   map(
     '<leader>fF',
-    bf('find_files', function()
+    wbf('find_files', function()
       return { cwd = vim.fn.expand('%:p:h') }
     end),
-    'Find files in current dir'
+    'Telescope: find files in buffer dir'
   )
-  map('<leader>fr', b('oldfiles'), 'Recent files')
 
-  -- Grep
-  map('<leader>fg', b('live_grep'), 'Live grep')
+  -- Grep (workspace-scoped)
+  map('<leader>fg', wb('live_grep'), 'Telescope: live grep')
+  map('<leader>fw', wb('grep_string'), 'Telescope: grep word under cursor')
   map(
     '<leader>fG',
-    bf('live_grep', function()
+    wbf('live_grep', function()
       return { cwd = vim.fn.expand('%:p:h') }
     end),
-    'Grep in current dir'
+    'Telescope: grep in buffer dir'
   )
-  map('<leader>fw', b('grep_string'), 'Grep word under cursor')
 
   vim.keymap.set('v', '<leader>fw', function()
     local text = vim.fn.getregion(vim.fn.getpos('.'), vim.fn.getpos('v'))
-    require('telescope.builtin').grep_string({ search = table.concat(text, '\n') })
-  end, { desc = 'Grep visual selection' })
+    require('telescope.builtin').grep_string({
+      search = table.concat(text, '\n'),
+      cwd = require('Adan.core.workspace').root(),
+    })
+  end, { desc = 'Telescope: grep visual selection' })
 
-  -- Navigation
-  map('<leader>fb', b('buffers'), 'Buffers')
-  map('<leader>fj', b('jumplist'), 'Jump list')
-  map('<leader>fh', b('help_tags'), 'Help tags')
+  -- Navigation (not workspace-scoped — global by nature)
+  map('<leader>fb', b('buffers'), 'Telescope: buffers')
+  map('<leader>fj', b('jumplist'), 'Telescope: jump list')
+  map('<leader>fh', b('help_tags'), 'Telescope: help tags')
 
   -- Diagnostics
   map(
@@ -144,47 +183,102 @@ function M.setup()
     bf('diagnostics', function()
       return { bufnr = 0 }
     end),
-    'Diagnostics (buffer)'
+    'Telescope: buffer diagnostics'
   )
 
   -- LSP
-  map('<leader>fs', b('lsp_document_symbols'), 'Document symbols')
-  map('<leader>fS', b('lsp_workspace_symbols'), 'Workspace symbols')
-  map('<leader>fR', b('lsp_references'), 'LSP references')
-  map('<leader>fi', b('lsp_implementations'), 'LSP implementations')
-  map('<leader>fD', b('lsp_definitions'), 'LSP definitions')
-  map('<leader>ft', b('lsp_type_definitions'), 'LSP type definitions')
+  map('<leader>fs', b('lsp_document_symbols'), 'Telescope: document symbols')
+  map('<leader>fS', wb('lsp_workspace_symbols'), 'Telescope: workspace symbols')
+  map('<leader>fR', b('lsp_references'), 'Telescope: LSP references')
+  map('<leader>fi', b('lsp_implementations'), 'Telescope: LSP implementations')
+  map('<leader>fD', b('lsp_definitions'), 'Telescope: LSP definitions')
+  map('<leader>ft', b('lsp_type_definitions'), 'Telescope: LSP type definitions')
 
-  -- Git
-  map('<leader>gs', b('git_status'), 'Git status')
+  -- Git (workspace-scoped)
+  map('<leader>gs', wb('git_status'), 'Telescope: git status')
+  map('<leader>gbc', b('git_bcommits'), 'Telescope: git buffer commits')
+  map('<leader>gB', b('git_branches'), 'Telescope: git branches')
+  map('<leader>gC', b('git_commits'), 'Telescope: git commits')
+  map('<leader>gS', b('git_stash'), 'Telescope: git stash')
   map(
     '<leader>gf',
-    bf('git_files', function()
-      return { git_command = { 'git', 'diff', '--name-only', 'HEAD', '--diff-filter=M' } }
-    end),
-    'Git modified files'
+    wb('git_files', { git_command = { 'git', 'diff', '--name-only', 'HEAD', '--diff-filter=M' } }),
+    'Telescope: git modified files'
   )
-  map('<leader>gbc', b('git_bcommits'), 'Git buffer commits')
-  map('<leader>gB', b('git_branches'), 'Git branches')
-  map('<leader>gC', b('git_commits'), 'Git commits')
-  map('<leader>gS', b('git_stash'), 'Git stash')
 
   -- Buffer / search
-  map('<leader>/', b('current_buffer_fuzzy_find'), 'Fuzzy find in buffer')
-  map('<leader>f/', b('search_history'), 'Search history')
-  map('<leader>f:', b('command_history'), 'Command history')
-  map('<leader>fm', b('marks'), 'Marks')
-  map('<leader>f"', b('registers'), 'Registers')
-  map('<leader>fk', b('keymaps'), 'Keymaps')
+  map('<leader>/', b('current_buffer_fuzzy_find'), 'Telescope: fuzzy find in buffer')
+  map('<leader>f/', b('search_history'), 'Telescope: search history')
+  map('<leader>f:', b('command_history'), 'Telescope: command history')
+  map('<leader>fm', b('marks'), 'Telescope: marks')
+  map('<leader>f"', b('registers'), 'Telescope: registers')
+  map('<leader>fk', b('keymaps'), 'Telescope: keymaps')
 
   -- Vim
-  map('<leader>fa', b('autocommands'), 'Autocommands')
-  map('<leader>fo', b('vim_options'), 'Vim options')
-  map('<leader>fq', b('quickfix'), 'Quickfix list')
-  map('<leader>fQ', b('quickfixhistory'), 'Quickfix history')
-  map('<leader>fl', b('loclist'), 'Location list')
-  map('<leader>fM', b('man_pages'), 'Man pages')
-  map('<leader>fz', b('spell_suggest'), 'Spell suggestions')
+  map('<leader>fa', b('autocommands'), 'Telescope: autocommands')
+  map('<leader>fo', b('vim_options'), 'Telescope: vim options')
+  map('<leader>fq', b('quickfix'), 'Telescope: quickfix list')
+  map('<leader>fQ', b('quickfixhistory'), 'Telescope: quickfix history')
+  map('<leader>fl', b('loclist'), 'Telescope: location list')
+  map('<leader>fM', b('man_pages'), 'Telescope: man pages')
+  map('<leader>fz', b('spell_suggest'), 'Telescope: spell suggestions')
+
+  -- Workspace root picker (telescope-powered, so it lives here not in keymaps.lua)
+  map('<leader>tW', function()
+    local actions = require('telescope.actions')
+    local action_state = require('telescope.actions.state')
+    local finders = require('telescope.finders')
+    local pickers = require('telescope.pickers')
+    local conf = require('telescope.config').values
+
+    local function open_picker(cwd)
+      pickers
+        .new({}, {
+          prompt_title = 'Set workspace root (' .. vim.fn.fnamemodify(cwd, ':~') .. ')',
+          finder = finders.new_oneshot_job({
+            'fd',
+            '--type',
+            'd',
+            '--max-depth',
+            '4',
+            '--hidden',
+            '--exclude',
+            '.git',
+            '--base-directory',
+            cwd,
+          }, {
+            entry_maker = function(line)
+              local abs = vim.fn.fnamemodify(cwd .. '/' .. line, ':p'):gsub('[/\\]$', '')
+              return { value = abs, display = line, ordinal = line }
+            end,
+          }),
+          sorter = conf.generic_sorter({}),
+          attach_mappings = function(bufnr, map_inner)
+            actions.select_default:replace(function()
+              local sel = action_state.get_selected_entry()
+              actions.close(bufnr)
+              require('Adan.core.workspace').set_root(sel.value)
+            end)
+
+            map_inner('i', '<C-u>', function()
+              local parent = vim.fn.fnamemodify(cwd, ':h')
+              if parent == cwd then
+                return
+              end -- already at fs root
+              actions.close(bufnr)
+              vim.schedule(function()
+                open_picker(parent)
+              end)
+            end)
+
+            return true
+          end,
+        })
+        :find()
+    end
+
+    open_picker(vim.fn.getcwd())
+  end, 'Telescope: pick workspace root')
 
   -- Diff two files
   map('<leader>dv', function()
@@ -192,13 +286,13 @@ function M.setup()
     local actions = require('telescope.actions')
     local action_state = require('telescope.actions.state')
     builtin.find_files({
-      prompt_title = 'Diff: Select first file',
+      prompt_title = 'Diff: select first file',
       attach_mappings = function(prompt_bufnr)
         actions.select_default:replace(function()
           local first = action_state.get_selected_entry().path
           actions.close(prompt_bufnr)
           builtin.find_files({
-            prompt_title = 'Diff: Select second file (first: '
+            prompt_title = 'Diff: select second file (first: '
               .. vim.fn.fnamemodify(first, ':~:.')
               .. ')',
             attach_mappings = function(prompt_bufnr2)
@@ -214,7 +308,7 @@ function M.setup()
         return true
       end,
     })
-  end, 'Diff two files via picker')
+  end, 'Telescope: diff two files')
 end
 
 return M
