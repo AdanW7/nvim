@@ -1,15 +1,18 @@
--- Highlight yanked text
-local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
+local group = vim.api.nvim_create_augroup('AdanUiAutocmds', { clear = true })
+
 vim.api.nvim_create_autocmd('TextYankPost', {
+  group = group,
   pattern = '*',
   callback = function()
     vim.highlight.on_yank({ higroup = 'YankHighlight', timeout = 170 })
   end,
-  group = highlight_group,
 })
 
 vim.api.nvim_create_autocmd('FileType', {
-  callback = function()
-    pcall(vim.treesitter.start)
+  group = group,
+  callback = function(args)
+    if vim.bo[args.buf].buftype == '' then
+      pcall(vim.treesitter.start, args.buf)
+    end
   end,
 })

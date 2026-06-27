@@ -125,3 +125,44 @@ vim.api.nvim_create_autocmd('FileType', {
     })
   end,
 })
+
+vim.api.nvim_create_autocmd('BufWritePre', {
+  group = group,
+  pattern = '*',
+  callback = function()
+    local view = vim.fn.winsaveview()
+    vim.cmd([[%s/\s\+$//e]])
+    vim.fn.winrestview(view)
+  end,
+  desc = 'Strip trailing whitespace before saving',
+})
+
+vim.api.nvim_create_autocmd('BufWritePre', {
+  callback = function(args)
+    if vim.bo[args.buf].buftype ~= '' then
+      return
+    end
+
+    if args.match:match('^%w+://') then
+      return
+    end
+
+    local file = vim.uv.fs_realpath(args.match) or args.match
+    vim.fn.mkdir(vim.fn.fnamemodify(file, ':p:h'), 'p')
+  end,
+  group = group,
+})
+
+vim.api.nvim_create_autocmd('InsertEnter', {
+  group = group,
+  callback = function()
+    vim.diagnostic.enable(false)
+  end,
+})
+
+vim.api.nvim_create_autocmd('InsertLeave', {
+  group = group,
+  callback = function()
+    vim.diagnostic.enable(true)
+  end,
+})

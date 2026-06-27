@@ -1,3 +1,7 @@
+vim.api.nvim_create_user_command('MasonRefresh', function()
+  require('mason-registry').refresh()
+end, {})
+
 ---@class TSVendor.GitResult
 ---@field code integer
 ---@field stderr? string

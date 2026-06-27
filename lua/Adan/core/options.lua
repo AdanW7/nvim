@@ -3,7 +3,6 @@
 -- =============================================================================
 
 -- Color scheme
--- vim.cmd.colorscheme("helix")
 vim.opt.termguicolors = true -- Enable true colors
 
 -- Cursor
@@ -24,7 +23,7 @@ vim.opt.cursorline = true -- Highlight the current line
 
 -- Line numbers
 vim.opt.number = true -- Show line numbers
-vim.opt.relativenumber = false -- Disable relative line numbers
+vim.opt.relativenumber = true -- enable relative line numbers
 vim.opt.numberwidth = 2 -- Width of the line number column
 
 -- Columns
@@ -50,6 +49,9 @@ vim.opt.winborder = 'rounded' -- Use rounded borders for windows
 -- BEHAVIOR & EDITING
 -- =============================================================================
 
+vim.opt.jumpoptions = 'stack,view'
+vim.opt.spelloptions = 'camel'
+vim.opt.virtualedit = 'block' -- free-move cursor in visual block mode
 -- Mouse
 vim.opt.mouse = 'a' -- Enable mouse mode
 
@@ -69,7 +71,8 @@ vim.opt.breakindent = true -- Maintain indent when wrapping
 vim.opt.showbreak = '↪ ' -- Visual indicator for wrapped lines
 
 -- Scrolling
-vim.opt.scrolloff = 8 -- Keep 8 lines above and below cursor
+vim.opt.scrolloff = 5 -- Keep N lines above and below cursor
+vim.opt.smoothscroll = true
 
 -- =============================================================================
 -- SEARCH
@@ -94,7 +97,7 @@ vim.opt.completeopt = { 'menuone', 'popup', 'noinsert' } -- Completion menu opti
 vim.opt.swapfile = false -- Disable swap files
 
 -- Undo
-vim.opt.undodir = os.getenv('HOME') .. '/.local/share/nvim/undo' -- Directory for undo files
+vim.opt.undodir = vim.fn.stdpath('data') .. '/undo' -- Directory for undo files
 vim.opt.undofile = true -- Enable persistent undo
 
 -- =============================================================================

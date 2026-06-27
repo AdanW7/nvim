@@ -9,6 +9,7 @@ function M.setup()
 
   local spec_ts = require('mini.ai').gen_spec.treesitter
   require('mini.ai').setup({
+    n_lines = 1000000,
     mappings = {
       around = 'a',
       inside = 'i',
@@ -67,6 +68,7 @@ function M.setup()
     vim.keymap.set({ 'n', 'x', 'o' }, lhs, function()
       MiniAi.move_cursor(side, ai, id, {
         search_method = side == 'left' and 'prev' or 'next',
+        n_lines = 1000000,
       })
     end, { desc = desc })
   end
