@@ -281,6 +281,13 @@ vim.keymap.set({ 'n', 't' }, '<Leader>tn', function()
   require('Adan.core.workspace').new_tab_with_root()
 end, { silent = true, desc = 'Tab: new tab + set workspace root' })
 
+vim.keymap.set({ 'n', 't' }, '<Leader>tr', function()
+  local name = vim.fn.input('Tab name: ', vim.t.tab_name or '')
+  if name ~= '' then
+    vim.t.tab_name = name
+    vim.cmd.redrawtabline()
+  end
+end, { silent = true, desc = 'Tab: rename' })
 -- =============================================================================
 -- TERMINAL MODE
 -- =============================================================================

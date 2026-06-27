@@ -7,6 +7,14 @@ function M.setup()
   require('mini.icons').setup()
   require('mini.icons').mock_nvim_web_devicons()
 
+  require('mini.pairs').setup()
+  require('mini.surround').setup({ respect_selection_type = true })
+  require('mini.cursorword').setup({ delay = 100 })
+  require('mini.jump').setup({
+    mappings = { repeat_jump = '' },
+    delay = { idle_stop = 1 },
+  })
+
   local spec_ts = require('mini.ai').gen_spec.treesitter
   require('mini.ai').setup({
     n_lines = 1000000,
@@ -33,13 +41,6 @@ function M.setup()
     },
   })
 
-  require('mini.pairs').setup()
-  require('mini.surround').setup({ respect_selection_type = true })
-  require('mini.cursorword').setup({ delay = 100 })
-  require('mini.jump').setup({
-    mappings = { repeat_jump = '' },
-    delay = { idle_stop = 1 },
-  })
   require('mini.statusline').setup({
     content = {
       active = function()
@@ -62,7 +63,6 @@ function M.setup()
       end,
     },
   })
-  require('mini.tabline').setup()
 
   local function jump(side, ai, id, lhs, desc)
     vim.keymap.set({ 'n', 'x', 'o' }, lhs, function()
