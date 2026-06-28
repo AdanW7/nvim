@@ -1,9 +1,19 @@
 local M = {}
 local H = {}
 
+-- ===========================================================================
+-- Public API
+-- ===========================================================================
+
 M.config = {
   show_icons = true,
   format = nil,
+  -- Maximum fraction of the screen width the tab pills section may occupy.
+  -- Pills grow dynamically up to this cap; the rest is left for buffers.
+  max_pills_width = 0.25,
+  -- When the active tab name alone exceeds max_pills_width, the cap grows up
+  -- to this fraction before the name gets tail-truncated with '…'.
+  max_tab_width = 0.50,
 }
 
 M.setup = function(config)
@@ -56,17 +66,141 @@ H.get_tab_label = function(tab)
   return vim.fn.fnamemodify(cwd, ':t')
 end
 
+-- Returns the fixed char width the pills section always occupies.
+-- Used by H.compute_display_interval without re-rendering.
+H.pills_display_width = function()
+  local config = H.get_config()
+  return math.floor(vim.o.columns * config.max_pills_width) + H.strwidth(' │ ')
+end
+
+-- Returns the rendered pill string. The section is always exactly `cap` chars
+-- wide — it never shrinks or grows. Short content is padded with fill highlight;
+-- long content is scrolled (ring-style) with '…' indicators on clipped sides.
 H.make_tab_pills = function()
+  local config = H.get_config()
+  local cap = math.floor(vim.o.columns * config.max_pills_width)
   local current = vim.api.nvim_get_current_tabpage()
-  local parts = {}
-  for _, tab in ipairs(vim.api.nvim_list_tabpages()) do
+  local tabpages = vim.api.nvim_list_tabpages()
+
+  -- Build pill data (untruncated).
+  local pills = {}
+  local active_idx = 1
+  local total_raw_width = 0
+  for i, tab in ipairs(tabpages) do
     local tabnr = vim.api.nvim_tabpage_get_number(tab)
-    local label = H.get_tab_label(tab)
+    local name = H.get_tab_label(tab)
+    local label = string.format(' %d:%s ', tabnr, name)
     local is_cur = tab == current
     local hl = is_cur and '%#TablineTabActive#' or '%#TablineTabInactive#'
-    parts[#parts + 1] = string.format('%s%%%dT %d:%s %%T', hl, tabnr, tabnr, label)
+    local w = H.strwidth(label)
+    pills[i] = {
+      tabnr = tabnr,
+      label = label,
+      name = name,
+      hl = hl,
+      width = w,
+      chars_on_left = total_raw_width,
+    }
+    total_raw_width = total_raw_width + w
+    if is_cur then
+      active_idx = i
+    end
   end
-  return table.concat(parts)
+
+  local function render(p)
+    return string.format('%s%%%dT%s%%T', p.hl, p.tabnr, p.label)
+  end
+
+  -- The active pill may claim at most max_tab_width chars, but is always
+  -- truncated to fit within cap regardless. We truncate if it exceeds cap.
+  local active = pills[active_idx]
+  local active_max = math.min(cap, math.floor(vim.o.columns * config.max_tab_width))
+
+  if active.width > active_max then
+    local prefix = string.format(' %d:', active.tabnr)
+    local suffix = ' '
+    local ellipsis = '…'
+    local name_budget = active_max - H.strwidth(prefix) - H.strwidth(suffix) - H.strwidth(ellipsis)
+    local name_trunc = vim.fn.strcharpart(active.name, 0, math.max(0, name_budget))
+    active.label = prefix .. name_trunc .. ellipsis .. suffix
+    active.width = H.strwidth(active.label)
+    for j = active_idx + 1, #pills do
+      pills[j].chars_on_left = pills[j - 1].chars_on_left + pills[j - 1].width
+    end
+    total_raw_width = 0
+    for _, p in ipairs(pills) do
+      total_raw_width = total_raw_width + p.width
+    end
+  end
+
+  -- Distribute remaining cap to neighbours with ring wrapping.
+  local neighbour_budget = cap - active.width
+  local half_left = math.floor(neighbour_budget / 2)
+  local half_right = neighbour_budget - half_left
+
+  local avail_left = active.chars_on_left
+  local avail_right = total_raw_width - (active.chars_on_left + active.width)
+
+  local want_left = math.min(avail_left, half_left + math.max(0, half_right - avail_right))
+  local want_right = math.min(avail_right, half_right + math.max(0, half_left - avail_left))
+
+  local win_left = active.chars_on_left - want_left + 1
+  local win_right = active.chars_on_left + active.width + want_right
+
+  -- Collect visible pills. Pills fully inside the window render normally.
+  -- Pills that partially overlap a window edge are clipped to the available
+  -- chars and get a '…' appended/prepended so the name is still visible.
+  local parts = {}
+  local need_left_trunc = false
+  local need_right_trunc = false
+  local content_width = 0
+  for _, p in ipairs(pills) do
+    local p_left = p.chars_on_left + 1
+    local p_right = p.chars_on_left + p.width
+    if p_left <= win_right and p_right >= win_left then
+      local clip_left = math.max(0, win_left - p_left)
+      local clip_right = math.max(0, p_right - win_right)
+      if clip_left > 0 then
+        -- Partially visible on the left edge: show '…' then clipped label.
+        need_left_trunc = true
+        local visible = p.width - clip_left - clip_right - 1 -- reserve 1 for the '…'
+        if visible > 0 then
+          local clipped = vim.fn.strcharpart(p.label, clip_left, visible)
+          parts[#parts + 1] = p.hl .. clipped
+          content_width = content_width + visible
+        end
+      elseif clip_right > 0 then
+        -- Partially visible on the right edge: show clipped label then '…'.
+        need_right_trunc = true
+        local visible = p.width - clip_right - 1 -- reserve 1 for the '…'
+        if visible > 0 then
+          local clipped = vim.fn.strcharpart(p.label, 0, visible)
+          parts[#parts + 1] = p.hl .. clipped
+          content_width = content_width + visible
+        end
+      else
+        parts[#parts + 1] = render(p)
+        content_width = content_width + p.width
+      end
+    end
+  end
+
+  -- '…' indicators each consume 1 char; remainder becomes padding.
+  local indicator_width = (need_left_trunc and 1 or 0) + (need_right_trunc and 1 or 0)
+  local pad_width = cap - content_width - indicator_width
+
+  local result = ''
+  if need_left_trunc then
+    result = result .. '%#TablineTrunc#…'
+  end
+  result = result .. table.concat(parts)
+  if need_right_trunc then
+    result = result .. '%#TablineTrunc#…'
+  end
+  if pad_width > 0 then
+    result = result .. '%#TablineTabInactive#' .. string.rep(' ', pad_width)
+  end
+  return result
 end
 
 -- ===========================================================================
@@ -86,6 +220,17 @@ H.setup_config = function(config)
   config = vim.tbl_deep_extend('force', vim.deepcopy(H.default_config), config or {})
   H.check_type('show_icons', config.show_icons, 'boolean')
   H.check_type('format', config.format, 'function', true)
+  H.check_type('max_pills_width', config.max_pills_width, 'number')
+  H.check_type('max_tab_width', config.max_tab_width, 'number')
+  if config.max_pills_width <= 0 or config.max_pills_width >= 1 then
+    H.error('`max_pills_width` should be a fraction between 0 and 1 (exclusive)')
+  end
+  if config.max_tab_width <= 0 or config.max_tab_width >= 1 then
+    H.error('`max_tab_width` should be a fraction between 0 and 1 (exclusive)')
+  end
+  if config.max_tab_width < config.max_pills_width then
+    H.error('`max_tab_width` should be >= `max_pills_width`')
+  end
   return config
 end
 
@@ -278,9 +423,7 @@ H.fit_width = function()
 end
 
 H.compute_display_interval = function(center_offset, tabline_width)
-  local pills_width = H.strwidth(vim.fn.substitute(H.make_tab_pills(), '%#[^#]*#', '', 'g'))
-    + H.strwidth(' │ ')
-  local tot_width = math.max(1, vim.o.columns - pills_width)
+  local tot_width = math.max(1, vim.o.columns - H.pills_display_width())
 
   local right = math.min(tabline_width, math.floor(center_offset + 0.5 * tot_width))
   local left = math.max(1, right - tot_width + 1)
