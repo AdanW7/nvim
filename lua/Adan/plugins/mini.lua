@@ -64,6 +64,28 @@ function M.setup()
     },
   })
 
+  require('mini.sessions').setup({
+    autoread = false,
+    autowrite = false,
+    directory = vim.fn.stdpath('data') .. '/sessions',
+    force = { read = false, write = true, delete = false },
+    verbose = { read = false, write = true, delete = true },
+  })
+
+  vim.keymap.set('n', '<leader>sw', function()
+    vim.ui.input({ prompt = 'Session name: ' }, function(name)
+      if name and name ~= '' then
+        MiniSessions.write(name)
+      end
+    end)
+  end, { desc = 'Session: write named' })
+  vim.keymap.set('n', '<leader>sl', function()
+    MiniSessions.select('read')
+  end, { desc = 'Session: select & open' })
+  vim.keymap.set('n', '<leader>sd', function()
+    MiniSessions.select('delete')
+  end, { desc = 'Session: select & delete' })
+
   local function jump(side, ai, id, lhs, desc)
     vim.keymap.set({ 'n', 'x', 'o' }, lhs, function()
       MiniAi.move_cursor(side, ai, id, {
@@ -85,6 +107,6 @@ function M.setup()
   jump('right', 'a', '/', ']/', 'Next comment')
   jump('left', 'a', '/', '[/', 'Prev comment')
 
-  vim.keymap.set('n', 's', '<Nop>', { noremap = true })
+  vim.keymap.set('n', 's', '<Nop>', { noremap = true }) -- unmap s so surround doesn't have issues, I also nver use it anyway
 end
 return M

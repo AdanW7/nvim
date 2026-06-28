@@ -129,3 +129,8 @@ vim.lsp.document_color.enable(true, nil, { style = 'virtual' })
 -- =============================================================================
 vim.opt.grepprg = 'rg --vimgrep --smart-case'
 vim.opt.grepformat = '%f:%l:%c:%m'
+
+-- =============================================================================
+-- Session settings
+-- =============================================================================
+vim.o.sessionoptions = 'buffers,curdir,folds,globals,localoptions,tabpages,winpos,winsize,resize'

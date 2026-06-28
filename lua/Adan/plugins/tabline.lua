@@ -6,31 +6,6 @@
 --   • Rich special-buffer names (terminal, qf, neo-tree, lazy, …)
 --   • Tab rename via  :let t:tab_name = "foo"  or  <leader>tr
 --
--- Setup (lazy.nvim – zero external deps, icons optional):
---
---   {
---     dir  = vim.fn.stdpath("config") .. "/lua",
---     name = "tabline",
---     config = function()
---       require("tabline").setup({
---         show_icons       = true,   -- needs nvim-web-devicons or mini.icons
---         show_diagnostics = true,
---         max_pills_width  = 0.28,
---         max_tab_width    = 0.45,
---       })
---     end,
---   }
---
--- Suggested keymaps:
---   vim.keymap.set("n", "<leader>tt", function()
---     vim.g.tabline_disable = not vim.g.tabline_disable
---     vim.cmd("redrawtabline")
---   end, { desc = "Toggle tabline" })
---
---   vim.keymap.set("n", "<leader>tr", function()
---     vim.t.tab_name = vim.fn.input("Tab name: ")
---     vim.cmd("redrawtabline")
---   end, { desc = "Rename tab" })
 
 local M = {}
 local H = {}
@@ -191,18 +166,18 @@ H.make_tab_pills = function()
     end
   end
 
-  local zone_sep = '%#TablineSep# ┃ '
+  local zone_sep = '%#TablineSep#  '
   local zone_sep_w = 3 -- " ┃ " = 3 display cells
   local indicator_w = (need_ltrunc and 1 or 0) + (need_rtrunc and 1 or 0)
   local pad_w = math.max(0, cap - content_w - indicator_w - zone_sep_w)
 
   local result = '%#TablineFill#'
   if need_ltrunc then
-    result = result .. '%#TablineTrunc#<'
+    result = result .. '%#TablineTrunc#'
   end
   result = result .. table.concat(parts)
   if need_rtrunc then
-    result = result .. '%#TablineTrunc#>'
+    result = result .. '%#TablineTrunc#'
   end
   if pad_w > 0 then
     result = result .. '%#TablineFill#' .. string.rep(' ', pad_w)
@@ -547,9 +522,6 @@ H.create_default_hl = function()
   hl('TablineFill', { link = 'TabLineFill' })
   hl('TablineTrunc', { link = 'Comment' })
   hl('TablineSep', { link = 'TabLine' })
-  -- TablineDiagError and TablineDiagWarn are intentionally not defined here;
-  -- they should be provided by your colorscheme. If you don't have a colorscheme
-  -- entry for them, add fallbacks here:
   --   hl('TablineDiagError', { fg = '#ff6060', bold = true })
   --   hl('TablineDiagWarn',  { fg = '#e5c07b', bold = true })
 end
