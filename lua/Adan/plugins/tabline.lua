@@ -41,7 +41,7 @@ local H = {}
 
 M.config = {
   show_icons = true,
-  show_diagnostics = true,
+  show_diagnostics = false,
   format = nil, -- function(buf_id, label) -> string | nil for default
   max_pills_width = 0.28,
   max_tab_width = 0.45,
@@ -342,8 +342,10 @@ H.get_unnamed_id = function(buf_id)
 end
 
 -- Diagnostic counts
+-- Numbers are coloured via TablineDiagError (red) and TablineDiagWarn (yellow).
+-- %* resets back to the buffer's own highlight group after each count.
 
-H.buf_diagnostics = function(buf_id)
+H.buf_diagnostics = function(buf_id, buf_hl_grp)
   if not vim.diagnostic then
     return nil
   end
@@ -359,12 +361,15 @@ H.buf_diagnostics = function(buf_id)
       W = W + 1
     end
   end
+  -- Reset back to the buffer's own hl group (not %* which snaps to Normal)
+  -- so the diag counts share the same background as the rest of the chip.
+  local reset = '%#' .. buf_hl_grp .. '#'
   local s = ''
   if E > 0 then
-    s = s .. '  ' .. E
+    s = s .. '  %#TablineDiagError#' .. E .. reset
   end
   if W > 0 then
-    s = s .. '  ' .. W
+    s = s .. '  %#TablineDiagWarn#' .. W .. reset
   end
   return s ~= '' and s or nil
 end
@@ -445,11 +450,10 @@ H.finalize_labels = function()
       s = s .. ' ●'
     end
 
+    -- Diag string is stored separately: it contains raw %#...# tabline escapes
+    -- that must NOT pass through the gsub('%%','%%%%') in make_buf_section.
     if cfg.show_diagnostics then
-      local diag = H.buf_diagnostics(b.buf_id)
-      if diag then
-        s = s .. diag
-      end
+      b.diag = H.buf_diagnostics(b.buf_id, b.hl_grp)
     end
 
     b.label = ' ' .. s .. ' '
@@ -516,7 +520,7 @@ H.make_buf_section = function()
   for _, b in ipairs(H.bufs) do
     local pill_hl = '%#' .. b.hl_grp .. '#'
     local click = '%' .. b.buf_id .. '@TablineSwitchBuffer@'
-    local label = b.label:gsub('%%', '%%%%')
+    local label = b.label:gsub('%%', '%%%%') .. (b.diag or '')
     parts[#parts + 1] = pill_hl .. click .. label .. '%X'
   end
 
@@ -543,6 +547,11 @@ H.create_default_hl = function()
   hl('TablineFill', { link = 'TabLineFill' })
   hl('TablineTrunc', { link = 'Comment' })
   hl('TablineSep', { link = 'TabLine' })
+  -- TablineDiagError and TablineDiagWarn are intentionally not defined here;
+  -- they should be provided by your colorscheme. If you don't have a colorscheme
+  -- entry for them, add fallbacks here:
+  --   hl('TablineDiagError', { fg = '#ff6060', bold = true })
+  --   hl('TablineDiagWarn',  { fg = '#e5c07b', bold = true })
 end
 
 -- ============================================================
