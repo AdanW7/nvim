@@ -355,7 +355,7 @@ end, { desc = 'Go to declaration' })
 
 vim.keymap.set('n', '<leader>lh', function()
   vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
-end, { desc = 'Toggle inlay hints' })
+end, { desc = 'LSP: Toggle inlay hints' })
 
 -- LSP restart
 vim.keymap.set('n', '<leader>lr', function()
@@ -371,7 +371,22 @@ vim.keymap.set('n', '<leader>lr', function()
     vim.lsp.enable(name, true)
   end
   vim.notify('LSP restarted: ' .. table.concat(names, ', '), vim.log.levels.INFO)
-end, { desc = 'LSP Restart' })
+end, { desc = 'LSP: Restart' })
+
+vim.keymap.set('n', '<leader>ld', function()
+  local bufnr = vim.api.nvim_get_current_buf()
+  local enabled = vim.diagnostic.is_enabled({ bufnr = bufnr })
+  local name = vim.api.nvim_buf_get_name(bufnr)
+  name = name ~= '' and vim.fn.fnamemodify(name, ':t') or ('buffer ' .. bufnr)
+
+  vim.diagnostic.enable(not enabled, { bufnr = bufnr })
+
+  vim.notify(
+    ('LSP diagnostics %s for %s'):format(enabled and 'disabled' or 'enabled', name),
+    vim.log.levels.INFO,
+    { title = 'Diagnostics' }
+  )
+end, { desc = 'LSP: Toggle buffer diagnostics' })
 
 -- =============================================================================
 -- FILE & DIRECTORY
