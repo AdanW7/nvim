@@ -288,6 +288,12 @@ vim.keymap.set({ 'n', 't' }, '<Leader>tr', function()
     vim.cmd.redrawtabline()
   end
 end, { silent = true, desc = 'Tab: rename' })
+
+vim.keymap.set('n', '<leader>tt', function()
+  vim.g.tabline_disable = not vim.g.tabline_disable
+  -- Force a redraw so the tabline updates immediately
+  vim.cmd('redrawtabline')
+end, { desc = 'Tab: Toggle tabline' })
 -- =============================================================================
 -- TERMINAL MODE
 -- =============================================================================
