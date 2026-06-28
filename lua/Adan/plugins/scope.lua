@@ -209,6 +209,32 @@ do
     )
     vim.api.nvim_create_user_command('ScopeList', core.print_summary, {})
     vim.api.nvim_create_user_command('ScopeMoveBuf', core.move_current_buf, { nargs = '?' })
+    vim.api.nvim_create_user_command('ScopeDuplicateTab', function()
+      -- Snapshot the current tab's buffers before we leave it
+      local current_tab = vim.api.nvim_get_current_tabpage()
+      core.revalidate()
+      local bufs_to_copy = vim.deepcopy(core.cache[current_tab] or {})
+      local current_buf = vim.api.nvim_get_current_buf()
+
+      -- Open a new tab (triggers on_tab_leave for the old tab, on_tab_enter for the new one)
+      vim.cmd('tabnew')
+      local new_tab = vim.api.nvim_get_current_tabpage()
+      local scratch_buf = vim.api.nvim_get_current_buf() -- the unwanted empty buffer
+
+      core.cache[new_tab] = bufs_to_copy
+      for _, buf in ipairs(bufs_to_copy) do
+        if vim.api.nvim_buf_is_valid(buf) then
+          vim.api.nvim_set_option_value('buflisted', true, { buf = buf })
+        end
+      end
+
+      if vim.api.nvim_buf_is_valid(current_buf) then
+        vim.cmd('buffer ' .. current_buf)
+      end
+
+      -- Delete the scratch buffer tabnew created, now that we've moved off it
+      vim.api.nvim_buf_delete(scratch_buf, { force = true })
+    end, {})
 
     -- Defer telescope integration until after startup
     vim.api.nvim_create_autocmd('User', {

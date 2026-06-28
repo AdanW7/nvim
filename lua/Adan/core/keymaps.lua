@@ -211,6 +211,12 @@ vim.keymap.set(
   '<cmd>close<CR>',
   { silent = true, desc = 'Close current window' }
 )
+vim.keymap.set(
+  'n',
+  '<Leader>wo',
+  '<cmd>only<CR>',
+  { silent = true, desc = 'Window: close all but current' }
+)
 
 -- Scratch buffers
 vim.keymap.set('n', '<leader>wnv', function()
@@ -239,6 +245,7 @@ vim.keymap.set(
   '<cmd>tabedit %<CR>',
   { silent = true, desc = 'Tab: buffer in new tab' }
 )
+vim.keymap.set('n', '<leader>td', '<cmd>ScopeDuplicateTab<cr>', { desc = 'Tab: Duplicate' })
 
 -- Tab closing
 vim.keymap.set(
