@@ -18,8 +18,8 @@ M.config = {
   show_icons = true,
   show_diagnostics = false,
   format = nil, -- function(buf_id, label) -> string | nil for default
-  max_pills_width = 0.28,
-  max_tab_width = 0.45,
+  max_pills_width = 0.25,
+  max_tab_width = 0.25,
 }
 
 M.setup = function(config)
@@ -166,7 +166,7 @@ H.make_tab_pills = function()
     end
   end
 
-  local zone_sep = '%#TablineSep#  '
+  local zone_sep = '%#TablineSep#  '
   local zone_sep_w = 3 -- " ┃ " = 3 display cells
   local indicator_w = (need_ltrunc and 1 or 0) + (need_rtrunc and 1 or 0)
   local pad_w = math.max(0, cap - content_w - indicator_w - zone_sep_w)
