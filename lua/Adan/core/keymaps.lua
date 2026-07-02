@@ -233,6 +233,30 @@ vim.keymap.set('n', '<leader>wns', function()
   vim.bo.swapfile = false
 end, { desc = 'New scratch buffer (horizontal)' })
 
+-- Window resize
+local function resize_width(delta)
+  vim.cmd('vertical resize ' .. (delta > 0 and '+' or '') .. delta)
+end
+
+local function resize_height(delta)
+  vim.cmd('resize ' .. (delta > 0 and '+' or '') .. delta)
+end
+
+vim.keymap.set('n', '<leader>w_', function()
+  resize_width(-8)
+end, { silent = true, desc = 'Window: decrease width' })
+
+vim.keymap.set('n', '<leader>w-', function()
+  resize_height(-5)
+end, { silent = true, desc = 'Window: decrease height' })
+
+vim.keymap.set(
+  'n',
+  '<leader>w=',
+  '<cmd>wincmd =<CR>',
+  { silent = true, desc = 'Window: equalize sizes' }
+)
+
 -- =============================================================================
 -- TAB MANAGEMENT
 -- =============================================================================
