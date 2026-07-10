@@ -35,6 +35,10 @@
       "src": "https://github.com/echasnovski/mini.nvim",
       "version": "'stable'"
     },
+    "neogit": {
+      "rev": "a0847c4bea5a5f92a36e3f3bf7da99d7d685d3ac",
+      "src": "https://github.com/neogitorg/neogit"
+    },
     "nvim-origami": {
       "rev": "f15aad8c58ef24b98ffe241ff52f9dfd74cff591",
       "src": "https://github.com/chrisgrieser/nvim-origami"

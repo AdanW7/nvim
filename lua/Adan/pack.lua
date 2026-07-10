@@ -5,10 +5,6 @@ local modules = {
     'Adan.plugins.tabline',
   },
 
-  git = {
-    'Adan.plugins.gitsigns',
-  },
-
   collection = {
     'Adan.plugins.mini',
     'Adan.plugins.snacks',
@@ -31,6 +27,11 @@ local modules = {
     'Adan.plugins.multi',
     'Adan.plugins.oil',
     'Adan.plugins.origami',
+  },
+
+  git = {
+    'Adan.plugins.gitsigns',
+    'Adan.plugins.neogit',
   },
   builtins = { 'Adan.plugins.builtins' },
 }
