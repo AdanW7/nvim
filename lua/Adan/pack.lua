@@ -3,6 +3,7 @@ local modules = {
     'Adan.plugins.helix',
     'Adan.plugins.which_key',
     'Adan.plugins.tabline',
+    'Adan.plugins.todo',
   },
 
   collection = {
