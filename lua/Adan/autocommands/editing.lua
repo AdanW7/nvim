@@ -155,14 +155,18 @@ vim.api.nvim_create_autocmd('BufWritePre', {
 
 vim.api.nvim_create_autocmd('InsertEnter', {
   group = group,
-  callback = function()
-    vim.diagnostic.enable(false)
+  callback = function(args)
+    vim.b[args.buf].diagnostics_enabled_before_insert = vim.diagnostic.is_enabled({ bufnr = args.buf })
+    vim.diagnostic.enable(false, { bufnr = args.buf })
   end,
 })
 
 vim.api.nvim_create_autocmd('InsertLeave', {
   group = group,
-  callback = function()
-    vim.diagnostic.enable(true)
+  callback = function(args)
+    if vim.b[args.buf].diagnostics_enabled_before_insert then
+      vim.diagnostic.enable(true, { bufnr = args.buf })
+    end
+    vim.b[args.buf].diagnostics_enabled_before_insert = nil
   end,
 })

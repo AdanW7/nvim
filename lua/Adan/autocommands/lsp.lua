@@ -10,6 +10,9 @@ vim.api.nvim_create_autocmd('LspAttach', {
     if client.name == 'ruff' then
       client.server_capabilities.hoverProvider = false
     end
+    if client:supports_method('textDocument/documentColor', args.buf) then
+      vim.lsp.document_color.enable(true, args.buf, { style = 'virtual' })
+    end
   end,
-  desc = 'LSP: Disable hover capability from Ruff',
+  desc = 'LSP: Configure attached client behavior',
 })

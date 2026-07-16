@@ -7,6 +7,14 @@ local function ensure_fzf_native()
   if vim.fn.filereadable(lib) == 1 then
     return
   end
+  if vim.fn.executable('make') == 0 then
+    vim.notify(
+      'telescope-fzf-native is not built and `make` is not available on PATH.',
+      vim.log.levels.WARN,
+      { title = 'Telescope FZF Native' }
+    )
+    return
+  end
   vim.notify('Building telescope-fzf-native...')
   vim.system({ 'make' }, { cwd = path, text = true }, function(obj)
     vim.schedule(function()

@@ -1,4 +1,3 @@
-vim.cmd('packloadall')
 require('Adan.core')
 require('Adan.autocommands')
 require('Adan.UserCommands')

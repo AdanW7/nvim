@@ -1,9 +1,11 @@
 local M = {}
 
 function M.setup()
-  vim.api.nvim_create_autocmd('BufRead', {
-    once = true,
-    callback = function()
+  local function setup_gitsigns()
+    if package.loaded['gitsigns'] then
+      return
+    end
+
       vim.pack.add(
         { 'https://github.com/lewis6991/gitsigns.nvim' },
         { load = true, confirm = false }
@@ -113,8 +115,16 @@ function M.setup()
           )
         end,
       })
-    end,
+  end
+
+  vim.api.nvim_create_autocmd('BufRead', {
+    once = true,
+    callback = setup_gitsigns,
   })
+
+  if vim.api.nvim_buf_get_name(0) ~= '' then
+    setup_gitsigns()
+  end
 end
 
 return M

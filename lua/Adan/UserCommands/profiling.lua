@@ -1,20 +1,19 @@
 vim.api.nvim_create_user_command('StartupProfile', function(opts)
   local runs = tonumber(opts.args) or 3
   local log_files = {}
-  local all_totals = {}
 
   vim.notify(string.format('Profiling startup (%d runs)...', runs), vim.log.levels.INFO)
 
   -- Run multiple times and average
   for i = 1, runs do
     local log_file = vim.fn.tempname() .. '-nvim-startup-' .. i .. '.log'
-    local null_device = vim.fn.has('win32') == 1 and 'nul' or '/dev/null'
-    local cmd = string.format(
-      'nvim --startuptime %s --headless +qall 2>%s',
-      vim.fn.shellescape(log_file),
-      null_device
-    )
-    vim.fn.system(cmd)
+    local result = vim.system({ vim.v.progpath, '--startuptime', log_file, '--headless', '+qall' }, {
+      text = true,
+    }):wait()
+    if result.code ~= 0 then
+      vim.notify(result.stderr or 'Startup profile run failed', vim.log.levels.ERROR)
+      return
+    end
     table.insert(log_files, log_file)
   end
 
