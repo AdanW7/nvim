@@ -91,6 +91,7 @@ local iar_to_clang_filter = [=[
           "--no_unroll",
           "--no_inline",
           "--no_code_motion",
+          "--no_static_destruction",
           "--no_tbaa",
           "--no_clustering",
           "--no_scheduling"
