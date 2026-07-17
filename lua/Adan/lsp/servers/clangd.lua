@@ -65,7 +65,21 @@ end
 
 ---@type vim.lsp.Config
 return {
-  cmd = { 'clangd' },
+  cmd = {
+    'clangd',
+    '--background-index', -- build & persist the project index on disk
+    '--clang-tidy', -- surface clang-tidy diagnostics inline
+    '--completion-style=detailed', -- one item per overload, with full type info
+    '--header-insertion=iwyu', -- 'iwyu' -> include suggestions, never -> don't auto-insert #includes on completion .
+    '--header-insertion-decorators', -- mark items that would add an include
+    '--function-arg-placeholders', -- fill call args as editable snippets
+    '--all-scopes-completion', -- complete symbols from all scopes (adds qualifiers)
+    '--pch-storage=memory', -- keep preambles in RAM (faster; uses more memory)
+    '-j=6', -- parallel background-index workers
+    -- NOTE: toolchain/target flags (compiler, --target, IAR includes, intrinsic
+    -- shim) live in the global clangd config.yaml, not here, so this stays
+    -- portable across every project. '-ferror-limit=0' also comes from there.
+  },
   filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'cuda' },
   root_markers = {
     '.clangd',
@@ -81,9 +95,6 @@ return {
       inactiveRegions = {
         useBackgroundHighlight = true,
         opacity = 1,
-      },
-      arguments = {
-        '--fallback-flags=[-ferror-limit=0]',
       },
     },
   },
