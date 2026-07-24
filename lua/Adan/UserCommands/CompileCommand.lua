@@ -50,14 +50,6 @@ local split_config_filter = [[
 local copy_database_filter = '.'
 
 local iar_to_clang_filter = [=[
-  def quote_arg:
-    tostring as $arg
-    | if ($arg | test("[[:space:]\\\"]")) then
-        "\"" + ($arg | gsub("\\\\"; "\\\\\\\\") | gsub("\""; "\\\"")) + "\""
-      else
-        $arg
-      end;
-
   def clang_driver:
     if (.file // "" | test("\\.(cc|cp|cxx|cpp|c\\+\\+)$"; "i")) then
       "arm-none-eabi-g++"
@@ -74,9 +66,11 @@ local iar_to_clang_filter = [=[
       elif $arg == "--char_is_unsigned" then ["-funsigned-char"]
       elif $arg == "--no_rtti" then ["-fno-rtti"]
       elif $arg == "--no_exceptions" then ["-fno-exceptions"]
-      elif ($arg | startswith("--preinclude=")) then ["-include", ($arg | sub("^--preinclude="; ""))]
+      elif ($arg | startswith("--preinclude=")) then
+        ["-include", ($arg | sub("^--preinclude="; ""))]
       elif ($arg | startswith("--diag_suppress=")) then []
       elif ([
+          "--c++",
           "--silent",
           "--debug",
           "--endian=little",
@@ -85,6 +79,8 @@ local iar_to_clang_filter = [=[
           "--fpu=None",
           "-e",
           "-Oh",
+          "-Ohs",
+          "-Ohz",
           "-On",
           "--use_c++_inline",
           "--no_cse",
@@ -108,7 +104,13 @@ local iar_to_clang_filter = [=[
           .skip = false
         else
           ($args[$i] | tostring) as $arg
-          | if $arg == "--dlib_config" or $arg == "--diag_suppress" or $arg == "--mfc" then
+          | if ([
+              "--preprocess=s",
+              "--dlib_config",
+              "--diag_suppress",
+              "--mfc",
+              "-o"
+            ] | index($arg)) then
               .skip = true
             elif $arg == "--preinclude" then
               .out += ["-include", ($args[$i + 1] // "" | tostring)] | .skip = true
@@ -119,17 +121,27 @@ local iar_to_clang_filter = [=[
       )
     | .out;
 
+  def is_iar_entry:
+    (.arguments? | type) == "array"
+    and (.arguments[0] // "" | tostring | test("(^|[/\\\\])iccarm(\\.exe)?$"; "i"));
+
   [
     .[]
-    | select((.arguments? | type) == "array")
     | select((.file? // "") != "")
-    | select((.type? // "COMPILER") != "LINKER")
-    | {
-        directory: (.directory // ""),
-        command: (clang_args | map(quote_arg) | join(" ")),
-        file: .file
-      }
-      + if (.output? // "") != "" then { output: .output } else {} end
+    | select((.type? // "COMPILER") == "COMPILER")
+    | select(.file | test("\\.(c|cc|cp|cxx|cpp|c\\+\\+)$"; "i"))
+    | if is_iar_entry then
+        {
+          directory: (.directory // ""),
+          arguments: clang_args,
+          file: .file
+        }
+        + if (.output? // "") != "" then { output: .output } else {} end
+      elif ((.arguments? | type) == "array") or ((.command? | type) == "string") then
+        del(.type)
+      else
+        empty
+      end
   ]
 ]=]
 
