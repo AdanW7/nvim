@@ -1,7 +1,7 @@
 {
   "plugins": {
     "blink.cmp": {
-      "rev": "bda905a4bf1b3edfa708b0be193b8c63d8620c96",
+      "rev": "0f54bd78892f587db4dcf100a23eaddfc2a9df7d",
       "src": "https://github.com/saghen/blink.cmp",
       "version": "'main'"
     },
@@ -19,7 +19,7 @@
       "src": "https://github.com/rafamadriz/friendly-snippets"
     },
     "gitsigns.nvim": {
-      "rev": "2038c666bd9d8a0b7349a0b6ee00dc83104b9ecf",
+      "rev": "31d6fb2d618bca1482b9f274751ead5f03461408",
       "src": "https://github.com/lewis6991/gitsigns.nvim"
     },
     "lazydev.nvim": {
@@ -36,11 +36,11 @@
       "version": "'stable'"
     },
     "neogit": {
-      "rev": "a0847c4bea5a5f92a36e3f3bf7da99d7d685d3ac",
+      "rev": "2043096b7ae81e8350ec8cceb3e7ab08dca1dcfe",
       "src": "https://github.com/neogitorg/neogit"
     },
     "nvim-origami": {
-      "rev": "f15aad8c58ef24b98ffe241ff52f9dfd74cff591",
+      "rev": "02312301df125908031b27dc556adb4cd81893d6",
       "src": "https://github.com/chrisgrieser/nvim-origami"
     },
     "oil.nvim": {
