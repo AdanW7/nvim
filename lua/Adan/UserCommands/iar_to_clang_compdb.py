@@ -52,9 +52,14 @@ class Compiler(StrEnum):
         if executable in {"clang", "clang.exe", "clang++", "clang++.exe"}:
             return cls.CLANGD
         if executable in {
-            "gcc", "gcc.exe", "g++", "g++.exe",
-            "arm-none-eabi-gcc", "arm-none-eabi-gcc.exe",
-            "arm-none-eabi-g++", "arm-none-eabi-g++.exe",
+            "gcc",
+            "gcc.exe",
+            "g++",
+            "g++.exe",
+            "arm-none-eabi-gcc",
+            "arm-none-eabi-gcc.exe",
+            "arm-none-eabi-g++",
+            "arm-none-eabi-g++.exe",
         }:
             return cls.GCC
         return None
@@ -128,6 +133,7 @@ DEFAULT_COMPILER = Compiler.GCC
 CPP_SUFFIXES = {".cc", ".cp", ".cxx", ".cpp", ".c++"}
 SOURCE_SUFFIXES = CPP_SUFFIXES | {".c"}
 
+
 def _source_suffix(path: str) -> str:
     return PurePath(path).suffix.lower()
 
@@ -143,15 +149,34 @@ class IarArgumentTranslator:
         "--no_exceptions": ["-fno-exceptions"],
     }
     DROPPED_FLAGS = {
-        "--c++", "--silent", "--debug", "--endian=little",
-        "--no_path_in_file_macros", "--warnings_are_errors", "--fpu=None",
-        "-e", "-Oh", "-Ohs", "-Ohz", "-On", "--use_c++_inline",
-        "--no_cse", "--no_unroll", "--no_inline", "--no_code_motion",
-        "--no_static_destruction", "--no_tbaa", "--no_clustering",
+        "--c++",
+        "--silent",
+        "--debug",
+        "--endian=little",
+        "--no_path_in_file_macros",
+        "--warnings_are_errors",
+        "--fpu=None",
+        "-e",
+        "-Oh",
+        "-Ohs",
+        "-Ohz",
+        "-On",
+        "--use_c++_inline",
+        "--no_cse",
+        "--no_unroll",
+        "--no_inline",
+        "--no_code_motion",
+        "--no_static_destruction",
+        "--no_tbaa",
+        "--no_clustering",
         "--no_scheduling",
     }
     DROPPED_PAIRED_FLAGS = {
-        "--preprocess=s", "--dlib_config", "--diag_suppress", "--mfc", "-o"
+        "--preprocess=s",
+        "--dlib_config",
+        "--diag_suppress",
+        "--mfc",
+        "-o",
     }
 
     def __init__(self, compiler: Compiler) -> None:
@@ -176,7 +201,9 @@ class IarArgumentTranslator:
                 index += 2
                 continue
             if argument == "--preinclude":
-                converted.extend(["-include", self._operand(arguments, index, argument)])
+                converted.extend(
+                    ["-include", self._operand(arguments, index, argument)]
+                )
                 index += 2
                 continue
             if argument.startswith("--preinclude="):
@@ -184,10 +211,15 @@ class IarArgumentTranslator:
                 if not operand:
                     raise ValueError("--preinclude= is missing its operand")
                 converted.extend(["-include", operand])
-            elif argument.startswith("--diag_suppress=") or argument in self.DROPPED_FLAGS:
+            elif (
+                argument.startswith("--diag_suppress=")
+                or argument in self.DROPPED_FLAGS
+            ):
                 pass
             elif argument.startswith("--cpu="):
-                converted.append(ArmCpu.from_iar(argument.partition("=")[2]).compiler_flag)
+                converted.append(
+                    ArmCpu.from_iar(argument.partition("=")[2]).compiler_flag
+                )
             else:
                 converted.extend(self.FLAG_MAP.get(argument, [argument]))
             index += 1
@@ -207,7 +239,10 @@ class CompilationDatabaseConverter:
             return None
 
         file_path = value.get("file")
-        if not isinstance(file_path, str) or _source_suffix(file_path) not in SOURCE_SUFFIXES:
+        if (
+            not isinstance(file_path, str)
+            or _source_suffix(file_path) not in SOURCE_SUFFIXES
+        ):
             return None
         if value.get("type", "COMPILER") != "COMPILER":
             return None
@@ -225,14 +260,20 @@ class CompilationDatabaseConverter:
                 converted["output"] = value["output"]
             return converted
 
-        if isinstance(value.get("arguments"), list) or isinstance(value.get("command"), str):
+        if isinstance(value.get("arguments"), list) or isinstance(
+            value.get("command"), str
+        ):
             return self._without_type(value)
         return None
 
     def convert_database(self, values: Any) -> list[dict[str, Any]]:
         if not isinstance(values, list):
             raise ValueError("compilation database must be a JSON array")
-        return [entry for value in values if (entry := self.convert_entry(value)) is not None]
+        return [
+            entry
+            for value in values
+            if (entry := self.convert_entry(value)) is not None
+        ]
 
     def convert_fragment(self, text: str) -> str:
         indent = _leading_indent(text)
@@ -254,7 +295,9 @@ class CompilationDatabaseConverter:
         else:
             raise ValueError("selected JSON must contain compilation database entries")
 
-        rendered = ",\n".join(_indent(json.dumps(entry, indent=2), indent) for entry in converted)
+        rendered = ",\n".join(
+            _indent(json.dumps(entry, indent=2), indent) for entry in converted
+        )
         if trailing_comma and rendered:
             rendered += ","
         return rendered + "\n"
@@ -344,7 +387,9 @@ class CompilationDatabaseSplitter:
             return match.group(1)
 
         command = value.get("command")
-        if isinstance(command, str) and (match := cls.COMMAND_CONFIG_RE.search(command)):
+        if isinstance(command, str) and (
+            match := cls.COMMAND_CONFIG_RE.search(command)
+        ):
             return match.group(1)
         return None
 
