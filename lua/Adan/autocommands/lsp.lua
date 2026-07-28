@@ -11,7 +11,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
       client.server_capabilities.hoverProvider = false
     end
     if client:supports_method('textDocument/documentColor', args.buf) then
-      vim.lsp.document_color.enable(true, args.buf, { style = 'virtual' })
+      vim.lsp.document_color.enable(true, { bufnr = args.buf }, { style = 'virtual' })
     end
   end,
   desc = 'LSP: Configure attached client behavior',
