@@ -95,18 +95,20 @@ local function qf_items(items)
   end, items)
 end
 
-local function qf_buffer()
+local function qf_window()
   for _, win in ipairs(vim.api.nvim_list_wins()) do
     local bufnr = vim.api.nvim_win_get_buf(win)
     if vim.bo[bufnr].filetype == 'qf' then
-      return bufnr
+      return win, bufnr
     end
   end
 end
 
 function M.open_current()
   local qf = vim.fn.getqflist({ idx = 0, items = 0 })
-  local item = qf.items[qf.idx]
+  local win = qf_window()
+  local idx = win and vim.api.nvim_win_get_cursor(win)[1] or qf.idx
+  local item = qf.items[idx]
   local data = item and item.user_data
 
   if not data or not data.url then
@@ -118,7 +120,7 @@ function M.open_current()
 end
 
 local function install_qf_maps()
-  local bufnr = qf_buffer()
+  local _, bufnr = qf_window()
   if not bufnr then
     return
   end
