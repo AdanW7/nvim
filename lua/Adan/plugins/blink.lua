@@ -4,6 +4,7 @@ function M.setup()
     { src = 'https://github.com/saghen/blink.lib', version = 'main' },
     { src = 'https://github.com/saghen/blink.cmp', version = 'main' },
     'https://github.com/rafamadriz/friendly-snippets',
+    'https://github.com/L3MON4D3/LuaSnip',
   }, { load = true, confirm = false })
   require('blink.cmp').setup({
     keymap = {

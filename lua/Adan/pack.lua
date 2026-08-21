@@ -20,6 +20,7 @@ local modules = {
     'Adan.plugins.lazydev',
     'Adan.plugins.conform',
     -- 'Adan.plugins.dap.bootstrap',
+    'Adan.plugins.neogen',
   },
 
   navigation = {
