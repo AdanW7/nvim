@@ -65,10 +65,14 @@ vim.opt.shiftround = true -- Round indent to multiple of shiftwidth
 vim.cmd.filetype('plugin indent on') -- Enable filetype detection, plugins, and indentation
 
 -- Line wrapping
-vim.opt.wrap = true -- Enable line wrapping
+vim.opt.wrap = false -- Enable line wrapping
 vim.opt.linebreak = true -- Wrap at word boundaries
 vim.opt.breakindent = true -- Maintain indent when wrapping
 vim.opt.showbreak = '↪ ' -- Visual indicator for wrapped lines
+
+-- add visual indicator if code going to wide
+vim.opt.colorcolumn = '100'
+vim.api.nvim_set_hl(0, 'ColorColumn', { ctermbg = 'darkgrey', bg = 'darkgrey' })
 
 -- Scrolling
 vim.opt.scrolloff = 5 -- Keep N lines above and below cursor
