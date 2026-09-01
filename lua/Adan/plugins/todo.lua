@@ -2,6 +2,9 @@
 ---  * Highlights keywords (TODO, FIXME, HACK, WARN, PERF, NOTE, TEST) but
 ---    ONLY when they appear inside a comment, as determined by Tree-sitter
 ---    (preferred) or the buffer's :syntax highlighting (fallback).
+---  * Highlights Doxygen tags (`@brief`, `@param`, `\brief`, `@{`, `@}`, ...)
+---    and the trailing-doc `<` marker (as in `/**<`, `/*!<`, `///<`, `//!<`),
+---    again only inside comments. Purely cosmetic - no quickfix support.
 ---  * Exposes two user commands that populate the quickfix list with
 ---    keyword matches that are actually inside comments:
 ---      `:TodoQuickFix`     - only currently open (loaded, listed) buffers
@@ -15,6 +18,11 @@
 ---    keywords = {
 ---      TODO = 'DiagnosticInfo',
 ---      XXX = 'DiagnosticWarn',
+---    },
+---    doxygen = {
+---      enabled = true,
+---      tag_hl = 'Special',
+---      angle_hl = 'Special',
 ---    },
 ---  })
 ---@class TodoComments
@@ -34,10 +42,23 @@ local default_keywords = {
   TEST = 'DiagnosticInfo',
 }
 
+---Default Doxygen highlighting config.
+---@class DoxygenConfig
+---@field enabled boolean
+---@field tag_hl string
+---@field angle_hl string }
+local default_doxygen = {
+  enabled = true,
+  tag_hl = 'Special', ---@type string highlight group for @tag / \tag
+  angle_hl = 'Special', ---@type string highlight group for the trailing `<` marker
+}
+
 ---@class TodoCommentsConfig
 ---@field keywords table<string,string> keyword -> highlight group to link to
+---@field doxygen DoxygenConfig
 local config = {
   keywords = vim.deepcopy(default_keywords),
+  doxygen = vim.deepcopy(default_doxygen),
   regex = nil, ---@type vim.regex?
 }
 
@@ -190,6 +211,88 @@ function M.scan_buffer(bufnr)
 end
 
 --------------------------------------------------------------------------------
+-- Doxygen scanning
+--------------------------------------------------------------------------------
+
+-- @word / \word (also @{ and @} for \addtogroup ... @{ ... @} blocks).
+local doxygen_tag_pattern = '[@\\][%a{}]+'
+
+-- Comment openers whose last character is the "this documents the
+-- preceding declaration" marker, e.g. `uint16_t x; /**< comment */`.
+local doxygen_angle_markers = { '/**<', '/*!<', '///<', '//!<' }
+
+---Find every non-overlapping match of `pattern` in `line` using plain Lua
+---string patterns (not vim.regex - these patterns are simple enough that
+---Lua's own matcher is sufficient and avoids the escaping headaches of
+---translating `\` and `{}` into vim regex syntax).
+---@param line string
+---@param pattern string
+---@return { [1]: integer, [2]: integer }[] list of {start_col, end_col} (0-indexed, end exclusive)
+local function find_lua_pattern_matches(line, pattern)
+  local matches = {}
+  local start = 1
+  while start <= #line do
+    local s, e = line:find(pattern, start)
+    if not s then
+      break
+    end
+    table.insert(matches, { s - 1, e })
+    start = e + 1
+  end
+  return matches
+end
+
+---Find the 0-indexed column of the trailing `<` for every occurrence of
+---any `doxygen_angle_markers` entry in `line`.
+---@param line string
+---@return { [1]: integer, [2]: integer }[] list of {start_col, end_col} (0-indexed, end exclusive)
+local function find_doxygen_angle_matches(line)
+  local matches = {}
+  for _, marker in ipairs(doxygen_angle_markers) do
+    local start = 1
+    while start <= #line do
+      local s, e = line:find(marker, start, true)
+      if not s then
+        break
+      end
+      table.insert(matches, { e - 1, e })
+      start = e + 1
+    end
+  end
+  return matches
+end
+
+---Scan `bufnr` and return every Doxygen tag / trailing-`<` match that sits
+---inside a comment.
+---@param bufnr integer
+---@return { lnum: integer, col: integer, end_col: integer, hl_group: string }[] 1-indexed lnum/col
+function M.scan_doxygen(bufnr)
+  local results = {}
+  if not config.doxygen.enabled then
+    return results
+  end
+  local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+  for i, line in ipairs(lines) do
+    local row = i - 1
+    if line:find('[@\\]') then
+      for _, m in ipairs(find_lua_pattern_matches(line, doxygen_tag_pattern)) do
+        if is_comment(bufnr, row, m[1]) then
+          table.insert(results, { lnum = i, col = m[1] + 1, end_col = m[2], hl_group = 'TodoDoxygenTag' })
+        end
+      end
+    end
+    if line:find('<', 1, true) then
+      for _, m in ipairs(find_doxygen_angle_matches(line)) do
+        if is_comment(bufnr, row, m[1]) then
+          table.insert(results, { lnum = i, col = m[1] + 1, end_col = m[2], hl_group = 'TodoDoxygenAngle' })
+        end
+      end
+    end
+  end
+  return results
+end
+
+--------------------------------------------------------------------------------
 -- Highlighting
 --------------------------------------------------------------------------------
 
@@ -197,6 +300,8 @@ local function define_highlights()
   for keyword, link in pairs(config.keywords) do
     vim.api.nvim_set_hl(0, 'Todo' .. keyword, { link = link, default = true })
   end
+  vim.api.nvim_set_hl(0, 'TodoDoxygenTag', { link = config.doxygen.tag_hl, default = true })
+  vim.api.nvim_set_hl(0, 'TodoDoxygenAngle', { link = config.doxygen.angle_hl, default = true })
 end
 
 ---Re-scan `bufnr` (default: current buffer) and refresh its extmarks.
@@ -214,6 +319,12 @@ function M.refresh(bufnr)
     vim.api.nvim_buf_set_extmark(bufnr, ns, match.lnum - 1, match.col - 1, {
       end_col = match.end_col,
       hl_group = 'Todo' .. match.keyword,
+    })
+  end
+  for _, match in ipairs(M.scan_doxygen(bufnr)) do
+    vim.api.nvim_buf_set_extmark(bufnr, ns, match.lnum - 1, match.col - 1, {
+      end_col = match.end_col,
+      hl_group = match.hl_group,
     })
   end
 end
@@ -420,10 +531,11 @@ end
 -- Setup
 --------------------------------------------------------------------------------
 
----@param opts { keywords: table<string,string>? }?
+---@param opts { keywords: table<string,string>?, doxygen: { enabled: boolean?, tag_hl: string?, angle_hl: string? }? }?
 function M.setup(opts)
   opts = opts or {}
   config.keywords = vim.tbl_extend('force', vim.deepcopy(default_keywords), opts.keywords or {})
+  config.doxygen = vim.tbl_extend('force', vim.deepcopy(default_doxygen), opts.doxygen or {})
   config.regex = nil -- force rebuild with the (possibly new) keyword set
 
   define_highlights()
