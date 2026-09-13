@@ -2,7 +2,8 @@ local M = {}
 
 function M.setup()
   vim.pack.add({
-    'https://github.com/stevearc/oil.nvim',
+    -- 'https://github.com/stevearc/oil.nvim',
+    'https://github.com/barrettruth/canola.nvim',
   }, { load = true, confirm = false })
 
   vim.keymap.set('n', '-', '<CMD>Oil<CR>', { desc = 'Open parent directory' })

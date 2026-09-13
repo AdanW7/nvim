@@ -9,8 +9,8 @@ vim.g.maplocalleader = ' '
 -- BASIC EDITOR BEHAVIOR
 -- =============================================================================
 
--- Clear search highlights
-vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
+-- Clear search highlights and multi cursors
+vim.keymap.set('n', '<Esc>', '<C-l>', { remap = true })
 
 -- Redo with capital U
 vim.keymap.set('n', 'U', '<C-r>', { desc = 'Redo' })
