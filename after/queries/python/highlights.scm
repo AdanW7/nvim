@@ -74,11 +74,10 @@
 
 (string) @string
 
-((escape_sequence) @string.escape
-  (#set! priority 130))
-
-((escape_interpolation) @string.escape
-  (#set! priority 130))
+[
+  (escape_sequence)
+  (escape_interpolation)
+] @string.escape
 
 ; doc-strings
 (expression_statement
