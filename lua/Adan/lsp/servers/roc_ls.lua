@@ -7,7 +7,8 @@
 
 ---@type vim.lsp.Config
 return {
-  cmd = { 'roc_language_server' },
+  -- cmd = { 'roc_language_server' },
+  cmd = { 'roc', 'experimental-lsp', '--stdio' },
   filetypes = { 'roc' },
   root_markers = { '.git' },
 }
