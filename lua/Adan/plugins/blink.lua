@@ -1,3 +1,13 @@
+local function strip_null(t)
+  for k, v in pairs(t) do
+    if v == vim.NIL then
+      t[k] = nil
+    elseif type(v) == 'table' then
+      strip_null(v)
+    end
+  end
+end
+
 local M = {}
 function M.setup()
   vim.pack.add({
@@ -52,6 +62,12 @@ function M.setup()
         lsp = {
           async = true,
           timeout_ms = 250,
+          transform_items = function(_, items)
+            for _, item in ipairs(items) do
+              strip_null(item)
+            end
+            return items
+          end,
         },
         lazydev = {
           name = 'LazyDev',

@@ -18,14 +18,21 @@
 --- })
 --- ```
 
-local util = require 'lspconfig.util'
-
 ---@type vim.lsp.Config
 return {
   cmd = { 'ada_language_server' },
   filetypes = { 'ada' },
+  root_markers = { 'Makefile', '.git', 'alire.toml' },
   root_dir = function(bufnr, on_dir)
-    local fname = vim.api.nvim_buf_get_name(bufnr)
-    on_dir(util.root_pattern('Makefile', '.git', 'alire.toml', '*.gpr', '*.adc')(fname))
+    local root = vim.fs.root(bufnr, function(name)
+      return name == 'Makefile'
+        or name == '.git'
+        or name == 'alire.toml'
+        or name:match('%.gpr$') ~= nil
+        or name:match('%.adc$') ~= nil
+    end)
+    if root then
+      on_dir(root)
+    end
   end,
 }
