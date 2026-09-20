@@ -32,6 +32,7 @@ local modules = {
 
   git = {
     'Adan.plugins.gitsigns',
+    'Adan.plugins.diff',
     'Adan.plugins.neogit',
   },
   builtins = { 'Adan.plugins.builtins' },

@@ -10,19 +10,31 @@ local function load_neogit()
   }, { load = true, confirm = false })
 
   require('neogit').setup({
-    kind = 'vsplit',
+    kind = 'tab',
     disable_hint = false,
     disable_signs = false,
     disable_insert_on_commit = 'auto',
-    graph_style = 'unicode',
+    graph_style = 'ascii',
+    diff_viewer = 'diffview',
+    integrations = {
+      telescope = true,
+      diffview = true,
+      codediff = false,
+      fzf_lua = false,
+      mini_pick = false,
+      snacks = false,
+    },
+    treesitter_diff_highlight = true,
     commit_editor = {
       kind = 'vsplit',
     },
     commit_select_view = {
       kind = 'vsplit',
+      show_title = true,
     },
     log_view = {
       kind = 'vsplit',
+      show_title = true,
     },
     status = {
       recent_commit_count = 30,
