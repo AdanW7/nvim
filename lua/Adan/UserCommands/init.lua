@@ -1,6 +1,6 @@
 require('Adan.UserCommands.PackFloat')
+require('Adan.UserCommands.Mason')
 require('Adan.UserCommands.profiling')
-require('Adan.UserCommands.packages')
 require('Adan.UserCommands.editing')
 require('Adan.UserCommands.CtoPython').setup()
 require('Adan.UserCommands.CompileCommand')

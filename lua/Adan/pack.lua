@@ -1,8 +1,8 @@
 local modules = {
   ui = {
     'Adan.plugins.helix',
+    'Adan.plugins.treesitter',
     'Adan.plugins.which_key',
-    'Adan.plugins.tabline',
     'Adan.plugins.todo',
   },
 

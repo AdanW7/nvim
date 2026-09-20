@@ -88,6 +88,7 @@ function M.setup()
     },
   })
   require('mini.statusline').setup {}
+  require('mini.tabline').setup {}
   require('mini.align').setup {}
   require('mini.sessions').setup({
     autoread = false,
