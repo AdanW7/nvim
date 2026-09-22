@@ -25,4 +25,5 @@ return {
   ols = true,
   lemminx = true,
   roc_ls = true,
+  nim_langserver = true,
 }
